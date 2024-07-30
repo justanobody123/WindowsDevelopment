@@ -20,9 +20,7 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		//H Ч Handler (обработчик, дескриптор)
 		HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON_BTC));
 		SendMessage(hwnd, WM_SETICON, 0, (LPARAM)hIcon);
-		/*HWND hEditLogin = GetDlgItem(hwnd, IDC_EDIT_LOGIN);
-		SetFocus(hEditLogin);*/
-		SetFocus(GetDlgItem(hwnd, IDC_EDIT_LOGIN));
+		SendMessage(GetDlgItem(hwnd, IDC_EDIT_LOGIN), WM_SETTEXT, 0, (LPARAM)"¬ведите логин");
 		break;
 	}
 	case WM_COMMAND://«десь обрабатываютс€ нажати€ на кнопки, ввод текста и любые изменени€ состо€ни€ окна
@@ -44,10 +42,32 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SendMessage(hEditPassword, WM_SETTEXT, 0, (LPARAM)sz_buffer);
 		}
 			break;
+		case IDC_EDIT_LOGIN:
+		{
+			HWND hEdit = GetDlgItem(hwnd, IDC_EDIT_LOGIN);
+			CONST INT SIZE = 256;
+			CHAR sz_buffer[SIZE]{};
+			SendMessage(hEdit, WM_GETTEXT, SIZE, (LPARAM)sz_buffer);
+			if (HIWORD(wParam) == EN_SETFOCUS)
+			{
+				if (!strcmp(sz_buffer, "¬ведите логин"))
+				{
+					SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)"");
+				}
+			}
+			else if (HIWORD(wParam) == EN_KILLFOCUS)
+			{
+				if (strlen(sz_buffer) == 0)
+				{
+					SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)"¬ведите логин");
+				}
+			}
+			break;
+		}
 		}
 		break;
 	case WM_CLOSE://ќтрабатывает при нажатии на крестик (закрыть)
 		EndDialog(hwnd, 0);
 	}
-	return false;
+	return FALSE;
 }
