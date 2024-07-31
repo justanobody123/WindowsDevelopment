@@ -1,5 +1,7 @@
 #include <Windows.h>
 #include "resource.h"
+//НЕ МОЕ
+CONST CHAR g_sz_INVITATION[] = "Введите Ваше имя:";
 BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
 {
@@ -20,7 +22,11 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		//H — Handler (обработчик, дескриптор)
 		HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON_BTC));
 		SendMessage(hwnd, WM_SETICON, 0, (LPARAM)hIcon);
-		SendMessage(GetDlgItem(hwnd, IDC_EDIT_LOGIN), WM_SETTEXT, 0, (LPARAM)"Введите логин");
+		//МОЕ
+		/*SendMessage(GetDlgItem(hwnd, IDC_EDIT_LOGIN), WM_SETTEXT, 0, (LPARAM)"Введите логин");*/
+		//НЕ МОЕ
+		HWND hEditLogin = GetDlgItem(hwnd, IDC_EDIT_LOGIN);
+		SendMessage(hEditLogin, WM_SETTEXT, 0, (LPARAM)g_sz_INVITATION);
 		break;
 	}
 	case WM_COMMAND://Здесь обрабатываются нажатия на кнопки, ввод текста и любые изменения состояния окна
@@ -41,26 +47,36 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SendMessage(hEdit, WM_GETTEXT, SIZE, (LPARAM)sz_buffer);
 			SendMessage(hEditPassword, WM_SETTEXT, 0, (LPARAM)sz_buffer);
 		}
-			break;
+		break;
 		case IDC_EDIT_LOGIN:
 		{
-			HWND hEdit = GetDlgItem(hwnd, IDC_EDIT_LOGIN);
+			HWND hEditLogin = GetDlgItem(hwnd, IDC_EDIT_LOGIN);
 			CONST INT SIZE = 256;
 			CHAR sz_buffer[SIZE]{};
-			SendMessage(hEdit, WM_GETTEXT, SIZE, (LPARAM)sz_buffer);
-			if (HIWORD(wParam) == EN_SETFOCUS)
+			SendMessage(hEditLogin, WM_GETTEXT, SIZE, (LPARAM)sz_buffer);
+			//МОЕ
+			/*if (HIWORD(wParam) == EN_SETFOCUS)
 			{
 				if (!strcmp(sz_buffer, "Введите логин"))
 				{
-					SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)"");
+					SendMessage(hEditLogin, WM_SETTEXT, 0, (LPARAM)"");
 				}
 			}
 			else if (HIWORD(wParam) == EN_KILLFOCUS)
 			{
 				if (strlen(sz_buffer) == 0)
 				{
-					SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)"Введите логин");
+					SendMessage(hEditLogin, WM_SETTEXT, 0, (LPARAM)"Введите логин");
 				}
+			}*/
+			//НЕ МОЕ
+			if (HIWORD(wParam) == EN_SETFOCUS and !strcmp(sz_buffer, g_sz_INVITATION))
+			{
+				SendMessage(hEditLogin, WM_SETTEXT, 0, (LPARAM)"");
+			}
+			else if (HIWORD(wParam) == EN_KILLFOCUS and !strlen(sz_buffer))
+			{
+				SendMessage(hEditLogin, WM_SETTEXT, 0, (LPARAM)g_sz_INVITATION);
 			}
 			break;
 		}
