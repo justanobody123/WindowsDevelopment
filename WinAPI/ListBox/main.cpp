@@ -105,7 +105,7 @@ BOOL CALLBACK GetInput(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         case IDOK1:
         {
             HWND hEdit = GetDlgItem(hwnd, IDC_EDIT1);
-            SendMessage(hEdit, WM_GETTEXT, 256, (LPARAM)pBuffer);
+            SendMessage(hEdit, WM_GETTEXT, 256, (LPARAM)pBuffer);//Вот только можно и не знать о размере буфера. Может, есть иной способ заполнить строку.
             if (!strlen(pBuffer))
             {
                 MessageBox(hwnd, "Пункт списка не должен быть пустым", "Warning", MB_OK | MB_ICONWARNING);
