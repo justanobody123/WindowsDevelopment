@@ -128,13 +128,12 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		CHAR sz_current_dir[MAX_PATH]{};
 		SetCurrentDirectory("starcraft-original");
 		GetCurrentDirectory(MAX_PATH, sz_current_dir);
-		//SendMessage(hwnd, WM_SETTEXT, 0, (LPARAM)sz_current_dir);
-		WIN32_FIND_DATA data;
-		//ZeroMemory(&data, sizeof(data));
-		HANDLE hFile = FindFirstFile("*", &data);
-		for (; FindNextFile(hFile, &data);)
+		WIN32_FIND_DATA file_data;
+		ZeroMemory(&file_data, sizeof(file_data));
+		HANDLE hFile = FindFirstFile("*", &file_data);
+		for (; FindNextFile(hFile, &file_data);)
 		{
-			SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)data.cFileName);
+			SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)file_data.cFileName);
 		}
 		FindClose(hFile);
 		break;
@@ -162,13 +161,14 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			int i = SendMessage(hCombo, CB_GETCURSEL, 0, 0);
 			CHAR sz_selected_cursor[_MAX_FNAME]{};
 			SendMessage(hCombo, CB_GETLBTEXT, i, (LPARAM)sz_selected_cursor);
-			HCURSOR hCursor = (HCURSOR)LoadImage(NULL, sz_selected_cursor, IMAGE_CURSOR, SM_CXCURSOR, SM_CYCURSOR, LR_LOADFROMFILE);
-			SetCursorPos(300, 300);
-
-			SetCursor(hCursor);
-			return FALSE;
+			HCURSOR hCursor = (HCURSOR)LoadImage(NULL, sz_selected_cursor, IMAGE_CURSOR, LR_DEFAULTSIZE, LR_DEFAULTSIZE, LR_LOADFROMFILE);
+			if (hCursor) //Если NULL, то значит он не загрузился
+			{
+				//Функция для установки атрибута для класса окна, которому принадлежит окно (hwnd)
+				SetClassLongPtr(hwnd, GCLP_HCURSOR, (LONG_PTR)hCursor); //GCLP_HCURSOR — обращаемся через этот дефайн к курсору окна и передаем новый курсор следующим параметром для установки.
+			}
 		}
-			break;
+		break;
 		case IDC_COMBO:
 			break;
 		}
