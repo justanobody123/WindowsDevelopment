@@ -2,6 +2,8 @@
 #include <Windows.h>
 #include "Resource.h"
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 CONST CHAR g_sz_WINDOW_CLASS[] = "Calc_PD_311";
 
 
@@ -27,6 +29,8 @@ CONST INT g_i_START_X_OPERATIONS = g_i_START_X_BUTTON + (g_i_BUTTON_SIZE + g_i_I
 CONST INT g_i_START_X_CONTROL_BUTTONS = g_i_START_X_BUTTON + (g_i_BUTTON_SIZE + g_i_INTERVAL) * 4;
 
 void TypeIn(HWND hWin, int numberID);
+char* Parse(CHAR display_content[]);
+bool IsParseable(CHAR display_content[]);
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
 {
@@ -179,6 +183,33 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		if (LOWORD(wParam) == IDC_BUTTON_CLEAR)
 		{
 			SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)"0");
+		}
+		if (LOWORD(wParam) == IDC_BUTTON_PLUS || LOWORD(wParam) == IDC_BUTTON_MINUS || LOWORD(wParam) == IDC_BUTTON_ASTER || LOWORD(wParam) == IDC_BUTTON_SLASH || LOWORD(wParam) == IDC_BUTTON_EQUAL)
+		{
+			SendMessage(hEditDisplay, WM_GETTEXT, SIZE, (LPARAM)sz_display);
+			if (IsParseable(sz_display))
+			{
+				//Çàìåíÿåì ñîäåðæèìîå äèñïëåÿ íà ðåçóëüòàò ìàò. îïåðàöèè
+				SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)Parse(sz_display));
+				SendMessage(hEditDisplay, WM_GETTEXT, SIZE, (LPARAM)sz_display);
+			}
+			if (LOWORD(wParam) == IDC_BUTTON_PLUS)
+			{
+				strcat(sz_display, "+");
+			}
+			else if (LOWORD(wParam) == IDC_BUTTON_MINUS)
+			{
+				strcat(sz_display, "-");
+			}
+			else if (LOWORD(wParam) == IDC_BUTTON_ASTER)
+			{
+				strcat(sz_display, "*");
+			}
+			else if (LOWORD(wParam) == IDC_BUTTON_SLASH)
+			{
+				strcat(sz_display, "/");
+			}
+			SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)sz_display);
 		}
 	}
 	/*switch (LOWORD(wParam))
@@ -348,3 +379,100 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 //	}
 //	SendMessage(hEdit, WM_SETTEXT, SIZE, (LPARAM)sz_buffer);
 //}
+
+/*
+	------------------------ÏËÀÍ ÏÀÐÑÈÍÃÀ------------------------
+	ÏÐÈÎÐÈÒÅÒ ÎÏÅÐÀÖÈÉ ÎÒÑÓÒÑÒÂÓÅÒ, ÏÎÑÊÎËÜÊÎ ÍÅÒ ÑÊÎÁÎÊ.
+	ÅÑËÈ Â ÑÒÐÎÊÅ ÅÑÒÜ ÄÂÀ ÎÏÅÐÀÍÄÀ È ÎÏÅÐÀÒÎÐ ÌÅÆÄÓ ÍÈÌÈ, Â ÝÄÈÒ ÁÎÊÑÅ ÁÓÄÅÒ ÎÒÎÁÐÀÆÀÒÜÑß ÐÅÇÓËÜÒÀÒ ÎÏÅÐÀÖÈÈ
+
+	ÏÈØÓ ÏÐÅÄÈÊÀÒ ÄËß ÎÏÐÅÄÅËÅÍÈß, ÏÎÄÕÎÄÈÒ ËÈ ÑÎÄÅÐÆÈÌÎÅ ÝÄÈÒÀ ÏÎÄ ÊÐÈÒÅÐÈÈ ÌÀÒ. ÎÏÅÐÀÖÈÈ.
+
+	ÅÑËÈ Â ÊÎÌÀÍÄÓ ÏÐÈËÅÒÀÅÒ ÊÎÄ ÊÍÎÏÊÈ ÎÏÅÐÀÍÄÀ, ÏÐÎÂÅÐßÅÌ ÏÐÈÃÎÄÍÎÑÒÜ ÑÎÄÅÐÆÈÌÎÃÎ ÍÀ ÏÀÐÑÈÍÃ
+	ÅÑËÈ ÏÎÄÕÎÄÈÒ, ÇÀÌÅÍßÅÌ ÑÎÄÅÐÆÈÌÎÅ ÝÄÈÒÁÎÊÑÀ ÐÅÇÓËÜÒÀÒÎÌ ÌÀÒÅÌÀÒÈ×ÅÑÊÎÉ ÎÏÅÐÀÖÈÈ
+	ÏÎÑËÅ ÝÒÎÃÎ ÌÎÆÍÎ ÏÎÑÒÀÂÈÒÜ ÎÏÅÐÀÍÄ, ÊÎÒÎÐÛÉ ÇÀÏÐÀØÈÂÀËÈ
+
+*/
+bool IsParseable(CHAR display_content[])
+{
+	CHAR operations[] = "+-*/";
+	for (size_t i = 0; operations[i] != 0; i++)
+	{
+		if (strchr(display_content, operations[i]))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+char* Parse(CHAR display_content[])
+{
+	CHAR operations[] = "+-*/";
+	double first_number = 0, second_number = 0;
+	char* op = NULL;
+	for (size_t i = 0; operations[i] != 0; i++)
+	{
+		op = strchr(display_content, operations[i]);
+		if (op != NULL)
+		{
+			break;
+		}
+	}
+	char first_part[256]{};
+	strncpy(first_part, display_content, op - display_content);
+
+	char second_part[256]{};
+	strcpy(second_part, op + 1);
+	first_number = strtod(first_part, NULL);
+	second_number = strtod(second_part, NULL);
+
+	// Âûïîëíÿåì ñîîòâåòñòâóþùóþ îïåðàöèþ
+	double result = 0;
+	switch (*op)
+	{
+	case '+':
+		result = first_number + second_number;
+		break;
+	case '-':
+		result = first_number - second_number;
+		break;
+	case '*':
+		result = first_number * second_number;
+		break;
+	case '/':
+		if (second_number != 0)
+		{
+			result = first_number / second_number;
+		}
+		else
+		{
+			//×òî áû ñþäà çàñóíóòü òàêîãî? Ëàäíî, ïóñòü áóäåò íîëü, ïîêà íå ïðèäóìàëà.
+			result = 0;
+		}
+		break;
+	}
+	CONST INT RESULT_SIZE = 30;
+	char result_str[RESULT_SIZE];
+	snprintf(result_str, sizeof(result_str), "%f", result);
+	//return result_str;
+	//Óäàëÿåì íóëè
+	char* dot = strchr(result_str, '.');
+	
+	if (dot)
+	{
+		int dotIndex = dot - result_str;
+		for (size_t i = RESULT_SIZE - 1; i >= dotIndex; i--)
+		{
+			if (i == dotIndex || result_str[i] == '0')
+			{
+				result_str[i] = '\0';
+			}
+			else
+			{
+				break;
+			}
+		}
+		
+	}
+	return result_str;
+	
+}
