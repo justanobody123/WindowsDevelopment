@@ -201,7 +201,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		CONST INT SLEEP_TIME = 100;
 
-		if (LOWORD(wParam) >= 0x30 && LOWORD(wParam) <= 0x39)
+		if (LOWORD(wParam) >= 0x30 && LOWORD(wParam) <= 0x39)//ÐÀÁÎÒÀÅÒ
 		{
 			HWND hButton = GetDlgItem(hwnd, LOWORD(wParam - 0x30 + IDC_BUTTON_0));
 			SendMessage(hButton, BM_SETSTATE, TRUE, 0);
@@ -209,7 +209,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			Sleep(SLEEP_TIME);
 			SendMessage(hButton, BM_SETSTATE, FALSE, 0);
 		}
-		if (LOWORD(wParam) >= 0x60 && LOWORD(wParam) <= 0x69)
+		if (LOWORD(wParam) >= 0x60 && LOWORD(wParam) <= 0x69)//ÐÀÁÎÒÀÅÒ
 		{
 			HWND hButton = GetDlgItem(hwnd, LOWORD(wParam - 0x60 + IDC_BUTTON_0));
 			SendMessage(hButton, BM_SETSTATE, TRUE, 0);
@@ -220,8 +220,8 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 		switch (LOWORD(wParam))
 		{
-			//ÍÅ ÐÀÁÎÒÀÞÒ Â ÏÎËÍÎÉ ÌÅÐÅ, ÂÎÇÌÎÆÍÎ ÊÎÄÛ ÍÅÏÐÀÂÈËÜÍÛ
-		case VK_OEM_PERIOD:
+			//ÍÅ ÐÀÁÎÒÀÞÒ Â ÏÎËÍÎÉ ÌÅÐÅ, ÏÎÄÎÇÐÅÂÀÞ, ×ÒÎ ÏÐÎÁËÅÌÀ ÊÐÎÅÒÑß Â ÂÈÐÒÓÀËÜÍÛÕ ÊÎÄÀÕ (ÈËÈ ß ÒÓÏÀß È ÃÄÅ-ÒÎ ÎÏÅ×ÀÒÀËÀÑÜ, À ÒÅÏÅÐÜ ÍÅ ÌÎÃÓ ÍÀÉÒÈ)
+		case VK_OEM_PERIOD://ÐÀÁÎÒÀÅÒ
 		{
 			HWND hButton = GetDlgItem(hwnd, IDC_BUTTON_POINT);
 			SendMessage(hButton, BM_SETSTATE, TRUE, 0);
@@ -231,7 +231,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 
 		break;
-		case VK_OEM_PLUS:
+		case VK_OEM_PLUS://ÐÀÁÎÒÀÅÒ
 		{
 			HWND hButton = GetDlgItem(hwnd, IDC_BUTTON_PLUS);
 			SendMessage(hButton, BM_SETSTATE, TRUE, 0);
@@ -240,7 +240,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SendMessage(hButton, BM_SETSTATE, FALSE, 0);
 		}
 		break;
-		case VK_OEM_MINUS:
+		case VK_OEM_MINUS://ÍÅ ÐÀÁÎÒÀÅÒ
 		{
 			HWND hButton = GetDlgItem(hwnd, IDC_BUTTON_MINUS);
 			SendMessage(hButton, BM_SETSTATE, TRUE, 0);
@@ -250,7 +250,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 
 		break;
-		case VK_MULTIPLY:
+		case VK_MULTIPLY://ÍÅ ÐÀÁÎÒÀÅÒ
 		{
 			HWND hButton = GetDlgItem(hwnd, IDC_BUTTON_ASTER);
 			SendMessage(hButton, BM_SETSTATE, TRUE, 0);
@@ -259,7 +259,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SendMessage(hButton, BM_SETSTATE, FALSE, 0);
 		}
 			break;
-		case VK_DIVIDE:
+		case VK_DIVIDE://ÍÅ ÐÀÁÎÒÀÅÒ
 		{
 			HWND hButton = GetDlgItem(hwnd, IDC_BUTTON_SLASH);
 			SendMessage(hButton, BM_SETSTATE, TRUE, 0);
@@ -269,7 +269,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 			
 			break;
-		case VK_BACK:
+		case VK_BACK://ÏÐÈ ÍÀÆÀÒÈÈ ÐÅÀÃÈÐÓÅÒ ÊËÀÂÈØÀ ÌÈÍÓÑ
 		{
 			HWND hButton = GetDlgItem(hwnd, IDC_BUTTON_BSP);
 			SendMessage(hButton, BM_SETSTATE, TRUE, 0);
@@ -278,7 +278,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SendMessage(hButton, BM_SETSTATE, FALSE, 0);
 		}
 			break;
-		case VK_ESCAPE:
+		case VK_ESCAPE://ÐÀÁÎÒÀÅÒ
 		{
 			HWND hButton = GetDlgItem(hwnd, IDC_BUTTON_CLEAR);
 			SendMessage(hButton, BM_SETSTATE, TRUE, 0);
