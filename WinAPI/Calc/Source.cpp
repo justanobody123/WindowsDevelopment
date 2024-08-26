@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS
+ï»¿#define _CRT_SECURE_NO_WARNINGS
 #include <Windows.h>
 #include "Resource.h"
 #include <string.h>
@@ -37,15 +37,15 @@ bool IsParseable(CHAR display_content[]);
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
 {
-	//1) Ðåãèñòðàöèÿ êëàññà îêíà
+	//1) Ð ÐµÐ³Ð¸ÑÑ‚Ñ€Ð°Ñ†Ð¸Ñ ÐºÐ»Ð°ÑÑÐ° Ð¾ÐºÐ½Ð°
 
 
 	WNDCLASSEX wClass;
-	ZeroMemory(&wClass, sizeof(wClass)); // Çàíóëÿåì ýêçåìïëÿð ñòðóêòóðû
+	ZeroMemory(&wClass, sizeof(wClass)); // Ð—Ð°Ð½ÑƒÐ»ÑÐµÐ¼ ÑÐºÐ·ÐµÐ¼Ð¿Ð»ÑÑ€ ÑÑ‚Ñ€ÑƒÐºÑ‚ÑƒÑ€Ñ‹
 	wClass.style = 0;
 	wClass.cbSize = sizeof(wClass); // cb - Count bytes
-	wClass.cbWndExtra = 0; //Ýêñòðà áàéòû äëÿ îêíà — ïî÷èòàòü ïîçæå
-	wClass.cbClsExtra = 0;//Ýêñòðà áàéòû äëÿ êëàññà — ïî÷èòàòü ïîçæå
+	wClass.cbWndExtra = 0; //Ð­ÐºÑÑ‚Ñ€Ð° Ð±Ð°Ð¹Ñ‚Ñ‹ Ð´Ð»Ñ Ð¾ÐºÐ½Ð° â€” Ð¿Ð¾Ñ‡Ð¸Ñ‚Ð°Ñ‚ÑŒ Ð¿Ð¾Ð·Ð¶Ðµ
+	wClass.cbClsExtra = 0;//Ð­ÐºÑÑ‚Ñ€Ð° Ð±Ð°Ð¹Ñ‚Ñ‹ Ð´Ð»Ñ ÐºÐ»Ð°ÑÑÐ° â€” Ð¿Ð¾Ñ‡Ð¸Ñ‚Ð°Ñ‚ÑŒ Ð¿Ð¾Ð·Ð¶Ðµ
 	wClass.hIcon = (HICON)LoadImage(hInstance, "ICO\\calcXP.ico", IMAGE_ICON, LR_DEFAULTSIZE, LR_DEFAULTSIZE, LR_LOADFROMFILE);
 	wClass.hIconSm = (HICON)LoadImage(hInstance, "ICO\\calcXP.ico", IMAGE_ICON, LR_DEFAULTSIZE, LR_DEFAULTSIZE, LR_LOADFROMFILE);
 	wClass.hCursor = LoadCursor(hInstance, IDC_ARROW);
@@ -58,11 +58,11 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 	{
 		MessageBox(NULL, "Class registration failed!", "Error", MB_OK | MB_ICONERROR);
 	}
-	//2) Ñîçäàíèå îêíà
+	//2) Ð¡Ð¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ð¾ÐºÐ½Ð°
 	HWND hwnd = CreateWindowEx(NULL, g_sz_WINDOW_CLASS, g_sz_WINDOW_CLASS, WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX, CW_USEDEFAULT, CW_USEDEFAULT, g_i_WINDOW_WIDTH, g_i_WINDOW_HEIGHT, NULL, NULL, hInstance, NULL);
 	ShowWindow(hwnd, nCmdShow);
 	UpdateWindow(hwnd);
-	//3) Çàïóñê öèêëà îáðàáîòêè ñîîáùåíèé
+	//3) Ð—Ð°Ð¿ÑƒÑÐº Ñ†Ð¸ÐºÐ»Ð° Ð¾Ð±Ñ€Ð°Ð±Ð¾Ñ‚ÐºÐ¸ ÑÐ¾Ð¾Ð±Ñ‰ÐµÐ½Ð¸Ð¹
 	MSG msg;
 	while (GetMessage(&msg, hwnd, 0, 0) > 0)
 	{
@@ -157,10 +157,8 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		CONST INT SIZE = 256;
 		CHAR sz_display[SIZE]{};
 		CHAR sz_digit[2]{};
-		
 		HWND hEditDisplay = GetDlgItem(hwnd, IDC_EDIT_DISPLAY);
-		SendMessage(hEditDisplay, WM_GETTEXT, SIZE, (LPARAM)sz_display);
-		if (LOWORD(wParam) >= IDC_BUTTON_0 && LOWORD(wParam) <= IDC_BUTTON_POINT && strcmp(sz_display, "Îøèáêà!"))
+		if (LOWORD(wParam) >= IDC_BUTTON_0 && LOWORD(wParam) <= IDC_BUTTON_POINT)
 		{
 			sz_digit[0] = LOWORD(wParam) - IDC_BUTTON_0 + '0';
 			SendMessage(hEditDisplay, WM_GETTEXT, SIZE, (LPARAM)sz_display);
@@ -176,7 +174,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			}
 			SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)sz_display);
 		}
-		if (LOWORD(wParam) == IDC_BUTTON_BSP && strcmp(sz_display, "Îøèáêà!"))
+		if (LOWORD(wParam) == IDC_BUTTON_BSP)
 		{
 			SendMessage(hEditDisplay, WM_GETTEXT, SIZE, (LPARAM)sz_display);
 			INT display_length = strlen(sz_display);
@@ -193,29 +191,31 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			SendMessage(hEditDisplay, WM_GETTEXT, SIZE, (LPARAM)sz_display);
 
-			if (IsParseable(sz_display))
-			{
-				//Çàìåíÿåì ñîäåðæèìîå äèñïëåÿ íà ðåçóëüòàò ìàò. îïåðàöèè
-				SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)Parse(sz_display));
-				SendMessage(hEditDisplay, WM_GETTEXT, SIZE, (LPARAM)sz_display);
-			}
-			if (LOWORD(wParam) == IDC_BUTTON_PLUS && strcmp(sz_display, "Îøèáêà!"))
-			{
-				strcat(sz_display, "+");
-			}
-			else if (LOWORD(wParam) == IDC_BUTTON_MINUS && strcmp(sz_display, "Îøèáêà!"))
-			{
-				strcat(sz_display, "-");
-			}
-			else if (LOWORD(wParam) == IDC_BUTTON_ASTER && strcmp(sz_display, "Îøèáêà!"))
-			{
-				strcat(sz_display, "*");
-			}
-			else if (LOWORD(wParam) == IDC_BUTTON_SLASH && strcmp(sz_display, "Îøèáêà!"))
-			{
-				strcat(sz_display, "/");
-			}
-			SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)sz_display);
+				if (IsParseable(sz_display))
+				{
+					//Ð—Ð°Ð¼ÐµÐ½ÑÐµÐ¼ ÑÐ¾Ð´ÐµÑ€Ð¶Ð¸Ð¼Ð¾Ðµ Ð´Ð¸ÑÐ¿Ð»ÐµÑ Ð½Ð° Ñ€ÐµÐ·ÑƒÐ»ÑŒÑ‚Ð°Ñ‚ Ð¼Ð°Ñ‚. Ð¾Ð¿ÐµÑ€Ð°Ñ†Ð¸Ð¸
+					SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)Parse(sz_display));
+					SendMessage(hEditDisplay, WM_GETTEXT, SIZE, (LPARAM)sz_display);
+				}
+				if (LOWORD(wParam) == IDC_BUTTON_PLUS)
+				{
+					strcat(sz_display, "+");
+				}
+				else if (LOWORD(wParam) == IDC_BUTTON_MINUS)
+				{
+					strcat(sz_display, "-");
+				}
+				else if (LOWORD(wParam) == IDC_BUTTON_ASTER)
+				{
+					strcat(sz_display, "*");
+				}
+				else if (LOWORD(wParam) == IDC_BUTTON_SLASH)
+				{
+					strcat(sz_display, "/");
+				}
+				SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)sz_display);
+	
+			
 		}
 	}
 	/*switch (LOWORD(wParam))
@@ -238,44 +238,44 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		//CONST INT SLEEP_TIME = 100;
 
-		if (LOWORD(wParam) >= 0x30 && LOWORD(wParam) <= 0x39)//ÐÀÁÎÒÀÅÒ
+		if (LOWORD(wParam) >= 0x30 && LOWORD(wParam) <= 0x39)//Ð ÐÐ‘ÐžÐ¢ÐÐ•Ð¢
 		{
 			HighlightButton(hwnd, LOWORD(wParam - 0x30 + IDC_BUTTON_0));
 			SendMessage(hwnd, WM_COMMAND, LOWORD(wParam - 0x30 + IDC_BUTTON_0), 0);
 		}
-		if (LOWORD(wParam) >= 0x60 && LOWORD(wParam) <= 0x69)//ÐÀÁÎÒÀÅÒ
+		if (LOWORD(wParam) >= 0x60 && LOWORD(wParam) <= 0x69)//Ð ÐÐ‘ÐžÐ¢ÐÐ•Ð¢
 		{
 			HighlightButton(hwnd, LOWORD(wParam - 0x60 + IDC_BUTTON_0));
 			SendMessage(hwnd, WM_COMMAND, LOWORD(wParam - 0x60 + IDC_BUTTON_0), 0);
 		}
 		switch (LOWORD(wParam))
 		{
-		case VK_OEM_PERIOD://ÐÀÁÎÒÀÅÒ
+		case VK_OEM_PERIOD://Ð ÐÐ‘ÐžÐ¢ÐÐ•Ð¢
 		{
 			HighlightButton(hwnd, IDC_BUTTON_POINT);
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_POINT), 0);
 			break;
 		}
-		case VK_ADD://ÐÀÁÎÒÀÅÒ
+		case VK_ADD://Ð ÐÐ‘ÐžÐ¢ÐÐ•Ð¢
 		{
 			HighlightButton(hwnd, IDC_BUTTON_PLUS);
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_PLUS), 0);
 			break;
 		}
 
-		case VK_SUBTRACT://ÐÀÁÎÒÀÅÒ
+		case VK_SUBTRACT://Ð ÐÐ‘ÐžÐ¢ÐÐ•Ð¢
 		{
 			HighlightButton(hwnd, IDC_BUTTON_MINUS);
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_MINUS), 0);
 			break;
 		}
-		case VK_MULTIPLY://ÐÀÁÎÒÀÅÒ
+		case VK_MULTIPLY://Ð ÐÐ‘ÐžÐ¢ÐÐ•Ð¢
 		{
 			HighlightButton(hwnd, IDC_BUTTON_ASTER);
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_ASTER), 0);
 			break;
 		}
-		case VK_DIVIDE://ÍÅ ÐÀÁÎÒÀÅÒ
+		case VK_DIVIDE://ÐÐ• Ð ÐÐ‘ÐžÐ¢ÐÐ•Ð¢
 		{
 			HighlightButton(hwnd, IDC_BUTTON_SLASH);
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_SLASH), 0);
@@ -283,20 +283,20 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 
 
-		case VK_BACK://ÏÐÈ ÍÀÆÀÒÈÈ ÐÅÀÃÈÐÓÅÒ ÊËÀÂÈØÀ ÌÈÍÓÑ
+		case VK_BACK://ÐŸÐ Ð˜ ÐÐÐ–ÐÐ¢Ð˜Ð˜ Ð Ð•ÐÐ“Ð˜Ð Ð£Ð•Ð¢ ÐšÐ›ÐÐ’Ð˜Ð¨Ð ÐœÐ˜ÐÐ£Ð¡
 		{
 			HighlightButton(hwnd, IDC_BUTTON_BSP);
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_BSP), 0);
 			break;
 		}
 
-		case VK_ESCAPE://ÐÀÁÎÒÀÅÒ
+		case VK_ESCAPE://Ð ÐÐ‘ÐžÐ¢ÐÐ•Ð¢
 		{
 			HighlightButton(hwnd, IDC_BUTTON_CLEAR);
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_CLEAR), 0);
 			break;
 		}
-		//ÝÒÎ ÐÀÂÍÎ — ÐÀÁÎÒÀÅÒ
+		//Ð­Ð¢Ðž Ð ÐÐ’ÐÐž â€” Ð ÐÐ‘ÐžÐ¢ÐÐ•Ð¢
 		case VK_OEM_PLUS:
 
 			HighlightButton(hwnd, IDC_BUTTON_EQUAL);
@@ -365,17 +365,16 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 //}
 
 /*
-	------------------------ÑÏÈÑÎÊ ÁÀÃÎÂ Ê ÈÑÏÐÀÂËÅÍÈÞ------------------------
-	ÏÐÈ ÍÀÆÀÒÈÈ ÍÀ ÊËÀÂÈØÓ BASKSPACE ÍÀ ÝÊÐÀÍÅ ÂÈÇÓÀËÜÍÎ ÐÅÀÃÈÐÓÅÒ ÌÈÍÓÑ — DONE
-	ÏÐÈ ÍÀÆÀÒÈÈ ÍÀ ÌÈÍÓÑ ÌÛØÜÞ ÏÎÑËÅÄÍÈÉ ÑÈÌÂÎË ÍÀ ÄÈÑÏËÅÅ ÑÒÈÐÀÅÒÑß ÊÀÊ ÏÐÈ ÍÀÆÀÒÈÈ ÍÀ BACKSPACE — DONE
-	(ÑÀÌ BACKSPACE ÑÎ ÂÑÅÕ ÑÒÎÐÎÍ ÐÀÁÎÒÀÅÒ ÎÒËÈ×ÍÎ, À ÏÐÈ ÍÀÆÀÒÈÈ ÍÀ ÌÈÍÓÑ Ñ ÊËÀÂÈÀÒÓÐÛ ÎÍ ÂÅÄÅÒ ÑÅÁß ÊÀÊ È ÍÀÄÎ, ÍÎ ÁÅÇ ÂÈÇÓÀËÈÇÀÖÈÈ ÍÀ ÝÊÐÀÍÅ)
-	ÓÌÍÎÆÈÒÜ È ÐÀÇÄÅËÈÒÜ ÍÅ ÐÀÁÎÒÀÞÒ Ñ ÌÛØÈ — DONE
-	ÐÀÂÍÎ Ñ ÊËÀÂÈÀÒÓÐÛ ÍÅ ÐÀÁÎÒÀÅÒ, ÏÎÑÊÎËÜÊÓ ÑÎÂÏÀÄÀÅÒ Ñ ÏËÞÑÎÌ — DONE
-	ÍÅ ÐÀÁÎÒÀÅÒ ÇÀÒÈÐÊÀ ËÈØÍÈÕ ÍÓËÅÉ È ÒÎ×ÊÈ ÄËß ÖÅËÛÕ ×ÈÑÅË — ÒÓÒ ÒÎËÜÊÎ ÏËÀÊÀÒÜ
-	ÍÅÎÁÕÎÄÈÌÀ ÁËÎÊÈÐÎÂÊÀ ÂÂÎÄÀ Â ÊÀËÜÊÓËßÒÎÐ ÅÑËÈ ÄÈÑÏËÅÉ ÑÎÄÅÐÆÈÒ ÑÒÐÎÊÓ "ÎØÈÁÊÀ!" — DONE
-	------------------------ÓËÓ×ØÅÍÈß------------------------
-	ÂÛÍÅÑÒÈ Â ÔÓÍÊÖÈÞ ÂÈÇÓÀËÈÇÀÖÈÞ ÍÀÆÀÒÈß ÊËÀÂÈØÈ — DONE
-	×ÒÎ-ÍÈÁÓÄÜ ÇÀÏÈÕÀÒÜ Â ÄÈÑÏËÅÉ ÏÐÈ ÄÅËÅÍÈÈ ÍÀ ÍÎËÜ — DONE 
+	------------------------Ð¡ÐŸÐ˜Ð¡ÐžÐš Ð‘ÐÐ“ÐžÐ’ Ðš Ð˜Ð¡ÐŸÐ ÐÐ’Ð›Ð•ÐÐ˜Ð®------------------------
+	ÐŸÐ Ð˜ ÐÐÐ–ÐÐ¢Ð˜Ð˜ ÐÐ ÐšÐ›ÐÐ’Ð˜Ð¨Ð£ BASKSPACE ÐÐ Ð­ÐšÐ ÐÐÐ• Ð’Ð˜Ð—Ð£ÐÐ›Ð¬ÐÐž Ð Ð•ÐÐ“Ð˜Ð Ð£Ð•Ð¢ ÐœÐ˜ÐÐ£Ð¡ â€” DONE
+	ÐŸÐ Ð˜ ÐÐÐ–ÐÐ¢Ð˜Ð˜ ÐÐ ÐœÐ˜ÐÐ£Ð¡ ÐœÐ«Ð¨Ð¬Ð® ÐŸÐžÐ¡Ð›Ð•Ð”ÐÐ˜Ð™ Ð¡Ð˜ÐœÐ’ÐžÐ› ÐÐ Ð”Ð˜Ð¡ÐŸÐ›Ð•Ð• Ð¡Ð¢Ð˜Ð ÐÐ•Ð¢Ð¡Ð¯ ÐšÐÐš ÐŸÐ Ð˜ ÐÐÐ–ÐÐ¢Ð˜Ð˜ ÐÐ BACKSPACE â€” DONE
+	(Ð¡ÐÐœ BACKSPACE Ð¡Ðž Ð’Ð¡Ð•Ð¥ Ð¡Ð¢ÐžÐ ÐžÐ Ð ÐÐ‘ÐžÐ¢ÐÐ•Ð¢ ÐžÐ¢Ð›Ð˜Ð§ÐÐž, Ð ÐŸÐ Ð˜ ÐÐÐ–ÐÐ¢Ð˜Ð˜ ÐÐ ÐœÐ˜ÐÐ£Ð¡ Ð¡ ÐšÐ›ÐÐ’Ð˜ÐÐ¢Ð£Ð Ð« ÐžÐ Ð’Ð•Ð”Ð•Ð¢ Ð¡Ð•Ð‘Ð¯ ÐšÐÐš Ð˜ ÐÐÐ”Ðž, ÐÐž Ð‘Ð•Ð— Ð’Ð˜Ð—Ð£ÐÐ›Ð˜Ð—ÐÐ¦Ð˜Ð˜ ÐÐ Ð­ÐšÐ ÐÐÐ•)
+	Ð£ÐœÐÐžÐ–Ð˜Ð¢Ð¬ Ð˜ Ð ÐÐ—Ð”Ð•Ð›Ð˜Ð¢Ð¬ ÐÐ• Ð ÐÐ‘ÐžÐ¢ÐÐ®Ð¢ Ð¡ ÐœÐ«Ð¨Ð˜ â€” DONE
+	Ð ÐÐ’ÐÐž Ð¡ ÐšÐ›ÐÐ’Ð˜ÐÐ¢Ð£Ð Ð« ÐÐ• Ð ÐÐ‘ÐžÐ¢ÐÐ•Ð¢, ÐŸÐžÐ¡ÐšÐžÐ›Ð¬ÐšÐ£ Ð¡ÐžÐ’ÐŸÐÐ”ÐÐ•Ð¢ Ð¡ ÐŸÐ›Ð®Ð¡ÐžÐœ â€” DONE
+	ÐÐ• Ð ÐÐ‘ÐžÐ¢ÐÐ•Ð¢ Ð—ÐÐ¢Ð˜Ð ÐšÐ Ð›Ð˜Ð¨ÐÐ˜Ð¥ ÐÐ£Ð›Ð•Ð™ Ð˜ Ð¢ÐžÐ§ÐšÐ˜ Ð”Ð›Ð¯ Ð¦Ð•Ð›Ð«Ð¥ Ð§Ð˜Ð¡Ð•Ð› â€” Ð¢Ð£Ð¢ Ð¢ÐžÐ›Ð¬ÐšÐž ÐŸÐ›ÐÐšÐÐ¢Ð¬
+	ÐžÐ¡Ð¢ÐÐ›Ð¬ÐÐžÐ• Ð£Ð–Ð• ÐÐ• Ð£Ð¡ÐŸÐ•Ð® (Ð¢ÐžÐ§ÐšÐ ÐžÐ”ÐÐ ÐÐ Ð’Ð•Ð¡Ð¬ Ð”Ð˜Ð¡ÐŸÐ›Ð•Ð™, Ð”ÐžÐ‘ÐÐ’Ð˜Ð¢Ð¬ ÐžÐ¨Ð˜Ð‘ÐšÐ£ ÐŸÐ Ð˜ Ð”Ð•Ð›Ð•ÐÐ˜Ð˜ ÐÐ ÐÐžÐ›Ð¬)
+	------------------------Ð£Ð›Ð£Ð§Ð¨Ð•ÐÐ˜Ð¯------------------------
+	Ð’Ð«ÐÐ•Ð¡Ð¢Ð˜ Ð’ Ð¤Ð£ÐÐšÐ¦Ð˜Ð® Ð’Ð˜Ð—Ð£ÐÐ›Ð˜Ð—ÐÐ¦Ð˜Ð® ÐÐÐ–ÐÐ¢Ð˜Ð¯ ÐšÐ›ÐÐ’Ð˜Ð¨Ð˜ â€” DONE
 */
 bool IsParseable(CHAR display_content[])
 {
@@ -391,8 +390,8 @@ bool IsParseable(CHAR display_content[])
 }
 char* Parse(CHAR display_content[])
 {
+	//CHAR sz_error[] = "Error!";
 	CHAR operations[] = "+-*/";
-	CHAR sz_error[] = "Îøèáêà!";
 	double first_number = 0, second_number = 0;
 	char* op = NULL;
 	for (size_t i = 0; operations[i] != 0; i++)
@@ -409,8 +408,6 @@ char* Parse(CHAR display_content[])
 	strcpy(second_part, op + 1);
 	first_number = strtod(first_part, NULL);
 	second_number = strtod(second_part, NULL);
-	CONST INT RESULT_SIZE = 30;
-	char result_str[RESULT_SIZE];
 	double result = 0;
 	switch (*op)
 	{
@@ -430,17 +427,21 @@ char* Parse(CHAR display_content[])
 		}
 		else
 		{
-			return sz_error;
+			//Ð§Ñ‚Ð¾ Ð±Ñ‹ ÑÑŽÐ´Ð° Ð½Ð°Ð¿Ð¸ÑÐ°Ñ‚ÑŒ? ÐŸÑƒÑÑ‚ÑŒ Ð¿Ð¾ÐºÐ° Ð±ÑƒÐ´ÐµÑ‚ Ð½Ð¾Ð»ÑŒ.
+			result = 0;
+			//return sz_error;
 		}
 		break;
 	}
-
+	CONST INT RESULT_SIZE = 30;
+	char result_str[RESULT_SIZE];
 	snprintf(result_str, sizeof(result_str), "%f", result);
 	//return result_str;
-	//Óäàëÿåì íóëè
+	//Ð£Ð´Ð°Ð»ÑÐµÐ¼ Ð½ÑƒÐ»Ð¸
+	//ÐÐ• Ð ÐÐ‘ÐžÐ¢ÐÐ•Ð¢ (ÐÐ£ ÐŸÐžÐ§Ð•ÐœÐ£...)
 	char* dot = strchr(result_str, '.');
-	//ÍÅ ÐÀÁÎÒÀÅÒ (ÍÓ ÏÎ×ÅÌÓ...)
-	if (dot)
+
+	/*if (dot)
 	{
 		int dotIndex = dot - result_str;
 		for (size_t i = RESULT_SIZE - 1; i >= dotIndex; i--)
@@ -454,8 +455,10 @@ char* Parse(CHAR display_content[])
 				break;
 			}
 		}
-	}
+
+	}*/
 	return result_str;
+
 }
 void HighlightButton(HWND hWin, int idc, int SLEEP_TIME)
 {
