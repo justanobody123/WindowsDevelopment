@@ -30,7 +30,7 @@ CONST INT g_i_START_Y_BUTTON = g_i_START_Y * 2 + g_i_DISPLAY_HEIGHT;
 CONST INT g_i_START_X_OPERATIONS = g_i_START_X_BUTTON + (g_i_BUTTON_SIZE + g_i_INTERVAL) * 3;
 CONST INT g_i_START_X_CONTROL_BUTTONS = g_i_START_X_BUTTON + (g_i_BUTTON_SIZE + g_i_INTERVAL) * 4;
 
-void HighlightButton(HWND hButton, int idc, int SLEEP_TIME = g_i_SLEEP_TIME);
+VOID PushButton(HWND parent, int id);
 void TypeIn(HWND hWin, int numberID);
 char* Parse(CHAR display_content[]);
 bool IsParseable(CHAR display_content[]);
@@ -236,48 +236,134 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	break;
 	case WM_KEYDOWN:
 	{
-		//CONST INT SLEEP_TIME = 100;
-
-		if (LOWORD(wParam) >= 0x30 && LOWORD(wParam) <= 0x39)//РАБОТАЕТ
+		if (GetKeyState(VK_SHIFT) < 0 and LOWORD(wParam) == 0x38)
 		{
-			HighlightButton(hwnd, LOWORD(wParam - 0x30 + IDC_BUTTON_0));
-			SendMessage(hwnd, WM_COMMAND, LOWORD(wParam - 0x30 + IDC_BUTTON_0), 0);
+			SendMessage(GetDlgItem(hwnd, IDC_BUTTON_ASTER), BM_SETSTATE, TRUE, 0);
+		}
+
+		else if (LOWORD(wParam) >= 0x30 && LOWORD(wParam) <= 0x39)//РАБОТАЕТ
+		{
+			SendMessage(GetDlgItem(hwnd, LOWORD(wParam - 0x30 + IDC_BUTTON_0)), BM_SETSTATE, TRUE, 0);
+			//PushButton(hwnd, LOWORD(wParam - 0x30 + IDC_BUTTON_0));
+			//SendMessage(hwnd, WM_COMMAND, LOWORD(wParam - 0x30 + IDC_BUTTON_0), 0);
 		}
 		if (LOWORD(wParam) >= 0x60 && LOWORD(wParam) <= 0x69)//РАБОТАЕТ
 		{
-			HighlightButton(hwnd, LOWORD(wParam - 0x60 + IDC_BUTTON_0));
+			SendMessage(GetDlgItem(hwnd, LOWORD(wParam - 0x60 + IDC_BUTTON_0)), BM_SETSTATE, TRUE, 0);
 			SendMessage(hwnd, WM_COMMAND, LOWORD(wParam - 0x60 + IDC_BUTTON_0), 0);
 		}
 		switch (LOWORD(wParam))
 		{
+		case VK_DECIMAL:
 		case VK_OEM_PERIOD://РАБОТАЕТ
 		{
-			HighlightButton(hwnd, IDC_BUTTON_POINT);
-			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_POINT), 0);
+			//PushButton(hwnd, IDC_BUTTON_POINT);
+			SendMessage(GetDlgItem(hwnd, LOWORD(IDC_BUTTON_POINT)), BM_SETSTATE, TRUE, 0);
+			//SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_POINT), 0);
 			break;
 		}
+		case VK_OEM_PLUS:
 		case VK_ADD://РАБОТАЕТ
 		{
-			HighlightButton(hwnd, IDC_BUTTON_PLUS);
-			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_PLUS), 0);
+			SendMessage(GetDlgItem(hwnd, LOWORD(IDC_BUTTON_PLUS)), BM_SETSTATE, TRUE, 0);
+			//SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_PLUS), 0);
 			break;
 		}
 
 		case VK_SUBTRACT://РАБОТАЕТ
+		case VK_OEM_MINUS:
 		{
-			HighlightButton(hwnd, IDC_BUTTON_MINUS);
+			SendMessage(GetDlgItem(hwnd, LOWORD(IDC_BUTTON_MINUS)), BM_SETSTATE, TRUE, 0);
+			//SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_MINUS), 0);
+			break;
+		}
+		case VK_MULTIPLY://РАБОТАЕТ
+		{
+			SendMessage(GetDlgItem(hwnd, LOWORD(IDC_BUTTON_ASTER)), BM_SETSTATE, TRUE, 0);
+			//SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_ASTER), 0);
+			break;
+		}
+		case VK_OEM_2:
+		case VK_DIVIDE://РАБОТАЕТ
+		{
+			SendMessage(GetDlgItem(hwnd, LOWORD(IDC_BUTTON_SLASH)), BM_SETSTATE, TRUE, 0);
+			//SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_SLASH), 0);
+			break;
+		}
+
+
+		case VK_BACK://ПРИ НАЖАТИИ РЕАГИРУЕТ КЛАВИША МИНУС
+		{
+			SendMessage(GetDlgItem(hwnd, LOWORD(IDC_BUTTON_BSP)), BM_SETSTATE, TRUE, 0);
+			//SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_BSP), 0);
+			break;
+		}
+
+		case VK_ESCAPE://РАБОТАЕТ
+		{
+			SendMessage(GetDlgItem(hwnd, LOWORD(IDC_BUTTON_CLEAR)), BM_SETSTATE, TRUE, 0);
+			//SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_CLEAR), 0);
+			break;
+		}
+		//ЭТО РАВНО — РАБОТАЕТ
+		case VK_RETURN:
+
+			SendMessage(GetDlgItem(hwnd, LOWORD(IDC_BUTTON_EQUAL)), BM_SETSTATE, TRUE, 0);
+			//SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_EQUAL), 0);
+			break;
+		}
+	}
+	break;
+	case WM_KEYUP:
+		if (GetKeyState(VK_SHIFT) < 0 and LOWORD(wParam) == 0x38)
+		{
+			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_ASTER), 0);
+			SendMessage(GetDlgItem(hwnd, IDC_BUTTON_ASTER), BM_SETSTATE, FALSE, 0);
+		}
+		else if (LOWORD(wParam) >= 0x30 && LOWORD(wParam) <= 0x39)//РАБОТАЕТ
+		{
+			SendMessage(GetDlgItem(hwnd, LOWORD(wParam - 0x30 + IDC_BUTTON_0)), BM_SETSTATE, FALSE, 0);
+			//PushButton(hwnd, LOWORD(wParam - 0x30 + IDC_BUTTON_0));
+			SendMessage(hwnd, WM_COMMAND, LOWORD(wParam - 0x30 + IDC_BUTTON_0), 0);
+		}
+		if (LOWORD(wParam) >= 0x60 && LOWORD(wParam) <= 0x69)//РАБОТАЕТ
+		{
+			SendMessage(GetDlgItem(hwnd, LOWORD(wParam - 0x60 + IDC_BUTTON_0)), BM_SETSTATE, FALSE, 0);
+			SendMessage(hwnd, WM_COMMAND, LOWORD(wParam - 0x60 + IDC_BUTTON_0), 0);
+		}
+		switch (LOWORD(wParam))
+		{
+		case VK_DECIMAL:
+		case VK_OEM_PERIOD://РАБОТАЕТ
+		{
+			SendMessage(GetDlgItem(hwnd, LOWORD(IDC_BUTTON_POINT)), BM_SETSTATE, FALSE, 0);
+			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_POINT), 0);
+			break;
+		}
+		case VK_OEM_PLUS:
+		case VK_ADD://РАБОТАЕТ
+		{
+			SendMessage(GetDlgItem(hwnd, LOWORD(IDC_BUTTON_PLUS)), BM_SETSTATE, FALSE, 0);
+			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_PLUS), 0);
+			break;
+		}
+		case VK_OEM_MINUS:
+		case VK_SUBTRACT://РАБОТАЕТ
+		{
+			SendMessage(GetDlgItem(hwnd, LOWORD(IDC_BUTTON_MINUS)), BM_SETSTATE, FALSE, 0);
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_MINUS), 0);
 			break;
 		}
 		case VK_MULTIPLY://РАБОТАЕТ
 		{
-			HighlightButton(hwnd, IDC_BUTTON_ASTER);
+			SendMessage(GetDlgItem(hwnd, LOWORD(IDC_BUTTON_ASTER)), BM_SETSTATE, FALSE, 0);
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_ASTER), 0);
 			break;
 		}
+		case VK_OEM_2:
 		case VK_DIVIDE://НЕ РАБОТАЕТ
 		{
-			HighlightButton(hwnd, IDC_BUTTON_SLASH);
+			SendMessage(GetDlgItem(hwnd, LOWORD(IDC_BUTTON_SLASH)), BM_SETSTATE, FALSE, 0);
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_SLASH), 0);
 			break;
 		}
@@ -285,26 +371,25 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 		case VK_BACK://ПРИ НАЖАТИИ РЕАГИРУЕТ КЛАВИША МИНУС
 		{
-			HighlightButton(hwnd, IDC_BUTTON_BSP);
+			SendMessage(GetDlgItem(hwnd, LOWORD(IDC_BUTTON_BSP)), BM_SETSTATE, FALSE, 0);
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_BSP), 0);
 			break;
 		}
 
 		case VK_ESCAPE://РАБОТАЕТ
 		{
-			HighlightButton(hwnd, IDC_BUTTON_CLEAR);
+			SendMessage(GetDlgItem(hwnd, LOWORD(IDC_BUTTON_CLEAR)), BM_SETSTATE, FALSE, 0);
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_CLEAR), 0);
 			break;
 		}
 		//ЭТО РАВНО — РАБОТАЕТ
-		case VK_OEM_PLUS:
+		case VK_RETURN:
 
-			HighlightButton(hwnd, IDC_BUTTON_EQUAL);
+			PushButton(hwnd, IDC_BUTTON_EQUAL);
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_EQUAL), 0);
 			break;
 		}
-	}
-	break;
+		break;
 	case WM_CLOSE:
 		DestroyWindow(hwnd);
 		break;
@@ -460,10 +545,10 @@ char* Parse(CHAR display_content[])
 	return result_str;
 
 }
-void HighlightButton(HWND hWin, int idc, int SLEEP_TIME)
+VOID PushButton(HWND parent, int id)
 {
-	HWND hButton = GetDlgItem(hWin, idc);
+	HWND hButton = GetDlgItem(parent, id);
 	SendMessage(hButton, BM_SETSTATE, TRUE, 0);
-	Sleep(SLEEP_TIME);
+	Sleep(100);
 	SendMessage(hButton, BM_SETSTATE, FALSE, 0);
 }
