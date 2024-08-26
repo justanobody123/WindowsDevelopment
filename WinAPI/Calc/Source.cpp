@@ -259,28 +259,27 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_POINT), 0);
 			Sleep(SLEEP_TIME);
 			SendMessage(hButton, BM_SETSTATE, FALSE, 0);
+			break;
 		}
-
-		break;
-		case VK_OEM_PLUS://пюанрюер
+		case VK_ADD://пюанрюер
 		{
 			HWND hButton = GetDlgItem(hwnd, IDC_BUTTON_PLUS);
 			SendMessage(hButton, BM_SETSTATE, TRUE, 0);
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_PLUS), 0);
 			Sleep(SLEEP_TIME);
 			SendMessage(hButton, BM_SETSTATE, FALSE, 0);
+			break;
 		}
-		break;
-		case VK_OEM_MINUS://ме пюанрюер
+
+		case VK_SUBTRACT://ме пюанрюер рнкэйн бхгсюкхгюжхъ
 		{
 			HWND hButton = GetDlgItem(hwnd, IDC_BUTTON_MINUS);
 			SendMessage(hButton, BM_SETSTATE, TRUE, 0);
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_MINUS), 0);
 			Sleep(SLEEP_TIME);
 			SendMessage(hButton, BM_SETSTATE, FALSE, 0);
+			break;
 		}
-
-		break;
 		case VK_MULTIPLY://ме пюанрюер
 		{
 			HWND hButton = GetDlgItem(hwnd, IDC_BUTTON_ASTER);
@@ -288,8 +287,8 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_ASTER), 0);
 			Sleep(SLEEP_TIME);
 			SendMessage(hButton, BM_SETSTATE, FALSE, 0);
-		}
 			break;
+		}
 		case VK_DIVIDE://ме пюанрюер
 		{
 			HWND hButton = GetDlgItem(hwnd, IDC_BUTTON_SLASH);
@@ -297,9 +296,10 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_SLASH), 0);
 			Sleep(SLEEP_TIME);
 			SendMessage(hButton, BM_SETSTATE, FALSE, 0);
-		}
-			
 			break;
+		}
+
+
 		case VK_BACK://опх мюфюрхх пеюцхпсер йкюбхью лхмся
 		{
 			HWND hButton = GetDlgItem(hwnd, IDC_BUTTON_BSP);
@@ -307,8 +307,9 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_BSP), 0);
 			Sleep(SLEEP_TIME);
 			SendMessage(hButton, BM_SETSTATE, FALSE, 0);
-		}
 			break;
+		}
+
 		case VK_ESCAPE://пюанрюер
 		{
 			HWND hButton = GetDlgItem(hwnd, IDC_BUTTON_CLEAR);
@@ -316,11 +317,20 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_CLEAR), 0);
 			Sleep(SLEEP_TIME);
 			SendMessage(hButton, BM_SETSTATE, FALSE, 0);
+			break;
 		}
+		//щрн пюбмн ≈ пюанрюер
+		case VK_OEM_PLUS:
+
+			HWND hButton = GetDlgItem(hwnd, IDC_BUTTON_EQUAL);
+			SendMessage(hButton, BM_SETSTATE, TRUE, 0);
+			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_EQUAL), 0);
+			Sleep(SLEEP_TIME);
+			SendMessage(hButton, BM_SETSTATE, FALSE, 0);
 			break;
 		}
 	}
-		break;
+	break;
 	case WM_CLOSE:
 		DestroyWindow(hwnd);
 		break;
@@ -381,16 +391,13 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 //}
 
 /*
-	------------------------окюм оюпяхмцю------------------------
-	опхнпхрер ноепюжхи нрясрярбсер, оняйнкэйн мер яйнанй.
-	еякх б ярпнйе еярэ дбю ноепюмдю х ноепюрнп лефдс мхлх, б щдхр анйяе асдер нрнапюфюрэяъ пегскэрюр ноепюжхх
-
-	охьс опедхйюр дкъ нопедекемхъ, ондундхр кх яндепфхлне щдхрю онд йпхрепхх люр. ноепюжхх.
-
-	еякх б йнлюмдс опхкерюер йнд ймнойх ноепюмдю, опнбепъел опхцндмнярэ яндепфхлнцн мю оюпяхмц
-	еякх ондундхр, гюлемъел яндепфхлне щдхранйяю пегскэрюрнл люрелюрхвеяйни ноепюжхх
-	оняке щрнцн лнфмн онярюбхрэ ноепюмд, йнрнпши гюопюьхбюкх
-
+	------------------------яохянй аюцнб й хяопюбкемхч------------------------
+	опх мюфюрхх мю йкюбхьс BASKSPACE мю щйпюме бхгсюкэмн пеюцхпсер лхмся
+	опх мюфюрхх мю лхмся лшьэч онякедмхи яхлбнк мю дхяокее ярхпюеряъ йюй опх мюфюрхх мю BACKSPACE
+	(яюл BACKSPACE ян бяеу ярнпнм пюанрюер нркхвмн, ю опх мюфюрхх мю лхмся я йкюбхюрспш нм бедер яеаъ йюй х мюдн, мн аег бхгсюкхгюжхх мю щйпюме)
+	слмнфхрэ х пюгдекхрэ ме пюанрючр я лшьх
+	пюбмн я йкюбхюрспш ме пюанрюер, оняйнкэйс янбоюдюер я окчянл
+	ме пюанрюер гюрхпйю кхьмху мскеи х рнвйх дкъ жекшу вхяек
 */
 bool IsParseable(CHAR display_content[])
 {
@@ -456,7 +463,7 @@ char* Parse(CHAR display_content[])
 	//return result_str;
 	//сДЮКЪЕЛ МСКХ
 	char* dot = strchr(result_str, '.');
-	
+	//ме пюанрюер (мс онвелс...)
 	if (dot)
 	{
 		int dotIndex = dot - result_str;
@@ -471,8 +478,8 @@ char* Parse(CHAR display_content[])
 				break;
 			}
 		}
-		
+
 	}
 	return result_str;
-	
+
 }
