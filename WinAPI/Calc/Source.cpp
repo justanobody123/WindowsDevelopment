@@ -157,8 +157,10 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		CONST INT SIZE = 256;
 		CHAR sz_display[SIZE]{};
 		CHAR sz_digit[2]{};
+		
 		HWND hEditDisplay = GetDlgItem(hwnd, IDC_EDIT_DISPLAY);
-		if (LOWORD(wParam) >= IDC_BUTTON_0 && LOWORD(wParam) <= IDC_BUTTON_POINT)
+		SendMessage(hEditDisplay, WM_GETTEXT, SIZE, (LPARAM)sz_display);
+		if (LOWORD(wParam) >= IDC_BUTTON_0 && LOWORD(wParam) <= IDC_BUTTON_POINT && strcmp(sz_display, "Îøèáêà!"))
 		{
 			sz_digit[0] = LOWORD(wParam) - IDC_BUTTON_0 + '0';
 			SendMessage(hEditDisplay, WM_GETTEXT, SIZE, (LPARAM)sz_display);
@@ -174,7 +176,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			}
 			SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)sz_display);
 		}
-		if (LOWORD(wParam) == IDC_BUTTON_BSP)
+		if (LOWORD(wParam) == IDC_BUTTON_BSP && strcmp(sz_display, "Îøèáêà!"))
 		{
 			SendMessage(hEditDisplay, WM_GETTEXT, SIZE, (LPARAM)sz_display);
 			INT display_length = strlen(sz_display);
@@ -190,25 +192,26 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		if (LOWORD(wParam) == IDC_BUTTON_PLUS || LOWORD(wParam) == IDC_BUTTON_MINUS || LOWORD(wParam) == IDC_BUTTON_ASTER || LOWORD(wParam) == IDC_BUTTON_SLASH || LOWORD(wParam) == IDC_BUTTON_EQUAL)
 		{
 			SendMessage(hEditDisplay, WM_GETTEXT, SIZE, (LPARAM)sz_display);
+
 			if (IsParseable(sz_display))
 			{
 				//Çàìåíÿåì ñîäåðæèìîå äèñïëåÿ íà ðåçóëüòàò ìàò. îïåðàöèè
 				SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)Parse(sz_display));
 				SendMessage(hEditDisplay, WM_GETTEXT, SIZE, (LPARAM)sz_display);
 			}
-			if (LOWORD(wParam) == IDC_BUTTON_PLUS)
+			if (LOWORD(wParam) == IDC_BUTTON_PLUS && strcmp(sz_display, "Îøèáêà!"))
 			{
 				strcat(sz_display, "+");
 			}
-			else if (LOWORD(wParam) == IDC_BUTTON_MINUS)
+			else if (LOWORD(wParam) == IDC_BUTTON_MINUS && strcmp(sz_display, "Îøèáêà!"))
 			{
 				strcat(sz_display, "-");
 			}
-			else if (LOWORD(wParam) == IDC_BUTTON_ASTER)
+			else if (LOWORD(wParam) == IDC_BUTTON_ASTER && strcmp(sz_display, "Îøèáêà!"))
 			{
 				strcat(sz_display, "*");
 			}
-			else if (LOWORD(wParam) == IDC_BUTTON_SLASH)
+			else if (LOWORD(wParam) == IDC_BUTTON_SLASH && strcmp(sz_display, "Îøèáêà!"))
 			{
 				strcat(sz_display, "/");
 			}
@@ -369,8 +372,10 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	ÓÌÍÎÆÈÒÜ È ÐÀÇÄÅËÈÒÜ ÍÅ ÐÀÁÎÒÀÞÒ Ñ ÌÛØÈ — DONE
 	ÐÀÂÍÎ Ñ ÊËÀÂÈÀÒÓÐÛ ÍÅ ÐÀÁÎÒÀÅÒ, ÏÎÑÊÎËÜÊÓ ÑÎÂÏÀÄÀÅÒ Ñ ÏËÞÑÎÌ — DONE
 	ÍÅ ÐÀÁÎÒÀÅÒ ÇÀÒÈÐÊÀ ËÈØÍÈÕ ÍÓËÅÉ È ÒÎ×ÊÈ ÄËß ÖÅËÛÕ ×ÈÑÅË — ÒÓÒ ÒÎËÜÊÎ ÏËÀÊÀÒÜ
+	ÍÅÎÁÕÎÄÈÌÀ ÁËÎÊÈÐÎÂÊÀ ÂÂÎÄÀ Â ÊÀËÜÊÓËßÒÎÐ ÅÑËÈ ÄÈÑÏËÅÉ ÑÎÄÅÐÆÈÒ ÑÒÐÎÊÓ "ÎØÈÁÊÀ!" — DONE
 	------------------------ÓËÓ×ØÅÍÈß------------------------
 	ÂÛÍÅÑÒÈ Â ÔÓÍÊÖÈÞ ÂÈÇÓÀËÈÇÀÖÈÞ ÍÀÆÀÒÈß ÊËÀÂÈØÈ — DONE
+	×ÒÎ-ÍÈÁÓÄÜ ÇÀÏÈÕÀÒÜ Â ÄÈÑÏËÅÉ ÏÐÈ ÄÅËÅÍÈÈ ÍÀ ÍÎËÜ — DONE 
 */
 bool IsParseable(CHAR display_content[])
 {
@@ -387,6 +392,7 @@ bool IsParseable(CHAR display_content[])
 char* Parse(CHAR display_content[])
 {
 	CHAR operations[] = "+-*/";
+	CHAR sz_error[] = "Îøèáêà!";
 	double first_number = 0, second_number = 0;
 	char* op = NULL;
 	for (size_t i = 0; operations[i] != 0; i++)
@@ -399,13 +405,12 @@ char* Parse(CHAR display_content[])
 	}
 	char first_part[256]{};
 	strncpy(first_part, display_content, op - display_content);
-
 	char second_part[256]{};
 	strcpy(second_part, op + 1);
 	first_number = strtod(first_part, NULL);
 	second_number = strtod(second_part, NULL);
-
-	// Âûïîëíÿåì ñîîòâåòñòâóþùóþ îïåðàöèþ
+	CONST INT RESULT_SIZE = 30;
+	char result_str[RESULT_SIZE];
 	double result = 0;
 	switch (*op)
 	{
@@ -425,13 +430,11 @@ char* Parse(CHAR display_content[])
 		}
 		else
 		{
-			//×òî áû ñþäà çàñóíóòü òàêîãî? Ëàäíî, ïóñòü áóäåò íîëü, ïîêà íå ïðèäóìàëà.
-			result = 0;
+			return sz_error;
 		}
 		break;
 	}
-	CONST INT RESULT_SIZE = 30;
-	char result_str[RESULT_SIZE];
+
 	snprintf(result_str, sizeof(result_str), "%f", result);
 	//return result_str;
 	//Óäàëÿåì íóëè
@@ -451,12 +454,10 @@ char* Parse(CHAR display_content[])
 				break;
 			}
 		}
-
 	}
 	return result_str;
-
 }
-void HighlightButton(HWND hWin, int idc, int SLEEP_TIME = g_i_SLEEP_TIME)
+void HighlightButton(HWND hWin, int idc, int SLEEP_TIME)
 {
 	HWND hButton = GetDlgItem(hWin, idc);
 	SendMessage(hButton, BM_SETSTATE, TRUE, 0);
