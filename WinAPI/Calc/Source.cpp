@@ -4,8 +4,10 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-CONST CHAR g_sz_WINDOW_CLASS[] = "Calc_PD_311";
 
+CONST INT g_i_SLEEP_TIME = 100;
+
+CONST CHAR g_sz_WINDOW_CLASS[] = "Calc_PD_311";
 
 CONST INT g_i_START_X = 10;
 CONST INT g_i_START_Y = 10;
@@ -28,6 +30,7 @@ CONST INT g_i_START_Y_BUTTON = g_i_START_Y * 2 + g_i_DISPLAY_HEIGHT;
 CONST INT g_i_START_X_OPERATIONS = g_i_START_X_BUTTON + (g_i_BUTTON_SIZE + g_i_INTERVAL) * 3;
 CONST INT g_i_START_X_CONTROL_BUTTONS = g_i_START_X_BUTTON + (g_i_BUTTON_SIZE + g_i_INTERVAL) * 4;
 
+void HighlightButton(HWND hButton, int idc, int SLEEP_TIME = g_i_SLEEP_TIME);
 void TypeIn(HWND hWin, int numberID);
 char* Parse(CHAR display_content[]);
 bool IsParseable(CHAR display_content[]);
@@ -122,7 +125,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				NULL, "Button", sz_operation, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 				g_i_START_X_OPERATIONS, g_i_START_Y_BUTTON + (g_i_BUTTON_SIZE + g_i_INTERVAL) * (3 - i),
 				g_i_BUTTON_SIZE, g_i_BUTTON_SIZE, hwnd,
-				(HMENU)IDC_BUTTON_PLUS + i, NULL, NULL
+				(HMENU)(IDC_BUTTON_PLUS + i), NULL, NULL
 			);
 		}
 		CreateWindowEx
@@ -230,103 +233,71 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	break;
 	case WM_KEYDOWN:
 	{
-		CONST INT SLEEP_TIME = 100;
+		//CONST INT SLEEP_TIME = 100;
 
 		if (LOWORD(wParam) >= 0x30 && LOWORD(wParam) <= 0x39)//ÐÀÁÎÒÀÅÒ
 		{
-			HWND hButton = GetDlgItem(hwnd, LOWORD(wParam - 0x30 + IDC_BUTTON_0));
-			SendMessage(hButton, BM_SETSTATE, TRUE, 0);
+			HighlightButton(hwnd, LOWORD(wParam - 0x30 + IDC_BUTTON_0));
 			SendMessage(hwnd, WM_COMMAND, LOWORD(wParam - 0x30 + IDC_BUTTON_0), 0);
-			Sleep(SLEEP_TIME);
-			SendMessage(hButton, BM_SETSTATE, FALSE, 0);
 		}
 		if (LOWORD(wParam) >= 0x60 && LOWORD(wParam) <= 0x69)//ÐÀÁÎÒÀÅÒ
 		{
-			HWND hButton = GetDlgItem(hwnd, LOWORD(wParam - 0x60 + IDC_BUTTON_0));
-			SendMessage(hButton, BM_SETSTATE, TRUE, 0);
+			HighlightButton(hwnd, LOWORD(wParam - 0x60 + IDC_BUTTON_0));
 			SendMessage(hwnd, WM_COMMAND, LOWORD(wParam - 0x60 + IDC_BUTTON_0), 0);
-			Sleep(SLEEP_TIME);
-			SendMessage(hButton, BM_SETSTATE, FALSE, 0);
-			//Íàïèñàòü ôóíêöèþ, åñëè áóäåò âðåìÿ.
 		}
 		switch (LOWORD(wParam))
 		{
-			//ÍÅ ÐÀÁÎÒÀÞÒ Â ÏÎËÍÎÉ ÌÅÐÅ, ÏÎÄÎÇÐÅÂÀÞ, ×ÒÎ ÏÐÎÁËÅÌÀ ÊÐÎÅÒÑß Â ÂÈÐÒÓÀËÜÍÛÕ ÊÎÄÀÕ (ÈËÈ ß ÒÓÏÀß È ÃÄÅ-ÒÎ ÎÏÅ×ÀÒÀËÀÑÜ, À ÒÅÏÅÐÜ ÍÅ ÌÎÃÓ ÍÀÉÒÈ)
 		case VK_OEM_PERIOD://ÐÀÁÎÒÀÅÒ
 		{
-			HWND hButton = GetDlgItem(hwnd, IDC_BUTTON_POINT);
-			SendMessage(hButton, BM_SETSTATE, TRUE, 0);
+			HighlightButton(hwnd, IDC_BUTTON_POINT);
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_POINT), 0);
-			Sleep(SLEEP_TIME);
-			SendMessage(hButton, BM_SETSTATE, FALSE, 0);
 			break;
 		}
 		case VK_ADD://ÐÀÁÎÒÀÅÒ
 		{
-			HWND hButton = GetDlgItem(hwnd, IDC_BUTTON_PLUS);
-			SendMessage(hButton, BM_SETSTATE, TRUE, 0);
+			HighlightButton(hwnd, IDC_BUTTON_PLUS);
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_PLUS), 0);
-			Sleep(SLEEP_TIME);
-			SendMessage(hButton, BM_SETSTATE, FALSE, 0);
 			break;
 		}
 
-		case VK_SUBTRACT://ÍÅ ÐÀÁÎÒÀÅÒ ÒÎËÜÊÎ ÂÈÇÓÀËÈÇÀÖÈß
+		case VK_SUBTRACT://ÐÀÁÎÒÀÅÒ
 		{
-			HWND hButton = GetDlgItem(hwnd, IDC_BUTTON_MINUS);
-			SendMessage(hButton, BM_SETSTATE, TRUE, 0);
+			HighlightButton(hwnd, IDC_BUTTON_MINUS);
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_MINUS), 0);
-			Sleep(SLEEP_TIME);
-			SendMessage(hButton, BM_SETSTATE, FALSE, 0);
 			break;
 		}
-		case VK_MULTIPLY://ÍÅ ÐÀÁÎÒÀÅÒ
+		case VK_MULTIPLY://ÐÀÁÎÒÀÅÒ
 		{
-			HWND hButton = GetDlgItem(hwnd, IDC_BUTTON_ASTER);
-			SendMessage(hButton, BM_SETSTATE, TRUE, 0);
+			HighlightButton(hwnd, IDC_BUTTON_ASTER);
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_ASTER), 0);
-			Sleep(SLEEP_TIME);
-			SendMessage(hButton, BM_SETSTATE, FALSE, 0);
 			break;
 		}
 		case VK_DIVIDE://ÍÅ ÐÀÁÎÒÀÅÒ
 		{
-			HWND hButton = GetDlgItem(hwnd, IDC_BUTTON_SLASH);
-			SendMessage(hButton, BM_SETSTATE, TRUE, 0);
+			HighlightButton(hwnd, IDC_BUTTON_SLASH);
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_SLASH), 0);
-			Sleep(SLEEP_TIME);
-			SendMessage(hButton, BM_SETSTATE, FALSE, 0);
 			break;
 		}
 
 
 		case VK_BACK://ÏÐÈ ÍÀÆÀÒÈÈ ÐÅÀÃÈÐÓÅÒ ÊËÀÂÈØÀ ÌÈÍÓÑ
 		{
-			HWND hButton = GetDlgItem(hwnd, IDC_BUTTON_BSP);
-			SendMessage(hButton, BM_SETSTATE, TRUE, 0);
+			HighlightButton(hwnd, IDC_BUTTON_BSP);
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_BSP), 0);
-			Sleep(SLEEP_TIME);
-			SendMessage(hButton, BM_SETSTATE, FALSE, 0);
 			break;
 		}
 
 		case VK_ESCAPE://ÐÀÁÎÒÀÅÒ
 		{
-			HWND hButton = GetDlgItem(hwnd, IDC_BUTTON_CLEAR);
-			SendMessage(hButton, BM_SETSTATE, TRUE, 0);
+			HighlightButton(hwnd, IDC_BUTTON_CLEAR);
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_CLEAR), 0);
-			Sleep(SLEEP_TIME);
-			SendMessage(hButton, BM_SETSTATE, FALSE, 0);
 			break;
 		}
 		//ÝÒÎ ÐÀÂÍÎ — ÐÀÁÎÒÀÅÒ
 		case VK_OEM_PLUS:
 
-			HWND hButton = GetDlgItem(hwnd, IDC_BUTTON_EQUAL);
-			SendMessage(hButton, BM_SETSTATE, TRUE, 0);
+			HighlightButton(hwnd, IDC_BUTTON_EQUAL);
 			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_EQUAL), 0);
-			Sleep(SLEEP_TIME);
-			SendMessage(hButton, BM_SETSTATE, FALSE, 0);
 			break;
 		}
 	}
@@ -392,12 +363,14 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 /*
 	------------------------ÑÏÈÑÎÊ ÁÀÃÎÂ Ê ÈÑÏÐÀÂËÅÍÈÞ------------------------
-	ÏÐÈ ÍÀÆÀÒÈÈ ÍÀ ÊËÀÂÈØÓ BASKSPACE ÍÀ ÝÊÐÀÍÅ ÂÈÇÓÀËÜÍÎ ÐÅÀÃÈÐÓÅÒ ÌÈÍÓÑ
-	ÏÐÈ ÍÀÆÀÒÈÈ ÍÀ ÌÈÍÓÑ ÌÛØÜÞ ÏÎÑËÅÄÍÈÉ ÑÈÌÂÎË ÍÀ ÄÈÑÏËÅÅ ÑÒÈÐÀÅÒÑß ÊÀÊ ÏÐÈ ÍÀÆÀÒÈÈ ÍÀ BACKSPACE
+	ÏÐÈ ÍÀÆÀÒÈÈ ÍÀ ÊËÀÂÈØÓ BASKSPACE ÍÀ ÝÊÐÀÍÅ ÂÈÇÓÀËÜÍÎ ÐÅÀÃÈÐÓÅÒ ÌÈÍÓÑ — DONE
+	ÏÐÈ ÍÀÆÀÒÈÈ ÍÀ ÌÈÍÓÑ ÌÛØÜÞ ÏÎÑËÅÄÍÈÉ ÑÈÌÂÎË ÍÀ ÄÈÑÏËÅÅ ÑÒÈÐÀÅÒÑß ÊÀÊ ÏÐÈ ÍÀÆÀÒÈÈ ÍÀ BACKSPACE — DONE
 	(ÑÀÌ BACKSPACE ÑÎ ÂÑÅÕ ÑÒÎÐÎÍ ÐÀÁÎÒÀÅÒ ÎÒËÈ×ÍÎ, À ÏÐÈ ÍÀÆÀÒÈÈ ÍÀ ÌÈÍÓÑ Ñ ÊËÀÂÈÀÒÓÐÛ ÎÍ ÂÅÄÅÒ ÑÅÁß ÊÀÊ È ÍÀÄÎ, ÍÎ ÁÅÇ ÂÈÇÓÀËÈÇÀÖÈÈ ÍÀ ÝÊÐÀÍÅ)
-	ÓÌÍÎÆÈÒÜ È ÐÀÇÄÅËÈÒÜ ÍÅ ÐÀÁÎÒÀÞÒ Ñ ÌÛØÈ
-	ÐÀÂÍÎ Ñ ÊËÀÂÈÀÒÓÐÛ ÍÅ ÐÀÁÎÒÀÅÒ, ÏÎÑÊÎËÜÊÓ ÑÎÂÏÀÄÀÅÒ Ñ ÏËÞÑÎÌ
-	ÍÅ ÐÀÁÎÒÀÅÒ ÇÀÒÈÐÊÀ ËÈØÍÈÕ ÍÓËÅÉ È ÒÎ×ÊÈ ÄËß ÖÅËÛÕ ×ÈÑÅË
+	ÓÌÍÎÆÈÒÜ È ÐÀÇÄÅËÈÒÜ ÍÅ ÐÀÁÎÒÀÞÒ Ñ ÌÛØÈ — DONE
+	ÐÀÂÍÎ Ñ ÊËÀÂÈÀÒÓÐÛ ÍÅ ÐÀÁÎÒÀÅÒ, ÏÎÑÊÎËÜÊÓ ÑÎÂÏÀÄÀÅÒ Ñ ÏËÞÑÎÌ — DONE
+	ÍÅ ÐÀÁÎÒÀÅÒ ÇÀÒÈÐÊÀ ËÈØÍÈÕ ÍÓËÅÉ È ÒÎ×ÊÈ ÄËß ÖÅËÛÕ ×ÈÑÅË — ÒÓÒ ÒÎËÜÊÎ ÏËÀÊÀÒÜ
+	------------------------ÓËÓ×ØÅÍÈß------------------------
+	ÂÛÍÅÑÒÈ Â ÔÓÍÊÖÈÞ ÂÈÇÓÀËÈÇÀÖÈÞ ÍÀÆÀÒÈß ÊËÀÂÈØÈ — DONE
 */
 bool IsParseable(CHAR display_content[])
 {
@@ -482,4 +455,11 @@ char* Parse(CHAR display_content[])
 	}
 	return result_str;
 
+}
+void HighlightButton(HWND hWin, int idc, int SLEEP_TIME = g_i_SLEEP_TIME)
+{
+	HWND hButton = GetDlgItem(hWin, idc);
+	SendMessage(hButton, BM_SETSTATE, TRUE, 0);
+	Sleep(SLEEP_TIME);
+	SendMessage(hButton, BM_SETSTATE, FALSE, 0);
 }
