@@ -31,6 +31,7 @@ CONST INT g_i_START_Y_BUTTON = g_i_START_Y * 2 + g_i_DISPLAY_HEIGHT;
 CONST INT g_i_START_X_OPERATIONS = g_i_START_X_BUTTON + (g_i_BUTTON_SIZE + g_i_INTERVAL) * 3;
 CONST INT g_i_START_X_CONTROL_BUTTONS = g_i_START_X_BUTTON + (g_i_BUTTON_SIZE + g_i_INTERVAL) * 4;
 
+VOID SetSkin(HWND parent, LPSTR skin);
 VOID PushButton(HWND parent, int id);
 void TypeIn(HWND hWin, int numberID);
 char* Parse(CHAR display_content[]);
@@ -74,6 +75,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 }
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	static CONST CHAR DEFAULT_SKIN[] = "square_blue";
+	
 	switch (uMsg)
 	{
 	case WM_CREATE:
@@ -103,7 +106,27 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				CreateWindowEx(NULL, "Button", sz_digit, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP, g_i_START_X_BUTTON + j * (g_i_BUTTON_SIZE + g_i_INTERVAL), g_i_START_Y_BUTTON + i * (g_i_BUTTON_SIZE + g_i_INTERVAL), g_i_BUTTON_SIZE, g_i_BUTTON_SIZE, hwnd, (HMENU)(IDC_BUTTON_1 + digit), NULL, NULL);
 			}
 		}
-		CreateWindowEx(NULL, "Button", "0", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP, g_i_START_X_BUTTON, g_i_START_Y_BUTTON + (g_i_BUTTON_SIZE + g_i_INTERVAL) * 3, g_i_BUTTON_DOUBLE_SIZE, g_i_BUTTON_SIZE, hwnd, (HMENU)IDC_BUTTON_0, NULL, NULL);
+
+		HWND hButtonDigit0 = CreateWindowEx(NULL, "Button", "0", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP, g_i_START_X_BUTTON, g_i_START_Y_BUTTON + (g_i_BUTTON_SIZE + g_i_INTERVAL) * 3, g_i_BUTTON_DOUBLE_SIZE, g_i_BUTTON_SIZE, hwnd, (HMENU)IDC_BUTTON_0, NULL, NULL);
+		
+		//HANDLE hImageDigit0 = LoadImage(NULL, "ButtonsBMP\\square_blue\\button_0.bmp", IMAGE_BITMAP, g_i_BUTTON_DOUBLE_SIZE, g_i_BUTTON_SIZE, LR_LOADFROMFILE);
+		//if (!hImageDigit0)
+		//{
+		//	DWORD dwErrorMessageID = GetLastError(); //Функция возвращает числовой код последней возникшей ошибки
+		//	LPSTR lpszMessageBuffer = NULL;
+		//	DWORD dwSize = FormatMessage
+		//	(
+		//		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+		//		NULL,
+		//		dwErrorMessageID,
+		//		MAKELANGID(LANG_NEUTRAL, SUBLANG_RUSSIAN_RUSSIA),
+		//		(LPSTR)&lpszMessageBuffer,
+		//		0,
+		//		NULL
+		//	);
+		//	MessageBox(hwnd, lpszMessageBuffer, "Error", MB_OK | MB_ICONERROR);
+		//}
+		//SendMessage(hButtonDigit0, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)hImageDigit0);
 		CreateWindowEx
 		(
 			NULL, "Button", ".", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP,
@@ -152,23 +175,23 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		);
 
 		//Тема
-		for (size_t t = 0; t <= 10; t++)
+		/*for (size_t t = 0; t <= 10; t++)
 		{
-			CHAR file_name[20]{};
-			sprintf(file_name, "calc_%i%s", t, ".bmp");
+			CHAR file_name[256]{};
+			sprintf(file_name, "ButtonsBMP\\painted\\calc_%i%s", t, ".bmp");
 			HBITMAP hBitmap = (HBITMAP)LoadImage(NULL, file_name, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 			HWND hButton = GetDlgItem(hwnd, IDC_BUTTON_0 + t);
 			SendMessage(hButton, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmap);
 			if (t <= 6)
 			{
-				sprintf(file_name, "calc_op_%i%s", t, ".bmp");
+				sprintf(file_name, "ButtonsBMP\\painted\\calc_op_%i%s", t, ".bmp");
 				HBITMAP hOPBitmap = (HBITMAP)LoadImage(NULL, file_name, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 				HWND hOPButton = GetDlgItem(hwnd, IDC_BUTTON_PLUS + t);
 				SendMessage(hOPButton, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)hOPBitmap);
 			}
-		}
+		}*/
 		
-		
+		SetSkin(hwnd, (LPSTR)DEFAULT_SKIN);
 	}
 	break;
 	case WM_COMMAND:
@@ -454,6 +477,64 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			break;
 		}
 		break;
+	case WM_CTLCOLOREDIT:
+	{
+		/*HDC hdc = (HDC)wParam;
+		SetBkMode(hdc, OPAQUE);
+		SetBkColor(hdc, RGB(0, 0, 155));
+		HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 200));
+		SetTextColor(hdc, RGB(255, 0, 0));
+		SetClassLongPtr(hwnd, GCLP_HBRBACKGROUND, (LONG_PTR)hBrush);
+		SendMessage(hwnd, WM_ERASEBKGND, wParam, 0);
+		SendMessage(GetDlgItem(hwnd, IDC_EDIT_DISPLAY), WM_SETTEXT, 0, (LPARAM)"0");*/
+
+		HWND hEditDisplay = GetDlgItem(hwnd, IDC_EDIT_DISPLAY);
+		HDC hdcEditDisplay = GetDC(hEditDisplay);
+		SetBkMode(hdcEditDisplay, OPAQUE);
+		//SetBkColor(hdc, RGB(0, 0, 155));
+		SetBkColor(hdcEditDisplay, RGB(0, 0, 100));
+		HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 200));
+		SetTextColor(hdcEditDisplay, RGB(255, 0, 0));
+		ReleaseDC(hEditDisplay, hdcEditDisplay);
+
+		return (LRESULT)hBrush;
+	}
+
+		break;
+	case WM_CONTEXTMENU:
+	{
+		HMENU hMainMenu = CreatePopupMenu();
+		HMENU hSubMenu = CreatePopupMenu();
+		InsertMenu(hMainMenu, 0, MF_BYPOSITION | MF_STRING, CM_EXIT, "Exit");
+		InsertMenu(hMainMenu, 0, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+		InsertMenu(hMainMenu, 0, MF_BYPOSITION | MF_STRING | MF_POPUP, (UINT_PTR)hSubMenu, "Skins");
+		InsertMenu(hSubMenu, 0, MF_BYPOSITION | MF_STRING, CM_SQUARE_GREEN, "Square Green");
+		InsertMenu(hSubMenu, 0, MF_BYPOSITION | MF_STRING, CM_SQUARE_BLUE, "Square Blue");
+		InsertMenu(hSubMenu, 0, MF_BYPOSITION | MF_STRING, CM_PAINTED, "Painted");
+		BOOL item = TrackPopupMenuEx(hMainMenu, TPM_BOTTOMALIGN | TPM_LEFTALIGN | TPM_RETURNCMD, LOWORD(lParam), HIWORD(lParam), hwnd, NULL);
+		switch (item)
+		{
+		case CM_SQUARE_BLUE:
+			SetSkin(hwnd, (LPSTR)"square_blue");
+			break;
+		case CM_SQUARE_GREEN:
+			SetSkin(hwnd, (LPSTR)"square_green");
+			break;
+		case CM_PAINTED:
+			SetSkin(hwnd, (LPSTR)"painted");
+			break;
+		case CM_EXIT:
+			DestroyWindow(hwnd);
+				break;
+		}
+
+		HDC hdc = GetDC(hwnd);
+		HDC hdcEdit = GetDC(GetDlgItem(hwnd, IDC_EDIT_DISPLAY));
+		//SendMessage(hwnd, WM_CTLCOLOREDIT, (WPARAM)hdc, 0);
+		SendMessage(hwnd, WM_CTLCOLOREDIT, (WPARAM)hdcEdit, 0);
+		ReleaseDC(hwnd, hdc);
+	}
+		break;
 	case WM_CLOSE:
 		DestroyWindow(hwnd);
 		break;
@@ -615,4 +696,16 @@ VOID PushButton(HWND parent, int id)
 	SendMessage(hButton, BM_SETSTATE, TRUE, 0);
 	Sleep(100);
 	SendMessage(hButton, BM_SETSTATE, FALSE, 0);
+}
+
+VOID SetSkin(HWND parent, LPSTR skin)
+{
+	CHAR sz_file[MAX_PATH]{};
+	for (size_t i = IDC_BUTTON_0; i <= IDC_BUTTON_9; i++)
+	{
+		HWND hButton = GetDlgItem(parent, i);
+		sprintf(sz_file, "ButtonsBMP\\%s\\button_%i.bmp", skin, i - IDC_BUTTON_0);
+		HANDLE hImage = LoadImage(GetModuleHandle(NULL), sz_file, IMAGE_BITMAP, i == IDC_BUTTON_0 ? g_i_BUTTON_DOUBLE_SIZE : g_i_BUTTON_SIZE, g_i_BUTTON_SIZE, LR_LOADFROMFILE);
+		SendMessage(hButton, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)hImage);
+	}
 }
