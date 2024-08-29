@@ -94,6 +94,26 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			g_i_START_X, g_i_START_Y, g_i_DISPLAY_WIDTH, g_i_DISPLAY_HEIGHT,
 			hwnd, (HMENU)IDC_EDIT_DISPLAY, NULL, NULL
 		);
+		//FONT
+		AddFontResourceEx("DS-DIGII.TTF", FR_PRIVATE, NULL); //Временно добавляем шрифт.
+		HFONT hFont = CreateFont
+		(
+			20, //Высота.
+			0, //Ширина. При нуле ширина подбеертся автоматически ан основе высоты.
+			0, //Угол наклона в градусах.
+			0, //Угол наклона отдельных символов в десятых долях градуса. Обычно совпадает с предыдущим параметром.
+			FW_NORMAL, //Толщина FW_THIN 100, FW_NORMALL 400, FW_BOLD 700, FW_HEAWY 900
+			TRUE, //Italic.
+			FALSE, //Подчеркивание.
+			FALSE, //Зачеркивание.
+			DEFAULT_CHARSET, //Кодировка
+			OUT_OUTLINE_PRECIS, //Точность воспроизводства шрифта
+			CLIP_DEFAULT_PRECIS, //Обрезка при выводе. Может быть по контуру с помощью CLIP_STROKE_PRECIS
+			CLEARTYPE_QUALITY, //Сглаживание. Может быть дефолтным, а можно использовать майковский клиртайп.
+			DEFAULT_PITCH, //Некая "плотность". Не забыть почитать больше.
+			"DS-Digital" //Имя шрифта.
+		);
+		SendMessage(hDisplay, WM_SETFONT, (WPARAM)hFont, FALSE); //Установка шрифта. Последний параметр для перерисовки окна при установке.
 		//DIGITS
 
 		INT digit = 0;
