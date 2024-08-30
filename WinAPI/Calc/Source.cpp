@@ -108,7 +108,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			NULL, NULL
 		);
 		//FONT
-		//AddFontResourceEx("DS-DIGII.TTF", FR_PRIVATE, NULL); //Временно добавляем шрифт.
+		//AddFontResourceEx("Fonts\\DS-DIGII.TTF", FR_PRIVATE, NULL); //Временно добавляем шрифт.
 		//HFONT hFont = CreateFont
 		//(
 		//	20, //Высота.
@@ -128,6 +128,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		//);
 		//SendMessage(hDisplay, WM_SETFONT, (WPARAM)hFont, FALSE); //Установка шрифта. Последний параметр для перерисовки окна при установке.
 		//CLASS FONT
+		AddFontResourceEx("Fonts\\digital-7\\digital-7.ttf", FR_PRIVATE, NULL);
 		HFONT hFont = CreateFont
 		(
 			g_i_FONT_HEIGHT, g_i_FONT_WIDTH,
@@ -141,7 +142,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			CLIP_CHARACTER_PRECIS,
 			ANTIALIASED_QUALITY,
 			DEFAULT_PITCH | FF_DONTCARE,
-			"Tahoma"
+			"Digital-7"
 			);
 		SendMessage(hDisplay, WM_SETFONT, (WPARAM)hFont, TRUE);
 		////////////////////// Digits: //////////////////////////
