@@ -15,23 +15,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="framework.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="dllmain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="pch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc">
@@ -39,10 +25,61 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="bitmap1.bmp">
+    <Image Include="Buttons\metal_mistral\button_0.bmp">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="ButtonsBMP\painted\button_0.bmp">
+    <Image Include="Buttons\metal_mistral\button_1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Buttons\metal_mistral\button_2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Buttons\metal_mistral\button_3.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Buttons\metal_mistral\button_4.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Buttons\metal_mistral\button_5.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Buttons\metal_mistral\button_6.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Buttons\metal_mistral\button_7.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Buttons\metal_mistral\button_8.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Buttons\metal_mistral\button_9.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Buttons\metal_mistral\button_aster.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Buttons\metal_mistral\button_bsp.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Buttons\metal_mistral\button_clr.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Buttons\metal_mistral\button_equal.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Buttons\metal_mistral\button_minus.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Buttons\metal_mistral\button_plus.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Buttons\metal_mistral\button_point.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Buttons\metal_mistral\button_slash.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="ICO\calcXP.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
