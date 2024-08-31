@@ -39,7 +39,7 @@ enum COLOR
 {
 	BLUE, GREEN
 };
-enum ELEMENT {WINDOW_BACKGROUND, DISPLAY_BACKGROUND, FOREGROUND};
+enum ELEMENT { WINDOW_BACKGROUND, DISPLAY_BACKGROUND, FOREGROUND };
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
 {
 	//1) ����������� ������ ����:
@@ -144,7 +144,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		HFONT hFont = CreateFont
 		(
 			g_i_FONT_HEIGHT, g_i_FONT_WIDTH,
-			0, 0, 
+			0, 0,
 			500,
 			FALSE,
 			FALSE,
@@ -155,7 +155,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			ANTIALIASED_QUALITY,
 			DEFAULT_PITCH | FF_DONTCARE,
 			"Digital-7"
-			);
+		);
 		SendMessage(hDisplay, WM_SETFONT, (WPARAM)hFont, TRUE);
 		////////////////////// Digits: //////////////////////////
 		INT digit = 0;
@@ -467,7 +467,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		SetTextColor(hdc, g_COLORS[color_scheme][ELEMENT::FOREGROUND]);
 		SetClassLongPtr(hwnd, GCLP_HBRBACKGROUND, (LONG_PTR)hBrush);
 		SendMessage(hwnd, WM_ERASEBKGND, wParam, 0);
-		
+
 		////////////////////////////////////////////////////////////////
 		/*HWND hEditDisplay = GetDlgItem(hwnd, IDC_EDIT_DISPLAY);
 		HDC hdcEditDisplay = GetDC(hEditDisplay);
@@ -483,18 +483,134 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		HMENU hMainMenu = CreatePopupMenu();
 		HMENU hSubMenu = CreatePopupMenu();
+		HMENU hFontMenu = CreatePopupMenu();
 		InsertMenu(hMainMenu, 0, MF_BYPOSITION | MF_STRING, CM_EXIT, "Exit");
 		InsertMenu(hMainMenu, 0, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
 		InsertMenu(hMainMenu, 0, MF_BYPOSITION | MF_POPUP, (UINT_PTR)hSubMenu, "Skins");
 		InsertMenu(hSubMenu, 0, MF_BYPOSITION | MF_STRING, CM_SQUARE_GREEN, "Square green");
 		InsertMenu(hSubMenu, 0, MF_BYPOSITION | MF_STRING, CM_SQUARE_BLUE, "Square blue");
-
+		InsertMenu(hMainMenu, 0, MF_BYPOSITION | MF_POPUP, (UINT_PTR)hFontMenu, "Fonts");
+		InsertMenu(hFontMenu, 0, MF_BYPOSITION | MF_STRING, CM_FONT_TAHOMA, "Tahoma");
+		InsertMenu(hFontMenu, 0, MF_BYPOSITION | MF_STRING, CM_FONT_ARIAL, "Arial");
+		InsertMenu(hFontMenu, 0, MF_BYPOSITION | MF_STRING, CM_FONT_DIGITAL7, "Digital-7");
+		InsertMenu(hFontMenu, 0, MF_BYPOSITION | MF_STRING, CM_FONT_TIMESNEWROMAN, "Times New Roman");
+		InsertMenu(hFontMenu, 0, MF_BYPOSITION | MF_STRING, CM_FONT_GEORGIA, "Georgia");
 		BOOL item = TrackPopupMenuEx(hMainMenu, TPM_BOTTOMALIGN | TPM_LEFTALIGN | TPM_RETURNCMD, LOWORD(lParam), HIWORD(lParam), hwnd, NULL);
 		switch (item)
 		{
 		case CM_SQUARE_BLUE: SetSkin(hwnd, (LPSTR)"square_blue"); color_scheme = COLOR::BLUE; break;
 		case CM_SQUARE_GREEN: SetSkin(hwnd, (LPSTR)"square_green"); color_scheme = COLOR::GREEN; break;
 		case CM_EXIT:		DestroyWindow(hwnd); break;
+		case CM_FONT_TAHOMA:
+		{
+			HWND hDisplay = GetDlgItem(hwnd, IDC_EDIT_DISPLAY);
+			HFONT hFont = CreateFont
+			(
+				g_i_FONT_HEIGHT, g_i_FONT_WIDTH,
+				0, 0,
+				500,
+				FALSE,
+				FALSE,
+				FALSE,
+				DEFAULT_CHARSET,
+				OUT_CHARACTER_PRECIS,
+				CLIP_CHARACTER_PRECIS,
+				ANTIALIASED_QUALITY,
+				DEFAULT_PITCH | FF_DONTCARE,
+				"Tahoma"
+			);
+			SendMessage(hDisplay, WM_SETFONT, (WPARAM)hFont, TRUE);
+			RedrawWindow(hwnd, NULL, NULL, RDW_INVALIDATE);
+			break;
+		}
+		case CM_FONT_ARIAL:
+		{
+			HWND hDisplay = GetDlgItem(hwnd, IDC_EDIT_DISPLAY);
+			HFONT hFont = CreateFont
+			(
+				g_i_FONT_HEIGHT, g_i_FONT_WIDTH,
+				0, 0,
+				500,
+				FALSE,
+				FALSE,
+				FALSE,
+				DEFAULT_CHARSET,
+				OUT_CHARACTER_PRECIS,
+				CLIP_CHARACTER_PRECIS,
+				ANTIALIASED_QUALITY,
+				DEFAULT_PITCH | FF_DONTCARE,
+				"Arial"
+			);
+			SendMessage(hDisplay, WM_SETFONT, (WPARAM)hFont, TRUE);
+			RedrawWindow(hwnd, NULL, NULL, RDW_INVALIDATE);
+			break;
+		}
+		case CM_FONT_DIGITAL7: {
+			HWND hDisplay = GetDlgItem(hwnd, IDC_EDIT_DISPLAY);
+			HFONT hFont = CreateFont
+			(
+				g_i_FONT_HEIGHT, g_i_FONT_WIDTH,
+				0, 0,
+				500,
+				FALSE,
+				FALSE,
+				FALSE,
+				DEFAULT_CHARSET,
+				OUT_CHARACTER_PRECIS,
+				CLIP_CHARACTER_PRECIS,
+				ANTIALIASED_QUALITY,
+				DEFAULT_PITCH | FF_DONTCARE,
+				"Digital-7"
+			);
+			SendMessage(hDisplay, WM_SETFONT, (WPARAM)hFont, FALSE);
+			RedrawWindow(hwnd, NULL, NULL, RDW_INVALIDATE);
+			break;
+		}
+		case CM_FONT_TIMESNEWROMAN: 
+		{
+			HWND hDisplay = GetDlgItem(hwnd, IDC_EDIT_DISPLAY);
+			HFONT hFont = CreateFont
+			(
+				g_i_FONT_HEIGHT, g_i_FONT_WIDTH,
+				0, 0,
+				500,
+				FALSE,
+				FALSE,
+				FALSE,
+				DEFAULT_CHARSET,
+				OUT_CHARACTER_PRECIS,
+				CLIP_CHARACTER_PRECIS,
+				ANTIALIASED_QUALITY,
+				DEFAULT_PITCH | FF_DONTCARE,
+				"Times New Roman"
+			);
+			SendMessage(hDisplay, WM_SETFONT, (WPARAM)hFont, TRUE);
+			RedrawWindow(hwnd, NULL, NULL, RDW_INVALIDATE);
+			break;
+		}
+		case CM_FONT_GEORGIA: 
+		{
+			HWND hDisplay = GetDlgItem(hwnd, IDC_EDIT_DISPLAY);
+			HFONT hFont = CreateFont
+			(
+				g_i_FONT_HEIGHT, g_i_FONT_WIDTH,
+				0, 0,
+				500,
+				FALSE,
+				FALSE,
+				FALSE,
+				DEFAULT_CHARSET,
+				OUT_CHARACTER_PRECIS,
+				CLIP_CHARACTER_PRECIS,
+				ANTIALIASED_QUALITY,
+				DEFAULT_PITCH | FF_DONTCARE,
+				"Georgia"
+			);
+			SendMessage(hDisplay, WM_SETFONT, (WPARAM)hFont, TRUE);
+			RedrawWindow(hwnd, NULL, NULL, RDW_INVALIDATE);
+			break;
+		}
+
 		}
 
 		HDC hdc = GetDC(hwnd);
