@@ -196,7 +196,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			NULL,
 			NULL
 		);
-		SetSkin(hwnd, (LPSTR)DEFAULT_SKIN);
+		//SetSkin(hwnd, (LPSTR)DEFAULT_SKIN);
 		/*HINSTANCE hButtons = LoadLibrary("MetalMistral.dll");
 		HBITMAP hBmpDigit0 = (HBITMAP)LoadImage(hButtons, MAKEINTRESOURCE(100),
 			IMAGE_BITMAP, g_i_BUTTON_DOUBLE_SIZE, g_i_BUTTON_SIZE, LR_SHARED);
@@ -513,9 +513,9 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		BOOL item = TrackPopupMenuEx(hMainMenu, TPM_BOTTOMALIGN | TPM_LEFTALIGN | TPM_RETURNCMD, LOWORD(lParam), HIWORD(lParam), hwnd, NULL);
 		switch (item)
 		{
-		case CM_SQUARE_BLUE: SetSkinFromDLL(hwnd, (LPSTR)"square_blue.dll"); color_scheme = COLOR::BLUE; break;
+		case CM_SQUARE_BLUE: SetSkinFromDLL(hwnd, (LPSTR)"square_blue"); color_scheme = COLOR::BLUE; break;
 		case CM_SQUARE_GREEN: SetSkin(hwnd, (LPSTR)"square_green"); color_scheme = COLOR::GREEN; break;
-		case CM_METAL_MISTRAL: SetSkinFromDLL(hwnd, (LPSTR)"MetalMistral.dll"); color_scheme = COLOR::GRAY; break;
+		case CM_METAL_MISTRAL: SetSkinFromDLL(hwnd, (LPSTR)"MetalMistral"); color_scheme = COLOR::GRAY; break;
 		case CM_EXIT:		DestroyWindow(hwnd); break;
 		case CM_FONT_TAHOMA:
 		{
@@ -582,7 +582,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			RedrawWindow(hwnd, NULL, NULL, RDW_INVALIDATE);
 			break;
 		}
-		case CM_FONT_TIMESNEWROMAN: 
+		case CM_FONT_TIMESNEWROMAN:
 		{
 			HWND hDisplay = GetDlgItem(hwnd, IDC_EDIT_DISPLAY);
 			HFONT hFont = CreateFont
@@ -604,7 +604,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			RedrawWindow(hwnd, NULL, NULL, RDW_INVALIDATE);
 			break;
 		}
-		case CM_FONT_GEORGIA: 
+		case CM_FONT_GEORGIA:
 		{
 			HWND hDisplay = GetDlgItem(hwnd, IDC_EDIT_DISPLAY);
 			HFONT hFont = CreateFont
@@ -673,22 +673,32 @@ LPSTR FormatLastError()
 
 VOID SetSkinFromDLL(HWND hwnd, LPSTR skin)
 {
-	HINSTANCE hButtons = LoadLibrary(skin);
+	std::cout << "\n----------------------FUNCTION LAUNCH----------------------\n";
 	CHAR sz_file[MAX_PATH]{};
-	for (int i = IDC_BUTTON_0; i <= IDC_BUTTON_EQUAL; i++)
+	sprintf(sz_file, "ButtonsDLL\\%s.dll", skin);
+	HINSTANCE hButtons = LoadLibrary(sz_file);
+	if (!hButtons)
 	{
-		HWND hButton = GetDlgItem(hwnd, i);
-		std::cout << i - IDC_BUTTON_0 + 100 << "\t" << FormatLastError() << std::endl;
-		HBITMAP hImage = (HBITMAP)LoadImage
-		(
-			hButtons, MAKEINTRESOURCE(i - IDC_BUTTON_0 + 100), IMAGE_BITMAP, 
-			i == IDC_BUTTON_0 ? g_i_BUTTON_DOUBLE_SIZE : g_i_BUTTON_SIZE,
-			i == IDC_BUTTON_EQUAL ? g_i_BUTTON_DOUBLE_SIZE : g_i_BUTTON_SIZE,
-			LR_SHARED
-		);
-		SendMessage(hButton, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)hImage);
+		std::cout << "DLL loading error.";
 	}
-	FreeLibrary(hButtons);
+	else
+	{
+		for (int i = IDC_BUTTON_0; i <= IDC_BUTTON_EQUAL; i++)
+		{
+			HWND hButton = GetDlgItem(hwnd, i);
+			std::cout << i - IDC_BUTTON_0 + 100 << std::endl;
+			HBITMAP hImage = (HBITMAP)LoadImage
+			(
+				hButtons, MAKEINTRESOURCE(i - IDC_BUTTON_0 + 100), IMAGE_BITMAP,
+				i == IDC_BUTTON_0 ? g_i_BUTTON_DOUBLE_SIZE : g_i_BUTTON_SIZE,
+				i == IDC_BUTTON_EQUAL ? g_i_BUTTON_DOUBLE_SIZE : g_i_BUTTON_SIZE,
+				LR_SHARED
+			);
+			SendMessage(hButton, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)hImage);
+		}
+		FreeLibrary(hButtons);
+	}
+	std::cout << "\n----------------------FUNCTION END----------------------\n";
 }
 VOID SetSkin(HWND hwnd, LPSTR skin)
 {
