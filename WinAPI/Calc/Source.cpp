@@ -8,7 +8,8 @@
 CONST COLORREF g_COLORS[][3] =
 {
 	{ RGB(0, 0, 200), RGB(0,0, 100), RGB(255, 0, 0) },
-	{ RGB(0, 200, 0), RGB(0, 100, 0), RGB(0, 255, 0)}
+	{ RGB(0, 200, 0), RGB(0, 100, 0), RGB(0, 255, 0)},
+	{ RGB(64, 64, 64), RGB(32, 32, 32),  RGB(0, 255, 0)}
 };
 CONST CHAR g_sz_WINDOW_CLASS[] = "Calc_PD_311";
 
@@ -16,7 +17,7 @@ CONST INT g_i_START_X = 10;
 CONST INT g_i_START_Y = 10;
 
 CONST INT g_i_BUTTON_SIZE = 64;
-CONST INT g_i_INTERVAL = 0;
+CONST INT g_i_INTERVAL = 5;
 CONST INT g_i_BUTTON_DOUBLE_SIZE = g_i_BUTTON_SIZE * 2 + g_i_INTERVAL;
 
 CONST INT g_i_DISPLAY_WIDTH = (g_i_BUTTON_SIZE + g_i_INTERVAL) * 5;
@@ -39,7 +40,7 @@ VOID SetSkinFromDLL(HWND hwnd, LPSTR skin);
 
 enum COLOR
 {
-	BLUE, GREEN
+	BLUE, GREEN, GRAY
 };
 enum ELEMENT { WINDOW_BACKGROUND, DISPLAY_BACKGROUND, FOREGROUND };
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
@@ -99,7 +100,7 @@ VOID SetSkin(HWND hwnd, LPSTR skin);
 
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	static CONST CHAR DEFAULT_SKIN[] = "MetalMistral.dll";
+	static CONST CHAR DEFAULT_SKIN[] = "square_blue";//"MetalMistral.dll";
 	static CHAR skin[MAX_PATH]{};
 	static COLOR color_scheme = COLOR::BLUE;
 	switch (uMsg)
@@ -512,9 +513,9 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		BOOL item = TrackPopupMenuEx(hMainMenu, TPM_BOTTOMALIGN | TPM_LEFTALIGN | TPM_RETURNCMD, LOWORD(lParam), HIWORD(lParam), hwnd, NULL);
 		switch (item)
 		{
-		case CM_SQUARE_BLUE: SetSkin(hwnd, (LPSTR)"square_blue"); color_scheme = COLOR::BLUE; break;
+		case CM_SQUARE_BLUE: SetSkinFromDLL(hwnd, (LPSTR)"square_blue.dll"); color_scheme = COLOR::BLUE; break;
 		case CM_SQUARE_GREEN: SetSkin(hwnd, (LPSTR)"square_green"); color_scheme = COLOR::GREEN; break;
-		case CM_METAL_MISTRAL: SetSkinFromDLL(hwnd, (LPSTR)"MetalMistral.dll"); color_scheme = COLOR::BLUE; break;
+		case CM_METAL_MISTRAL: SetSkinFromDLL(hwnd, (LPSTR)"MetalMistral.dll"); color_scheme = COLOR::GRAY; break;
 		case CM_EXIT:		DestroyWindow(hwnd); break;
 		case CM_FONT_TAHOMA:
 		{
