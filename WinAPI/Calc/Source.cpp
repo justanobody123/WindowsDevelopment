@@ -100,9 +100,9 @@ VOID SetSkin(HWND hwnd, LPSTR skin);
 
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	static CONST CHAR DEFAULT_SKIN[] = "square_blue";//"MetalMistral.dll";
+	static CONST CHAR DEFAULT_SKIN[] = "MetalMistral";
 	static CHAR skin[MAX_PATH]{};
-	static COLOR color_scheme = COLOR::BLUE;
+	static COLOR color_scheme = COLOR::GRAY;
 	switch (uMsg)
 	{
 	case WM_CREATE:
@@ -475,11 +475,26 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_CTLCOLOREDIT:
 	{
 		HDC hdc = (HDC)wParam;
-		SetBkMode(hdc, OPAQUE);
-		SetBkColor(hdc, g_COLORS[color_scheme][ELEMENT::DISPLAY_BACKGROUND]);
-		HBRUSH hBrush = CreateSolidBrush(g_COLORS[color_scheme][ELEMENT::WINDOW_BACKGROUND]);
-		SetTextColor(hdc, g_COLORS[color_scheme][ELEMENT::FOREGROUND]);
+		//SetBkMode(hdc, OPAQUE);
+		//SetBkColor(hdc, g_COLORS[color_scheme][ELEMENT::DISPLAY_BACKGROUND]);
+		HBITMAP hBackground = NULL;
+		switch (color_scheme)
+		{
+		case BLUE:
+			hBackground = (HBITMAP)LoadImage(NULL, "ButtonsBMP\\square_blue\\square_blue_background.bmp", IMAGE_BITMAP, g_i_WINDOW_WIDTH, g_i_WINDOW_HEIGHT - g_i_TITLE_HEIGHT, LR_LOADFROMFILE);
+			break;
+		case GREEN:
+			hBackground = (HBITMAP)LoadImage(NULL, "ButtonsBMP\\square_green\\square_green_background.bmp", IMAGE_BITMAP, g_i_WINDOW_WIDTH, g_i_WINDOW_HEIGHT - g_i_TITLE_HEIGHT, LR_LOADFROMFILE);
+			break;
+		case GRAY:
+			hBackground = (HBITMAP)LoadImage(NULL, "ButtonsBMP\\MetalMistral\\MetalMistral_background.bmp", IMAGE_BITMAP, g_i_WINDOW_WIDTH, g_i_WINDOW_HEIGHT - g_i_TITLE_HEIGHT, LR_LOADFROMFILE);
+			break;
+		}
+		//hBackground = (HBITMAP)LoadImage(NULL, "ButtonsBMP\\MetalMistral\\MetalMistral_background.bmp", IMAGE_BITMAP, g_i_WINDOW_WIDTH, g_i_WINDOW_HEIGHT - g_i_TITLE_HEIGHT, LR_LOADFROMFILE);
+		HBRUSH hBrush = CreatePatternBrush(hBackground);//CreateSolidBrush(g_COLORS[color_scheme][ELEMENT::WINDOW_BACKGROUND]); 
 		SetClassLongPtr(hwnd, GCLP_HBRBACKGROUND, (LONG_PTR)hBrush);
+		SetTextColor(hdc, g_COLORS[color_scheme][ELEMENT::FOREGROUND]);
+		
 		SendMessage(hwnd, WM_ERASEBKGND, wParam, 0);
 
 		////////////////////////////////////////////////////////////////
@@ -698,6 +713,13 @@ VOID SetSkinFromDLL(HWND hwnd, LPSTR skin)
 		}
 		FreeLibrary(hButtons);
 	}
+	/*if (strcmp("square_green", skin))
+	{
+		sprintf(sz_file, "ButtonsBMP\\%s\\%s_background.bmp", skin);
+		HBITMAP hBackground = (HBITMAP)LoadImage(NULL, sz_file, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+		SendMessage(hwnd, );
+	}*/
+	
 	std::cout << "\n----------------------FUNCTION END----------------------\n";
 }
 VOID SetSkin(HWND hwnd, LPSTR skin)
