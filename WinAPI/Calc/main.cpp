@@ -475,8 +475,8 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_CTLCOLOREDIT:
 	{
 		HDC hdc = (HDC)wParam;
-		//SetBkMode(hdc, OPAQUE);
-		//SetBkColor(hdc, g_COLORS[color_scheme][ELEMENT::DISPLAY_BACKGROUND]);
+		SetBkMode(hdc, OPAQUE);
+		SetBkColor(hdc, g_COLORS[color_scheme][ELEMENT::DISPLAY_BACKGROUND]);
 		HBITMAP hBackground = NULL;
 		switch (color_scheme)
 		{
