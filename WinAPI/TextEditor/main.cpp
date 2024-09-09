@@ -80,6 +80,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	static HINSTANCE hRichEdit = LoadLibrary("riched20.dll");
 	static CHAR szFileName[MAX_PATH] = "";
+	static BOOL beenChanged = FALSE;
 	switch (uMsg)
 	{
 	case WM_CREATE:
@@ -101,6 +102,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			NULL,
 			NULL
 		);
+		SendMessage(hEdit, EM_SETEVENTMASK, 0, ENM_CHANGE);
 	}
 	break;
 	case WM_SIZE:
@@ -116,6 +118,21 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 		case ID_FILE_OPEN:
 		{
+			BOOL cancel = FALSE;
+			if (beenChanged)
+			{
+				
+				switch (MessageBox(hwnd, "Сохранить изменения в файле?", "Файл был изменен", MB_YESNOCANCEL | MB_ICONQUESTION))
+				{
+				case IDYES: SendMessage(hwnd, WM_COMMAND, ID_FILE_SAVE, 0);
+				case IDNO:
+					break;
+				case IDCANCEL:
+					cancel = TRUE;
+					break;
+				}
+			}
+			if (cancel) break;
 			OPENFILENAME ofn;
 			ZeroMemory(&ofn, sizeof(ofn));
 			//CHAR szFileName[MAX_PATH]{};
@@ -131,6 +148,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			{
 				HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
 				LoadTextFileToEdit(hEdit, szFileName);
+				beenChanged = FALSE;
 			}
 		}
 		break;
@@ -153,7 +171,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			InvalidateRect(hwnd, NULL, TRUE);
 			UpdateWindow(hwnd);
 		}
-			break;
+		break;
 		case ID_FILE_SAVE:
 		{
 			if (strlen(szFileName))
@@ -165,7 +183,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				SendMessage(hwnd, WM_COMMAND, LOWORD(ID_FILE_SAVEAS), 0);
 			}
 		}
-			break;
+		break;
 		case ID_FILE_SAVEAS:
 		{
 			OPENFILENAME ofn;
@@ -182,7 +200,16 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), szFileName);
 			}
 		}
-			break;
+		break;
+		case IDC_EDIT:
+		{
+			if (HIWORD(wParam) == EN_CHANGE)//If multiline was changed through WM_SETTEXT this case won't work;
+			{
+				beenChanged = TRUE;
+				cout << "File was changed" << endl;
+			}
+		}
+		break;
 		}
 		break;
 	case WM_DESTROY:
