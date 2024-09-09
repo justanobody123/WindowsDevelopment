@@ -79,6 +79,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	static HINSTANCE hRichEdit = LoadLibrary("riched20.dll");
+	static CHAR szFileName[MAX_PATH] = "";
 	switch (uMsg)
 	{
 	case WM_CREATE:
@@ -117,11 +118,11 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			OPENFILENAME ofn;
 			ZeroMemory(&ofn, sizeof(ofn));
-			CHAR szFileName[MAX_PATH]{};
+			//CHAR szFileName[MAX_PATH]{};
 
 			ofn.lStructSize = sizeof(ofn);
 			ofn.hwndOwner = hwnd;
-			ofn.lpstrFilter = "Text files: (*.txt)\0*.txt\0All files (*.*)\0*.*\0";
+			ofn.lpstrFilter = "Text files: (*.txt)\0*.txt\0C Plus Plus files (*.cpp | *.h)\0*.ccp;*.h\0All files (*.*)\0*.*\0";
 			ofn.lpstrDefExt = "txt";
 			ofn.nMaxFile = MAX_PATH;
 			ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
@@ -151,6 +152,35 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SetWindowLongPtr(hEdit, GWL_STYLE, style);
 			InvalidateRect(hwnd, NULL, TRUE);
 			UpdateWindow(hwnd);
+		}
+			break;
+		case ID_FILE_SAVE:
+		{
+			if (strlen(szFileName))
+			{
+				SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), szFileName);
+			}
+			else
+			{
+				SendMessage(hwnd, WM_COMMAND, LOWORD(ID_FILE_SAVEAS), 0);
+			}
+		}
+			break;
+		case ID_FILE_SAVEAS:
+		{
+			OPENFILENAME ofn;
+			ZeroMemory(&ofn, sizeof(ofn));
+			ofn.lStructSize = sizeof(ofn);
+			ofn.hwndOwner = hwnd;
+			ofn.lpstrFilter = "Text files: (*.txt)\0*.txt\0C Plus Plus files (*.cpp | *.h)\0*.ccp;*.h\0All files: (*.*)\0*.*\0";
+			ofn.lpstrDefExt = "txt";
+			ofn.nMaxFile = MAX_PATH;
+			ofn.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
+			ofn.lpstrFile = szFileName;
+			if (GetSaveFileName(&ofn))
+			{
+				SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), szFileName);
+			}
 		}
 			break;
 		}
