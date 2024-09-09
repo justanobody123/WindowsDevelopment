@@ -3,10 +3,17 @@
 #include <Windows.h>
 #include "resource.h"
 #include <iostream>
+#include <Richedit.h>
+
+using std::cout;
+using std::endl;
 
 CONST CHAR g_sz_WINDOW_CLASS[] = "TextEditorPD_311";
 CHAR* FormatLastError();
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+BOOL LoadTextFileToEdit(HWND hEdit, LPSTR lpszFileName);
+BOOL SaveTextFileFromEdit(HWND hEdit, LPSTR lpszFileName);
+
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, INT nCmdShow)
 {
@@ -71,18 +78,20 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	static HINSTANCE hRichEdit = LoadLibrary("riched20.dll");
 	switch (uMsg)
 	{
 	case WM_CREATE:
 	{
+
 		RECT client;
 		RECT window;
 		GetWindowRect(hwnd, &window);
 		GetClientRect(hwnd, &client);
 		std::cout << "Window: " << window.left << "\t" << window.top << "\t" << window.right << "\t" << window.bottom << std::endl;
 		std::cout << "Client: " << client.left << "\t" << client.top << "\t" << client.right << "\t" << client.bottom << std::endl;
-		HWND hEdit = CreateWindowEx(NULL, "Edit", "Workspace",
-			WS_CHILD | WS_VISIBLE | ES_MULTILINE | ES_AUTOVSCROLL,
+		HWND hEdit = CreateWindowEx(NULL, RICHEDIT_CLASS, "Workspace",
+			WS_CHILD | WS_VISIBLE | ES_MULTILINE | ES_AUTOVSCROLL | WS_VSCROLL,
 			0, 0,
 			window.right - window.left,
 			window.bottom - window.top,
@@ -90,20 +99,64 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			(HMENU)IDC_EDIT,
 			NULL,
 			NULL
-			);
+		);
 	}
-		break;
+	break;
 	case WM_SIZE:
 	{
 		HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
-		RECT window;
-		GetWindowRect(hwnd, &window);
-		MoveWindow(hEdit, 0, 0, window.right - window.left, window.bottom - window.top, TRUE);
+		RECT client;
+		GetClientRect(hwnd, &client);
+		MoveWindow(hEdit, 10, 10, client.right - 20, client.bottom - 20, TRUE);
 	}
-		break;
+	break;
 	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case ID_FILE_OPEN:
+		{
+			OPENFILENAME ofn;
+			ZeroMemory(&ofn, sizeof(ofn));
+			CHAR szFileName[MAX_PATH]{};
+
+			ofn.lStructSize = sizeof(ofn);
+			ofn.hwndOwner = hwnd;
+			ofn.lpstrFilter = "Text files: (*.txt)\0*.txt\0All files (*.*)\0*.*\0";
+			ofn.lpstrDefExt = "txt";
+			ofn.nMaxFile = MAX_PATH;
+			ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+			ofn.lpstrFile = szFileName;
+			if (GetOpenFileName(&ofn))
+			{
+				HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
+				LoadTextFileToEdit(hEdit, szFileName);
+			}
+		}
+		break;
+		case ID_FORMAT_WORDWRAP:
+		{
+			HMENU hMenu = GetMenu(hwnd);
+			HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
+			LONG style = GetWindowLong(hEdit, GWL_STYLE);
+			if (GetMenuState(hMenu, ID_FORMAT_WORDWRAP, MF_BYCOMMAND) == MF_CHECKED)
+			{
+				CheckMenuItem(hMenu, ID_FORMAT_WORDWRAP, MF_UNCHECKED);
+				style = WS_CHILD | WS_VISIBLE | ES_MULTILINE | ES_AUTOVSCROLL | WS_VSCROLL | WS_HSCROLL;
+			}
+			else
+			{
+				CheckMenuItem(hMenu, ID_FORMAT_WORDWRAP, MF_CHECKED);
+				style = WS_CHILD | WS_VISIBLE | ES_MULTILINE | ES_AUTOVSCROLL | WS_VSCROLL;
+			}
+			SetWindowLongPtr(hEdit, GWL_STYLE, style);
+			InvalidateRect(hwnd, NULL, TRUE);
+			UpdateWindow(hwnd);
+		}
+			break;
+		}
 		break;
 	case WM_DESTROY:
+		FreeLibrary(hRichEdit);
 		PostQuitMessage(0);
 		break;
 	case WM_CLOSE:
@@ -129,4 +182,68 @@ CHAR* FormatLastError()
 		NULL
 	);
 	return lpszBuffer;
+}
+
+BOOL LoadTextFileToEdit(HWND hEdit, LPSTR lpszFileName)
+{
+	BOOL bSuccess = FALSE;
+	HANDLE hFile = CreateFile
+	(
+		lpszFileName,
+		GENERIC_READ,
+		FILE_SHARE_READ,
+		NULL,
+		OPEN_EXISTING,
+		0,
+		0
+	);
+	if (hFile != INVALID_HANDLE_VALUE)
+	{
+		DWORD dwFileSize = GetFileSize(hFile, NULL);
+		if (dwFileSize != UINT_MAX)
+		{
+			LPSTR lpszFileText = (LPSTR)GlobalAlloc(GPTR, dwFileSize + 1);
+			if (lpszFileText)
+			{
+				DWORD dwRead = 0;
+				if (ReadFile(hFile, lpszFileText, dwFileSize, &dwRead, NULL))
+				{
+					if (SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)lpszFileText))
+					{
+						bSuccess = TRUE;
+					}
+				}
+				GlobalFree(lpszFileText);
+			}
+			CloseHandle(hFile);
+		}
+	}
+	return bSuccess;
+}
+BOOL SaveTextFileFromEdit(HWND hEdit, LPSTR lpszFileName)
+{
+	BOOL bSucces = FALSE;
+	HANDLE hFile = CreateFile(lpszFileName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (hFile != INVALID_HANDLE_VALUE)
+	{
+		DWORD dwTextLength = SendMessage(hEdit, WM_GETTEXTLENGTH, 0, 0);
+		if (dwTextLength)
+		{
+			LPSTR lpszText = (LPSTR)GlobalAlloc(GPTR, dwTextLength + 1);
+			if (lpszText)
+			{
+				if (SendMessage(hEdit, WM_GETTEXT, dwTextLength + 1, (LPARAM)lpszText))
+				{
+					DWORD dwWritten = 0;
+					if (WriteFile(hFile, lpszText, dwTextLength, &dwWritten, NULL))
+					{
+						bSucces = TRUE;
+					}
+				}
+				GlobalFree(lpszText);
+			}
+		}
+		CloseHandle(hFile);
+	}
+	return bSucces;
 }
