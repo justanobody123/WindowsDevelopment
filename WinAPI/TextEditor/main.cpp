@@ -4,6 +4,7 @@
 #include "resource.h"
 #include <iostream>
 #include <Richedit.h>
+#include <string.h>
 
 using std::cout;
 using std::endl;
@@ -48,7 +49,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	(
 		NULL,
 		g_sz_WINDOW_CLASS,
-		g_sz_WINDOW_CLASS,
+		"Untitled",
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, CW_USEDEFAULT,
 		CW_USEDEFAULT, CW_USEDEFAULT,
@@ -118,6 +119,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 		case ID_FILE_OPEN:
 		{
+			cout << "File open case: " << endl;
 			BOOL cancel = FALSE;
 			if (beenChanged)
 			{
@@ -149,6 +151,21 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
 				LoadTextFileToEdit(hEdit, szFileName);
 				beenChanged = FALSE;
+				//Парсим szFileName. Реверсом?
+				char* newTitle = _strrev(szFileName);
+				cout << "NewTitle: " << newTitle << endl;
+				//Меняем szFileName на новое содержимое
+				int start = strchr(newTitle, '.') - newTitle + 1;
+				cout << start << endl;
+				int end = strchr(newTitle, '\\') - newTitle;
+				cout << end << endl;
+				newTitle[end] = 0;
+				newTitle = _strrev(newTitle + start);
+				cout << "New-New Title: " << newTitle << endl;
+				//Меняем имя файла
+				SetWindowText(hwnd, newTitle);
+				strcpy(szFileName, newTitle);
+				//There is no need to use delete or free for newTitle.
 			}
 		}
 		break;
@@ -174,9 +191,19 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 		case ID_FILE_SAVE:
 		{
-			if (strlen(szFileName))
+			//ЗДЕСЬ НЕТ ТРАНСФОРМАЦИИ ИМЕНИ ФАЙЛА В ПОЛНЫЙ ПУТЬ
+			cout << "Save case: " << endl;
+			cout << strlen(szFileName) << endl;
+			if (strlen(szFileName) != 0 && !strlen(szFileName) != 1)//Заменить на Untitled && Untitled*
 			{
+				cout << szFileName << endl;
+				if (szFileName[strlen(szFileName) - 1] == '*')
+				{
+					szFileName[strlen(szFileName) - 1] = 0;
+				}
 				SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), szFileName);
+				beenChanged = FALSE;
+				SetWindowText(hwnd, szFileName);
 			}
 			else
 			{
@@ -186,6 +213,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 		case ID_FILE_SAVEAS:
 		{
+			cout << "Saveas case: " << endl;
 			OPENFILENAME ofn;
 			ZeroMemory(&ofn, sizeof(ofn));
 			ofn.lStructSize = sizeof(ofn);
@@ -198,6 +226,22 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			if (GetSaveFileName(&ofn))
 			{
 				SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), szFileName);
+				beenChanged = FALSE;
+				//Парсим szFileName. Реверсом?
+				char* newTitle = _strrev(szFileName);
+				cout << "NewTitle: " << newTitle << endl;
+				//Меняем szFileName на новое содержимое
+				int start = strchr(newTitle, '.') - newTitle + 1;
+				cout << start << endl;
+				int end = strchr(newTitle, '\\') - newTitle;
+				cout << end << endl;
+				newTitle[end] = 0;
+				newTitle = _strrev(newTitle + start);
+				cout << "New-New Title: " << newTitle << endl;
+				//Меняем имя файла
+				SetWindowText(hwnd, newTitle);
+				strcpy(szFileName, newTitle);
+				//There is no need to use delete or free for newTitle.
 			}
 		}
 		break;
@@ -205,7 +249,13 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			if (HIWORD(wParam) == EN_CHANGE)//If multiline was changed through WM_SETTEXT this case won't work;
 			{
-				beenChanged = TRUE;
+				if (!beenChanged)
+				{
+					beenChanged = TRUE;
+					//Добавляем к имени файла звездочку
+					strcat(szFileName, "*");
+					SetWindowText(hwnd, szFileName);
+				}
 				cout << "File was changed" << endl;
 			}
 		}
