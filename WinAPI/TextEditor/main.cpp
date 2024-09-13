@@ -5,6 +5,7 @@
 #include <iostream>
 #include <Richedit.h>
 #include <string.h>
+#include <CommCtrl.h>
 
 using std::cout;
 using std::endl;
@@ -15,12 +16,12 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 BOOL LoadTextFileToEdit(HWND hEdit, LPSTR lpszFileName);
 BOOL SaveTextFileFromEdit(HWND hEdit, LPSTR lpszFileName);
 
-
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, INT nCmdShow)
 {
 
 	AllocConsole();
 	freopen("CONOUT$", "w", stdout);
+	system("chcp 1251");
 	WNDCLASSEX wClass;
 	ZeroMemory(&wClass, sizeof(WNDCLASSEX));
 	wClass.style = 0;
@@ -47,9 +48,9 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	HWND hwnd = CreateWindowEx
 	(
-		NULL,
+		WS_EX_ACCEPTFILES,
 		g_sz_WINDOW_CLASS,
-		"Untitled",
+		g_sz_WINDOW_CLASS,
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, CW_USEDEFAULT,
 		CW_USEDEFAULT, CW_USEDEFAULT,
@@ -79,14 +80,17 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	static HINSTANCE comCtrl = LoadLibrary("ComCtlr32.dll");
 	static HINSTANCE hRichEdit = LoadLibrary("riched20.dll");
+	static INITCOMMONCONTROLSEX icce;
 	static CHAR szFileName[MAX_PATH] = "";
 	static BOOL beenChanged = FALSE;
+	static CHAR sz_title[MAX_PATH]{};
 	switch (uMsg)
 	{
 	case WM_CREATE:
 	{
-
+		//DragAcceptFiles(hwnd, TRUE);
 		RECT client;
 		RECT window;
 		GetWindowRect(hwnd, &window);
@@ -104,14 +108,81 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			NULL
 		);
 		SendMessage(hEdit, EM_SETEVENTMASK, 0, ENM_CHANGE);
+		HWND hStatus = CreateWindowEx(NULL, STATUSCLASSNAME, "Status Bar", WS_CHILD | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, hwnd, (HMENU)IDC_STATUS, NULL, NULL);
+		//1) File path
+		//2) Save status
+		//3) Number of Words
+		//4) Window Size
+		//5) File size
+		//6) Creation date
+		//7) Date of last change
+		INT dimentions[] = { 500, 600, 700, 800, 900, 1000, -1 };
+		SendMessage(hStatus, SB_SETPARTS, sizeof(dimentions) / sizeof(dimentions[0]), (LPARAM)dimentions);
+	}
+	break;
+	case WM_DROPFILES:
+	{
+		cout << "Case WM_DROPFILES code: " << uMsg <<  endl;
+		BOOL cancel = FALSE;
+		if (beenChanged)
+		{
+
+			switch (MessageBox(hwnd, "Сохранить изменения в файле?", "Файл был изменен", MB_YESNOCANCEL | MB_ICONQUESTION))
+			{
+			case IDYES: SendMessage(hwnd, WM_COMMAND, ID_FILE_SAVE, 0);
+			case IDNO:
+				break;
+			case IDCANCEL:
+				cancel = TRUE;
+				break;
+			}
+		}
+		if (cancel) break;
+		HDROP hDrop = (HDROP)wParam;
+		if (DragQueryFile(hDrop, 0, szFileName, MAX_PATH))
+		{
+			LoadTextFileToEdit(GetDlgItem(hwnd, IDC_EDIT), szFileName);
+			beenChanged = FALSE;
+			if (szFileName[strlen(szFileName) - 1] == '*')
+			{
+				szFileName[strlen(szFileName) - 1] = 0;
+			}
+			SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 0, (LPARAM)szFileName);
+			SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"Сохранен");
+			sprintf(sz_title, "%s - %s", g_sz_WINDOW_CLASS, strrchr(szFileName, '\\') + 1);
+			SetWindowText(hwnd, sz_title);
+		}
+		DragFinish(hDrop);
+		cout << "DragFinish" << endl;
+		//InvalidateRect(hwnd, NULL, TRUE); 
+		//UpdateWindow(hwnd);
+		//--------- Не помогло. Попробую перерисовать рич эдит.
+		/*RECT client;
+		RECT status;
+		GetClientRect(hwnd, &client); --------- Тоже не помогло. Надо двигать окно.
+		GetWindowRect(GetDlgItem(hwnd, IDC_STATUS), &status);
+		DWORD dwStatusHeight = status.bottom - status.top;
+		MoveWindow(GetDlgItem(hwnd, IDC_EDIT), 10, 10, client.right - 20, client.bottom - 20 - dwStatusHeight, TRUE);*/
+		// --------- Тоже не помогло. Надо двигать окно.
+		/*RECT window;
+		GetWindowRect(hwnd, &window);
+		cout << "Window: left - " << window.left << " right - " << window.right << " top - " << window.top << " bottom - " << window.bottom << endl;
+		MoveWindow(hwnd, window.left, window.top, window.right, window.bottom, TRUE);*/
+		// ---------- Не работает. Сообщение отправляется только после того, как надо подвинуть окно.
 	}
 	break;
 	case WM_SIZE:
 	{
 		HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
 		RECT client;
+		RECT window;
+		RECT status;
+		GetWindowRect(hwnd, &window);
 		GetClientRect(hwnd, &client);
-		MoveWindow(hEdit, 10, 10, client.right - 20, client.bottom - 20, TRUE);
+		GetWindowRect(GetDlgItem(hwnd, IDC_STATUS), &status);
+		DWORD dwStatusHeight = status.bottom - status.top;
+		MoveWindow(hEdit, 10, 10, client.right - 20, client.bottom - 20 - dwStatusHeight, TRUE);
+		MoveWindow(GetDlgItem(hwnd, IDC_STATUS), 0, 0, 0, 0, TRUE);
 	}
 	break;
 	case WM_COMMAND:
@@ -148,24 +219,34 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			ofn.lpstrFile = szFileName;
 			if (GetOpenFileName(&ofn))
 			{
+				
 				HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
 				LoadTextFileToEdit(hEdit, szFileName);
 				beenChanged = FALSE;
+				if (szFileName[strlen(szFileName) - 1] == '*')
+				{
+					szFileName[strlen(szFileName) - 1] = 0;
+				}
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 0, (LPARAM)ofn.lpstrFile);
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"Сохранен");
+				sprintf(sz_title, "%s - %s", g_sz_WINDOW_CLASS, strrchr(szFileName, '\\') + 1);
+				SetWindowText(hwnd, sz_title);
 				//Парсим szFileName. Реверсом?
-				char* newTitle = _strrev(szFileName);
-				cout << "NewTitle: " << newTitle << endl;
-				//Меняем szFileName на новое содержимое
-				int start = strchr(newTitle, '.') - newTitle + 1;
-				cout << start << endl;
-				int end = strchr(newTitle, '\\') - newTitle;
-				cout << end << endl;
-				newTitle[end] = 0;
-				newTitle = _strrev(newTitle + start);
-				cout << "New-New Title: " << newTitle << endl;
-				//Меняем имя файла
-				SetWindowText(hwnd, newTitle);
-				strcpy(szFileName, newTitle);
-				//There is no need to use delete or free for newTitle.
+				//char* newTitle = _strrev(szFileName);
+				//cout << "NewTitle: " << newTitle << endl;
+				////Меняем szFileName на новое содержимое
+				//int start = strchr(newTitle, '.') - newTitle + 1;
+				//cout << start << endl;
+				//int end = strchr(newTitle, '\\') - newTitle;
+				//cout << end << endl;
+				//newTitle[end] = 0;
+				//newTitle = _strrev(newTitle + start);
+				//cout << "New-New Title: " << newTitle << endl;
+				////Меняем имя файла
+				//SetWindowText(hwnd, newTitle);
+				//strcpy(szFileName, newTitle);
+				////There is no need to use delete or free for newTitle.
+				
 			}
 		}
 		break;
@@ -204,6 +285,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), szFileName);
 				beenChanged = FALSE;
 				SetWindowText(hwnd, szFileName);
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"Сохранен");
 			}
 			else
 			{
@@ -227,20 +309,29 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			{
 				SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), szFileName);
 				beenChanged = FALSE;
+				if (szFileName[strlen(szFileName) - 1] == '*')
+				{
+					szFileName[strlen(szFileName) - 1] = 0;
+				}
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 0, (LPARAM)ofn.lpstrFile);
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"Сохранен");
+				CHAR sz_title[MAX_PATH]{};
+				sprintf(sz_title, "%s - %s", g_sz_WINDOW_CLASS, strrchr(szFileName, '\\') + 1);
+				SetWindowText(hwnd, sz_title);
 				//Парсим szFileName. Реверсом?
-				char* newTitle = _strrev(szFileName);
-				cout << "NewTitle: " << newTitle << endl;
-				//Меняем szFileName на новое содержимое
-				int start = strchr(newTitle, '.') - newTitle + 1;
-				cout << start << endl;
-				int end = strchr(newTitle, '\\') - newTitle;
-				cout << end << endl;
-				newTitle[end] = 0;
-				newTitle = _strrev(newTitle + start);
-				cout << "New-New Title: " << newTitle << endl;
-				//Меняем имя файла
-				SetWindowText(hwnd, newTitle);
-				strcpy(szFileName, newTitle);
+				//char* newTitle = _strrev(szFileName);
+				//cout << "NewTitle: " << newTitle << endl;
+				////Меняем szFileName на новое содержимое
+				//int start = strchr(newTitle, '.') - newTitle + 1;
+				//cout << start << endl;
+				//int end = strchr(newTitle, '\\') - newTitle;
+				//cout << end << endl;
+				//newTitle[end] = 0;
+				//newTitle = _strrev(newTitle + start);
+				//cout << "New-New Title: " << newTitle << endl;
+				////Меняем имя файла
+				//SetWindowText(hwnd, newTitle);
+				//strcpy(szFileName, newTitle);
 				//There is no need to use delete or free for newTitle.
 			}
 		}
@@ -253,16 +344,33 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				{
 					beenChanged = TRUE;
 					//Добавляем к имени файла звездочку
-					strcat(szFileName, "*");
-					SetWindowText(hwnd, szFileName);
+					strcat(sz_title, "*");
+					SetWindowText(hwnd, sz_title);
+					SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"Изменен");
 				}
-				cout << "File was changed" << endl;
+				//cout << "File was changed" << endl;
+				HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
+				DWORD dwTextLength = SendMessage(hEdit, WM_GETTEXTLENGTH, 0, 0);
+				LPSTR lpstrBuffer = (LPSTR)GlobalAlloc(GPTR, dwTextLength);
+				SendMessage(hEdit, WM_GETTEXT, dwTextLength + 1, (LPARAM)lpstrBuffer);
+				CHAR delimiters[] = " ,.!?;-()[]<>{}\"\':\\/\n";
+				int i = 0;
+				for (char* pch = strtok(lpstrBuffer, delimiters); pch; pch = strtok(NULL, delimiters))i++;
+				GlobalFree(lpstrBuffer);
+				CHAR sz_status[MAX_PATH]{};
+				sprintf(sz_status, "%i %s", i, "слов");
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 2, (LPARAM)sz_status);
+				sprintf(sz_status, "%s %i", "длина: ", strlen(lpstrBuffer));
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 3, (LPARAM)sz_status);
+
+				
 			}
 		}
 		break;
 		}
 		break;
 	case WM_DESTROY:
+		FreeLibrary(comCtrl);
 		FreeLibrary(hRichEdit);
 		PostQuitMessage(0);
 		break;
@@ -354,3 +462,4 @@ BOOL SaveTextFileFromEdit(HWND hEdit, LPSTR lpszFileName)
 	}
 	return bSucces;
 }
+
