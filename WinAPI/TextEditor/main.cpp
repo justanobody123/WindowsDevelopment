@@ -15,6 +15,8 @@ CHAR* FormatLastError();
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 BOOL LoadTextFileToEdit(HWND hEdit, LPSTR lpszFileName);
 BOOL SaveTextFileFromEdit(HWND hEdit, LPSTR lpszFileName);
+LPSTR FormatFileTime(FILETIME fileTime, CONST CHAR sz_message[], CHAR sz_buffer[]);
+VOID SetFileDataToSstatusBar(CONST CHAR szFileName[]);
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, INT nCmdShow)
 {
@@ -116,7 +118,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		//5) File size
 		//6) Creation date
 		//7) Date of last change
-		INT dimentions[] = { 500, 600, 700, 800, 900, 1000, -1 };
+		INT dimentions[] = { 400, 500, 600, 700, 750, 900, -1 };
 		SendMessage(hStatus, SB_SETPARTS, sizeof(dimentions) / sizeof(dimentions[0]), (LPARAM)dimentions);
 	}
 	break;
@@ -231,6 +233,25 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"Сохранен");
 				sprintf(sz_title, "%s - %s", g_sz_WINDOW_CLASS, strrchr(szFileName, '\\') + 1);
 				SetWindowText(hwnd, sz_title);
+				WIN32_FIND_DATA fileData;
+				ZeroMemory(&fileData, sizeof(fileData));
+				HANDLE hFile = FindFirstFile(szFileName, &fileData);
+				cout << fileData.cFileName << "\t" << fileData.nFileSizeLow << "\t" << endl;
+				CHAR sz_buffer[MAX_PATH]{};
+				sprintf(sz_buffer, "%i B", fileData.nFileSizeLow);
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 4, (LPARAM)sz_buffer);
+				/*FILETIME localTime;
+				ZeroMemory(&localTime, sizeof(localTime));
+				FileTimeToLocalFileTime(&fileData.ftCreationTime, &localTime);
+				SYSTEMTIME sysTime;
+				ZeroMemory(&sysTime, sizeof(sysTime));
+				FileTimeToSystemTime(&localTime, &sysTime);
+				ZeroMemory(sz_buffer, MAX_PATH);
+				sprintf(sz_buffer, "%s%02d.%02d.%02d %02d:%02d:%02d", "Создан: ",
+					sysTime.wYear, sysTime.wMonth, sysTime.wDay,
+					sysTime.wHour, sysTime.wMinute, sysTime.wSecond);*/
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 5,
+					(LPARAM)FormatFileTime(fileData.ftCreationTime, "Создан: ", sz_buffer));
 				//Парсим szFileName. Реверсом?
 				//char* newTitle = _strrev(szFileName);
 				//cout << "NewTitle: " << newTitle << endl;
@@ -246,7 +267,8 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				//SetWindowText(hwnd, newTitle);
 				//strcpy(szFileName, newTitle);
 				////There is no need to use delete or free for newTitle.
-				
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 6,
+					(LPARAM)FormatFileTime(fileData.ftLastWriteTime, "Изменен: ", sz_buffer));
 			}
 		}
 		break;
@@ -360,7 +382,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				CHAR sz_status[MAX_PATH]{};
 				sprintf(sz_status, "%i %s", i, "слов");
 				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 2, (LPARAM)sz_status);
-				sprintf(sz_status, "%s %i", "длина: ", strlen(lpstrBuffer));
+				sprintf(sz_status, "%s %i", "длина: ", dwTextLength);
 				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 3, (LPARAM)sz_status);
 
 				
@@ -462,4 +484,22 @@ BOOL SaveTextFileFromEdit(HWND hEdit, LPSTR lpszFileName)
 	}
 	return bSucces;
 }
+LPSTR FormatFileTime(FILETIME fileTime,  CONST CHAR sz_message[], CHAR sz_buffer[])
+{
+	ZeroMemory(sz_buffer, MAX_PATH);
+	FILETIME localTime;
+	ZeroMemory(&localTime, sizeof(localTime));
+	FileTimeToLocalFileTime(&fileTime, &localTime);
+	SYSTEMTIME sysTime;
+	ZeroMemory(&sysTime, sizeof(sysTime));
+	FileTimeToSystemTime(&localTime, &sysTime);
+	//ZeroMemory(sz_buffer, MAX_PATH);
+	sprintf(sz_buffer, "%s%02d.%02d.%02d %02d:%02d:%02d", sz_message,
+		sysTime.wYear, sysTime.wMonth, sysTime.wDay,
+		sysTime.wHour, sysTime.wMinute, sysTime.wSecond);
+	return sz_buffer;
+}
+VOID SetFileDataToSstatusBar(CONST CHAR szFileName[])
+{
 
+}
