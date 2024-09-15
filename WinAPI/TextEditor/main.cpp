@@ -1,4 +1,4 @@
-#undef UNICODE
+п»ї#undef UNICODE
 #define _CRT_SECURE_NO_WARNINGS
 #include <Windows.h>
 #include "resource.h"
@@ -16,7 +16,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 BOOL LoadTextFileToEdit(HWND hEdit, LPSTR lpszFileName);
 BOOL SaveTextFileFromEdit(HWND hEdit, LPSTR lpszFileName);
 LPSTR FormatFileTime(FILETIME fileTime, CONST CHAR sz_message[], CHAR sz_buffer[]);
-VOID SetFileDataToSstatusBar(CONST CHAR szFileName[]);
+VOID SetFileDataToStatusBar(HWND hwnd, CONST CHAR szFileName[], CHAR sz_title[], BOOL beenChanged);
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, INT nCmdShow)
 {
@@ -118,8 +118,8 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		//5) File size
 		//6) Creation date
 		//7) Date of last change
-		INT dimentions[] = { 400, 500, 600, 700, 750, 900, -1 };
-		SendMessage(hStatus, SB_SETPARTS, sizeof(dimentions) / sizeof(dimentions[0]), (LPARAM)dimentions);
+		INT dimensions[] = { 300, 400, 500, 580, 650, 900, -1 };
+		SendMessage(hStatus, SB_SETPARTS, sizeof(dimensions) / sizeof(dimensions[0]), (LPARAM)dimensions);
 	}
 	break;
 	case WM_DROPFILES:
@@ -129,7 +129,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		if (beenChanged)
 		{
 
-			switch (MessageBox(hwnd, "Сохранить изменения в файле?", "Файл был изменен", MB_YESNOCANCEL | MB_ICONQUESTION))
+			switch (MessageBox(hwnd, "РЎРѕС…СЂР°РЅРёС‚СЊ РёР·РјРµРЅРµРЅРёСЏ РІ С„Р°Р№Р»Рµ?", "Р¤Р°Р№Р» Р±С‹Р» РёР·РјРµРЅРµРЅ", MB_YESNOCANCEL | MB_ICONQUESTION))
 			{
 			case IDYES: SendMessage(hwnd, WM_COMMAND, ID_FILE_SAVE, 0);
 			case IDNO:
@@ -150,7 +150,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				szFileName[strlen(szFileName) - 1] = 0;
 			}
 			SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 0, (LPARAM)szFileName);
-			SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"Сохранен");
+			
 			sprintf(sz_title, "%s - %s", g_sz_WINDOW_CLASS, strrchr(szFileName, '\\') + 1);
 			SetWindowText(hwnd, sz_title);
 		}
@@ -158,19 +158,19 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		cout << "DragFinish" << endl;
 		//InvalidateRect(hwnd, NULL, TRUE); 
 		//UpdateWindow(hwnd);
-		//--------- Не помогло. Попробую перерисовать рич эдит.
+		//--------- РќРµ РїРѕРјРѕРіР»Рѕ. РџРѕРїСЂРѕР±СѓСЋ РїРµСЂРµСЂРёСЃРѕРІР°С‚СЊ СЂРёС‡ СЌРґРёС‚.
 		/*RECT client;
 		RECT status;
-		GetClientRect(hwnd, &client); --------- Тоже не помогло. Надо двигать окно.
+		GetClientRect(hwnd, &client); --------- РўРѕР¶Рµ РЅРµ РїРѕРјРѕРіР»Рѕ. РќР°РґРѕ РґРІРёРіР°С‚СЊ РѕРєРЅРѕ.
 		GetWindowRect(GetDlgItem(hwnd, IDC_STATUS), &status);
 		DWORD dwStatusHeight = status.bottom - status.top;
 		MoveWindow(GetDlgItem(hwnd, IDC_EDIT), 10, 10, client.right - 20, client.bottom - 20 - dwStatusHeight, TRUE);*/
-		// --------- Тоже не помогло. Надо двигать окно.
+		// --------- РўРѕР¶Рµ РЅРµ РїРѕРјРѕРіР»Рѕ. РќР°РґРѕ РґРІРёРіР°С‚СЊ РѕРєРЅРѕ.
 		/*RECT window;
 		GetWindowRect(hwnd, &window);
 		cout << "Window: left - " << window.left << " right - " << window.right << " top - " << window.top << " bottom - " << window.bottom << endl;
 		MoveWindow(hwnd, window.left, window.top, window.right, window.bottom, TRUE);*/
-		// ---------- Не работает. Сообщение отправляется только после того, как надо подвинуть окно.
+		// ---------- РќРµ СЂР°Р±РѕС‚Р°РµС‚. РЎРѕРѕР±С‰РµРЅРёРµ РѕС‚РїСЂР°РІР»СЏРµС‚СЃСЏ С‚РѕР»СЊРєРѕ РїРѕСЃР»Рµ С‚РѕРіРѕ, РєР°Рє РЅР°РґРѕ РїРѕРґРІРёРЅСѓС‚СЊ РѕРєРЅРѕ.
 	}
 	break;
 	case WM_SIZE:
@@ -197,7 +197,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			if (beenChanged)
 			{
 				
-				switch (MessageBox(hwnd, "Сохранить изменения в файле?", "Файл был изменен", MB_YESNOCANCEL | MB_ICONQUESTION))
+				switch (MessageBox(hwnd, "РЎРѕС…СЂР°РЅРёС‚СЊ РёР·РјРµРЅРµРЅРёСЏ РІ С„Р°Р№Р»Рµ?", "Р¤Р°Р№Р» Р±С‹Р» РёР·РјРµРЅРµРЅ", MB_YESNOCANCEL | MB_ICONQUESTION))
 				{
 				case IDYES: SendMessage(hwnd, WM_COMMAND, ID_FILE_SAVE, 0);
 				case IDNO:
@@ -225,50 +225,12 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
 				LoadTextFileToEdit(hEdit, szFileName);
 				beenChanged = FALSE;
-				if (szFileName[strlen(szFileName) - 1] == '*')
-				{
-					szFileName[strlen(szFileName) - 1] = 0;
-				}
 				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 0, (LPARAM)ofn.lpstrFile);
-				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"Сохранен");
-				sprintf(sz_title, "%s - %s", g_sz_WINDOW_CLASS, strrchr(szFileName, '\\') + 1);
-				SetWindowText(hwnd, sz_title);
-				WIN32_FIND_DATA fileData;
-				ZeroMemory(&fileData, sizeof(fileData));
-				HANDLE hFile = FindFirstFile(szFileName, &fileData);
-				cout << fileData.cFileName << "\t" << fileData.nFileSizeLow << "\t" << endl;
-				CHAR sz_buffer[MAX_PATH]{};
-				sprintf(sz_buffer, "%i B", fileData.nFileSizeLow);
-				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 4, (LPARAM)sz_buffer);
-				/*FILETIME localTime;
-				ZeroMemory(&localTime, sizeof(localTime));
-				FileTimeToLocalFileTime(&fileData.ftCreationTime, &localTime);
-				SYSTEMTIME sysTime;
-				ZeroMemory(&sysTime, sizeof(sysTime));
-				FileTimeToSystemTime(&localTime, &sysTime);
-				ZeroMemory(sz_buffer, MAX_PATH);
-				sprintf(sz_buffer, "%s%02d.%02d.%02d %02d:%02d:%02d", "Создан: ",
-					sysTime.wYear, sysTime.wMonth, sysTime.wDay,
-					sysTime.wHour, sysTime.wMinute, sysTime.wSecond);*/
-				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 5,
-					(LPARAM)FormatFileTime(fileData.ftCreationTime, "Создан: ", sz_buffer));
-				//Парсим szFileName. Реверсом?
-				//char* newTitle = _strrev(szFileName);
-				//cout << "NewTitle: " << newTitle << endl;
-				////Меняем szFileName на новое содержимое
-				//int start = strchr(newTitle, '.') - newTitle + 1;
-				//cout << start << endl;
-				//int end = strchr(newTitle, '\\') - newTitle;
-				//cout << end << endl;
-				//newTitle[end] = 0;
-				//newTitle = _strrev(newTitle + start);
-				//cout << "New-New Title: " << newTitle << endl;
-				////Меняем имя файла
-				//SetWindowText(hwnd, newTitle);
-				//strcpy(szFileName, newTitle);
-				////There is no need to use delete or free for newTitle.
-				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 6,
-					(LPARAM)FormatFileTime(fileData.ftLastWriteTime, "Изменен: ", sz_buffer));
+				//SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"РЎРѕС…СЂР°РЅРµРЅ");
+				cout << "Title before: " << sz_title << endl;
+				SetFileDataToStatusBar(hwnd, szFileName, sz_title, beenChanged);
+				cout << "Title after: " << sz_title << endl;
+				
 			}
 		}
 		break;
@@ -294,10 +256,10 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 		case ID_FILE_SAVE:
 		{
-			//ЗДЕСЬ НЕТ ТРАНСФОРМАЦИИ ИМЕНИ ФАЙЛА В ПОЛНЫЙ ПУТЬ
+			//Р—Р”Р•РЎР¬ РќР•Рў РўР РђРќРЎР¤РћР РњРђР¦РР РРњР•РќР Р¤РђР™Р›Рђ Р’ РџРћР›РќР«Р™ РџРЈРўР¬
 			cout << "Save case: " << endl;
 			cout << strlen(szFileName) << endl;
-			if (strlen(szFileName) != 0 && !strlen(szFileName) != 1)//Заменить на Untitled && Untitled*
+			if (strlen(szFileName) != 0 && !strlen(szFileName) != 1)//Р—Р°РјРµРЅРёС‚СЊ РЅР° Untitled && Untitled*
 			{
 				cout << szFileName << endl;
 				if (szFileName[strlen(szFileName) - 1] == '*')
@@ -307,7 +269,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				SaveTextFileFromEdit(GetDlgItem(hwnd, IDC_EDIT), szFileName);
 				beenChanged = FALSE;
 				SetWindowText(hwnd, szFileName);
-				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"Сохранен");
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"РЎРѕС…СЂР°РЅРµРЅ");
 			}
 			else
 			{
@@ -336,14 +298,14 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					szFileName[strlen(szFileName) - 1] = 0;
 				}
 				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 0, (LPARAM)ofn.lpstrFile);
-				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"Сохранен");
+				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"РЎРѕС…СЂР°РЅРµРЅ");
 				CHAR sz_title[MAX_PATH]{};
 				sprintf(sz_title, "%s - %s", g_sz_WINDOW_CLASS, strrchr(szFileName, '\\') + 1);
 				SetWindowText(hwnd, sz_title);
-				//Парсим szFileName. Реверсом?
+				//РџР°СЂСЃРёРј szFileName. Р РµРІРµСЂСЃРѕРј?
 				//char* newTitle = _strrev(szFileName);
 				//cout << "NewTitle: " << newTitle << endl;
-				////Меняем szFileName на новое содержимое
+				////РњРµРЅСЏРµРј szFileName РЅР° РЅРѕРІРѕРµ СЃРѕРґРµСЂР¶РёРјРѕРµ
 				//int start = strchr(newTitle, '.') - newTitle + 1;
 				//cout << start << endl;
 				//int end = strchr(newTitle, '\\') - newTitle;
@@ -351,7 +313,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				//newTitle[end] = 0;
 				//newTitle = _strrev(newTitle + start);
 				//cout << "New-New Title: " << newTitle << endl;
-				////Меняем имя файла
+				////РњРµРЅСЏРµРј РёРјСЏ С„Р°Р№Р»Р°
 				//SetWindowText(hwnd, newTitle);
 				//strcpy(szFileName, newTitle);
 				//There is no need to use delete or free for newTitle.
@@ -365,10 +327,10 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				if (!beenChanged)
 				{
 					beenChanged = TRUE;
-					//Добавляем к имени файла звездочку
+					//Р”РѕР±Р°РІР»СЏРµРј Рє РёРјРµРЅРё С„Р°Р№Р»Р° Р·РІРµР·РґРѕС‡РєСѓ
 					strcat(sz_title, "*");
 					SetWindowText(hwnd, sz_title);
-					SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"Изменен");
+					SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"РР·РјРµРЅРµРЅ");
 				}
 				//cout << "File was changed" << endl;
 				HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
@@ -380,9 +342,9 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				for (char* pch = strtok(lpstrBuffer, delimiters); pch; pch = strtok(NULL, delimiters))i++;
 				GlobalFree(lpstrBuffer);
 				CHAR sz_status[MAX_PATH]{};
-				sprintf(sz_status, "%i %s", i, "слов");
+				sprintf(sz_status, "%i %s", i, "СЃР»РѕРІ");
 				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 2, (LPARAM)sz_status);
-				sprintf(sz_status, "%s %i", "длина: ", dwTextLength);
+				sprintf(sz_status, "%s %i", "РґР»РёРЅР°: ", dwTextLength);
 				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 3, (LPARAM)sz_status);
 
 				
@@ -499,7 +461,31 @@ LPSTR FormatFileTime(FILETIME fileTime,  CONST CHAR sz_message[], CHAR sz_buffer
 		sysTime.wHour, sysTime.wMinute, sysTime.wSecond);
 	return sz_buffer;
 }
-VOID SetFileDataToSstatusBar(CONST CHAR szFileName[])
+VOID SetFileDataToStatusBar(HWND hwnd, CONST CHAR szFileName[], CHAR sz_title[], BOOL beenChanged)
 {
+	sprintf(sz_title, "%s - %s", g_sz_WINDOW_CLASS, strrchr(szFileName, '\\') + 1);
+	cout << sz_title << endl;
+	SendMessage(hwnd, WM_SETTEXT, 0, (LPARAM)sz_title);
+	WIN32_FIND_DATA fileData;
+	ZeroMemory(&fileData, sizeof(fileData));
+	HANDLE hFile = FindFirstFile(szFileName, &fileData);
+	cout << "\n==================================\n\n";
+	cout << fileData.cFileName << "\t" << fileData.nFileSizeLow << "\t\n";
+	cout << "\n==================================\n\n";
+	CHAR sz_buffer[MAX_PATH]{};
+	if (beenChanged)
+	{
+		SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"РР·РјРµРЅРµРЅ");
+	}
+	else
+	{
+		SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 1, (LPARAM)"РЎРѕС…СЂР°РЅРµРЅ");
+	}
+	sprintf(sz_buffer, "%i B", fileData.nFileSizeLow);
+	SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 4, (LPARAM)sz_buffer);
+	SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 5,
+		(LPARAM)FormatFileTime(fileData.ftCreationTime, "Р”Р°С‚Р° СЃРѕР·РґР°РЅРёСЏ: ", sz_buffer));
+	SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 6,
+		(LPARAM)FormatFileTime(fileData.ftLastWriteTime, "Р”Р°С‚Р° РёР·РјРµРЅРµРЅРёСЏ: ", sz_buffer));
 
 }
