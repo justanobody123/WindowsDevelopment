@@ -67,6 +67,15 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		MessageBox(NULL, "Window creation failed!", "Error", MB_OK | MB_ICONERROR);
 		return 0;
 	}
+	if (lpCmdLine && strlen(lpCmdLine) > 0)
+	{
+		CHAR szFileName[MAX_PATH];
+		CHAR sz_title[MAX_PATH] = { "Да запарсю потом" };
+		strncpy(szFileName, lpCmdLine, MAX_PATH);
+		cout << "Грузим файл в рич эдит: " << endl;
+		LoadTextFileToEdit(GetDlgItem(hwnd, IDC_EDIT), szFileName, sz_title, FALSE);
+		cout << "Загрузили.";
+	}
 	ShowWindow(hwnd, nCmdShow);
 	UpdateWindow(hwnd);
 
@@ -272,9 +281,11 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			if (HIWORD(wParam) == EN_CHANGE)//If multiline was changed through WM_SETTEXT this case won't work;
 			{
+				cout << "До ифа " << beenChanged << endl;
 				if (!beenChanged)
 				{
 					beenChanged = TRUE;
+					cout << "После ифа " << beenChanged << endl;
 					//Добавляем к имени файла звездочку
 					strcat(sz_title, "*");
 					SetWindowText(hwnd, sz_title);
