@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -27,8 +28,19 @@ namespace Clock
 			label1.Text = DateTime.Now.ToString("hh:mm:ss tt");
 			if (cbShowDate.Checked) 
 			{
-				//label1.Text += DateTime.Now.ToString("yyyy.MM.dd");
 				label1.Text += $"\n{DateTime.Now.ToString("yyyy.MM.dd")}";
+			}
+		}
+		private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			this.WindowState = FormWindowState.Normal;
+			this.ShowInTaskbar = true;
+		}
+		protected override void OnResize(EventArgs e)
+		{
+			if (this.WindowState == FormWindowState.Minimized)
+			{
+				this.ShowInTaskbar = false;
 			}
 		}
 	}

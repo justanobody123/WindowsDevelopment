@@ -29,9 +29,11 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.timer1 = new System.Windows.Forms.Timer(this.components);
 			this.label1 = new System.Windows.Forms.Label();
 			this.cbShowDate = new System.Windows.Forms.CheckBox();
+			this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
 			this.SuspendLayout();
 			// 
 			// timer1
@@ -55,19 +57,27 @@
 			this.cbShowDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.cbShowDate.Location = new System.Drawing.Point(47, 201);
 			this.cbShowDate.Name = "cbShowDate";
-			this.cbShowDate.Size = new System.Drawing.Size(283, 43);
+			this.cbShowDate.Size = new System.Drawing.Size(274, 42);
 			this.cbShowDate.TabIndex = 1;
 			this.cbShowDate.Text = "Показать дату";
 			this.cbShowDate.UseVisualStyleBackColor = true;
+			// 
+			// notifyIcon1
+			// 
+			this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
+			this.notifyIcon1.Text = "notifyIcon1";
+			this.notifyIcon1.Visible = true;
+			this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
 			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(32F, 61F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1924, 1055);
+			this.ClientSize = new System.Drawing.Size(782, 553);
 			this.Controls.Add(this.cbShowDate);
 			this.Controls.Add(this.label1);
 			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 32F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Margin = new System.Windows.Forms.Padding(12, 11, 12, 11);
 			this.Name = "MainForm";
 			this.Text = "MainForm";
@@ -82,6 +92,7 @@
 		private System.Windows.Forms.Timer timer1;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.CheckBox cbShowDate;
+		private System.Windows.Forms.NotifyIcon notifyIcon1;
 	}
 }
 
