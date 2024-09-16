@@ -31,7 +31,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	wClass.cbClsExtra = 0;
 	wClass.cbWndExtra = 0;
 
-	wClass.hIcon = (HICON)LoadImage(hInstance, "ICO\\text_icon.ico", IMAGE_ICON, LR_DEFAULTSIZE, LR_DEFAULTSIZE, LR_LOADFROMFILE);
+	wClass.hIcon = (HICON)LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
 	wClass.hIconSm = (HICON)LoadImage(hInstance, "ICO\\text_icon.ico", IMAGE_ICON, LR_DEFAULTSIZE, LR_DEFAULTSIZE, LR_LOADFROMFILE);
 	wClass.hCursor = (HCURSOR)LoadCursor(hInstance, IDC_ARROW);
 	HBITMAP hBackground = (HBITMAP)LoadImage(hInstance, "IMG\\background.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
@@ -70,7 +70,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	if (lpCmdLine && strlen(lpCmdLine) > 0)
 	{
 		CHAR szFileName[MAX_PATH];
-		CHAR sz_title[MAX_PATH] = { "Да запарсю потом" };
+		CHAR sz_title[MAX_PATH] = { "Да пофиг" };
 		strncpy(szFileName, lpCmdLine, MAX_PATH);
 		cout << "Грузим файл в рич эдит: " << endl;
 		LoadTextFileToEdit(GetDlgItem(hwnd, IDC_EDIT), szFileName, sz_title, FALSE);
@@ -80,7 +80,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UpdateWindow(hwnd);
 
 	MSG msg;
-	while (GetMessage(&msg, hwnd, 0, 0) > 0)
+	while (GetMessage(&msg, 0, 0, 0) > 0)
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
@@ -101,6 +101,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_CREATE:
 	{
+		
 		//DragAcceptFiles(hwnd, TRUE);
 		RECT client;
 		RECT window;
@@ -211,8 +212,10 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			if (GetOpenFileName(&ofn))
 			{
 				HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
-				LoadTextFileToEdit(hEdit, szFileName, sz_title, FALSE);//Фолз, потому что статическая переменная меняется после попадания в функцию на тру, хотя там она используется лишь в ифе. (Это правда, я не сумасшедшая)
 				beenChanged = FALSE;
+				cout << "Been changed before function: " << beenChanged << endl;
+				LoadTextFileToEdit(hEdit, szFileName, sz_title, beenChanged);//Фолз, потому что статическая переменная меняется после попадания в функцию на тру, хотя там она используется лишь в ифе. (Это правда, я не сумасшедшая)
+				cout << "Been changed after function: " << beenChanged << endl;
 				SendMessage(GetDlgItem(hwnd, IDC_STATUS), SB_SETTEXT, 0, (LPARAM)sz_title);
 			}
 		}
