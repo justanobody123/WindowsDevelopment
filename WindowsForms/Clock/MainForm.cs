@@ -16,9 +16,14 @@ namespace Clock
 		bool controlsVisible;
 		public MainForm()
 		{
-            controlsVisible = true;
-
             InitializeComponent();
+            SetControlsVisibility(false);
+			this.StartPosition = FormStartPosition.Manual;
+
+			int startX = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Right - this.Right - 25;
+			int startY = 25;
+            this.Location = new Point(startX, startY);
+            
 		}
 
 		private void MainForm_Load(object sender, EventArgs e)
@@ -64,6 +69,7 @@ namespace Clock
             btnHideControls.Visible = visible;
             this.ShowInTaskbar = visible;
 			showControlsToolStripMenuItem.Checked = visible;
+			this.controlsVisible = visible;
 
         }
 
