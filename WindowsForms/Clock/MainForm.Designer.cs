@@ -120,6 +120,7 @@
             this.cbShowDate.Text = "Показать дату";
             this.cbShowDate.UseVisualStyleBackColor = true;
             this.cbShowDate.CheckedChanged += new System.EventHandler(this.cbShowDate_CheckedChanged);
+            this.cbShowDate.Enter += new System.EventHandler(this.cbShowDate_Enter);
             // 
             // notifyIcon1
             // 

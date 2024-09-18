@@ -118,5 +118,10 @@ namespace Clock
                 labelTime.ForeColor = dialog.Color;
             }
         }
+
+        private void cbShowDate_Enter(object sender, EventArgs e)
+        {
+			labelTime.Focus();
+        }
     }
 }
