@@ -98,6 +98,7 @@ namespace Clock
 			int startY = 25;
             this.Location = new Point(startX, startY);
             
+
 		}
 
 		private void MainForm_Load(object sender, EventArgs e)
