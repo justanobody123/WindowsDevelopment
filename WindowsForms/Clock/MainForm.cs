@@ -13,7 +13,6 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Reflection.Emit;
 using System.Reflection;
-
 namespace Clock
 {
 	public partial class MainForm : Form
@@ -21,7 +20,8 @@ namespace Clock
 		bool controlsVisible;
         //Класс, позволяющий использовать шрифты из ресурсов.
         //Своего рода массив загруженных шрифтов, которые можно вытащить через Families[x]
-        PrivateFontCollection customFonts;
+        //PrivateFontCollection customFonts;
+        PrivateFontCollection pfc;
         Font digital7;
 
         public MainForm()
@@ -29,7 +29,7 @@ namespace Clock
             InitializeComponent();
             this.FormClosing += MainForm_FormClosing;
             this.Load += MainForm_Load;
-            customFonts = new PrivateFontCollection();
+            //customFonts = new PrivateFontCollection();
             //using испольуется для работы с объектами, которые реализуют интерфейс IDisposable,
             //и он гарантирует, что ресурсы, занятые объектом,
             //будут высвобождены после завершения работы с ним.
@@ -53,7 +53,7 @@ namespace Clock
                 //Копируем байты из массива в выделенный блок памяти, обращаясь к блоку через указатель
                 Marshal.Copy(fontData, 0, data, (int)fontStream.Length);
                 //Загружаем данные из выделенного блока памяти в коллекцию шрифтов
-                customFonts.AddMemoryFont(data, (int)fontStream.Length);
+                //customFonts.AddMemoryFont(data, (int)fontStream.Length);
                 //Высвобождаем блок выделенной памяти
                 Marshal.FreeCoTaskMem(data);
 
@@ -89,7 +89,7 @@ namespace Clock
                 //с нативными API или внешними библиотеками, которые работают вне CLR.
 
             }
-            digital7 = new Font(customFonts.Families[0], Font.Size);
+            //digital7 = new Font(customFonts.Families[0], Font.Size);
             //labelTime.Font = digital7;
             labelTime.UseCompatibleTextRendering = true;
             this.StartPosition = FormStartPosition.Manual;
@@ -97,21 +97,40 @@ namespace Clock
 			int startX = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Right - this.Right - 25;
 			int startY = 25;
             this.Location = new Point(startX, startY);
+
+            ////////////////////////////////////////////
+            AllocConsole();
+            CreateCustomFont();
+
+        }
+        ~MainForm()
+        {
+            pfc.Dispose();
+        }
+        void CreateCustomFont()
+        {
+            Console.WriteLine(Directory.GetCurrentDirectory());
+            Directory.SetCurrentDirectory("..\\..\\Fonts");
+            Console.WriteLine(Directory.GetCurrentDirectory());
+
+            PrivateFontCollection pfc = new PrivateFontCollection();
+            pfc.AddFontFile("Terminat.ttf");
+            Font font = new Font(pfc.Families[0], labelTime.Font.Size);
             
+            labelTime.Font = font;
+        }
 
-		}
-
-		private void MainForm_Load(object sender, EventArgs e)
+        private void MainForm_Load(object sender, EventArgs e)
 		{
 
-            if (Properties.Settings.Default.FontName == digital7.Name)
-            {
-                labelTime.Font = digital7;
-            }
-            else if (!string.IsNullOrEmpty(Properties.Settings.Default.FontName))
-            {
-                labelTime.Font = new Font(Properties.Settings.Default.FontName, labelTime.Font.Size);
-            }
+            //if (Properties.Settings.Default.FontName == digital7.Name)
+            //{
+            //    labelTime.Font = digital7;
+            //}
+            //else if (!string.IsNullOrEmpty(Properties.Settings.Default.FontName))
+            //{
+            //    labelTime.Font = new Font(Properties.Settings.Default.FontName, labelTime.Font.Size);
+            //}
             SetControlsVisibility(Properties.Settings.Default.ShowControls);
             labelTime.BackColor = Properties.Settings.Default.BackgroundColor;
             labelTime.ForeColor = Properties.Settings.Default.ForegroundColor;
@@ -291,6 +310,13 @@ namespace Clock
                 Properties.Settings.Default.AppIcon = "ClockIcon";
             }
         }
+        const UInt32 StdOutputhandle = 0xFFFFFFF5;
+        [DllImport("kernel32.dll")]
+        static extern IntPtr GetStdhandle(UInt32 nStdHandle);
+        [DllImport("kernel32.dll")]
+        static extern void SetStdHandle(UInt32 nStdHandle, IntPtr handle);
+        [DllImport("kernel32.dll")]
+        static extern bool AllocConsole();
     }
 	
 }
