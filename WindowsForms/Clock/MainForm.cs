@@ -115,6 +115,17 @@ namespace Clock
             labelTime.BackColor = Properties.Settings.Default.BackgroundColor;
             labelTime.ForeColor = Properties.Settings.Default.ForegroundColor;
             cbShowDate.Checked = Properties.Settings.Default.ShowDate;
+            if (Properties.Settings.Default.AppIcon == "WindowIcon")
+            {
+                this.Icon = Properties.Resources.WindowIcon;
+                notifyIcon1.Icon = Properties.Resources.WindowIcon;
+            }
+            else
+            {
+                this.Icon = Properties.Resources.ClockIcon;
+                notifyIcon1.Icon = Properties.Resources.ClockIcon;
+            }
+
         }
 
 		private void timer1_Tick(object sender, EventArgs e)
@@ -256,6 +267,28 @@ namespace Clock
             Properties.Settings.Default.ShowControls = controlsVisible;
             Properties.Settings.Default.ShowDate = cbShowDate.Checked;
             Properties.Settings.Default.Save();
+        }
+
+        private void windowToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Icon newIcon = Properties.Resources.WindowIcon;
+            if (notifyIcon1.Icon != newIcon)
+            {
+                notifyIcon1.Icon = newIcon;
+                this.Icon = newIcon;
+                Properties.Settings.Default.AppIcon = "WindowIcon";
+            }
+        }
+
+        private void clockToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Icon newIcon = Properties.Resources.ClockIcon;
+            if (notifyIcon1.Icon != newIcon)
+            {
+                notifyIcon1.Icon = newIcon;
+                this.Icon = newIcon;
+                Properties.Settings.Default.AppIcon = "ClockIcon";
+            }
         }
     }
 	

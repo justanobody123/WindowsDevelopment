@@ -232,12 +232,14 @@
             this.windowToolStripMenuItem.Name = "windowToolStripMenuItem";
             this.windowToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.windowToolStripMenuItem.Text = "Window";
+            this.windowToolStripMenuItem.Click += new System.EventHandler(this.windowToolStripMenuItem_Click);
             // 
             // clockToolStripMenuItem
             // 
             this.clockToolStripMenuItem.Name = "clockToolStripMenuItem";
             this.clockToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.clockToolStripMenuItem.Text = "Clock";
+            this.clockToolStripMenuItem.Click += new System.EventHandler(this.clockToolStripMenuItem_Click);
             // 
             // MainForm
             // 
