@@ -111,10 +111,9 @@ namespace Clock
             {
                 labelTime.Font = new Font(Properties.Settings.Default.FontName, labelTime.Font.Size);
             }
+            SetControlsVisibility(Properties.Settings.Default.ShowControls);
             labelTime.BackColor = Properties.Settings.Default.BackgroundColor;
             labelTime.ForeColor = Properties.Settings.Default.ForegroundColor;
-
-            SetControlsVisibility(Properties.Settings.Default.ShowControls);
             cbShowDate.Checked = Properties.Settings.Default.ShowDate;
         }
 

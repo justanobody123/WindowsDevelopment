@@ -49,6 +49,9 @@
             this.cbShowDate = new System.Windows.Forms.CheckBox();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.btnHideControls = new System.Windows.Forms.Button();
+            this.iconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.windowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -78,11 +81,12 @@
             this.showDateToolStripMenuItem,
             this.toolStripSeparator2,
             this.fontsToolStripMenuItem,
+            this.iconsToolStripMenuItem,
             this.colorsToolStripMenuItem,
             this.toolStripSeparator1,
             this.quitToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(211, 174);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(211, 200);
             // 
             // showControlsToolStripMenuItem
             // 
@@ -214,6 +218,27 @@
             this.btnHideControls.UseVisualStyleBackColor = true;
             this.btnHideControls.Click += new System.EventHandler(this.btnHideControls_Click);
             // 
+            // iconsToolStripMenuItem
+            // 
+            this.iconsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.windowToolStripMenuItem,
+            this.clockToolStripMenuItem});
+            this.iconsToolStripMenuItem.Name = "iconsToolStripMenuItem";
+            this.iconsToolStripMenuItem.Size = new System.Drawing.Size(210, 26);
+            this.iconsToolStripMenuItem.Text = "Icons";
+            // 
+            // windowToolStripMenuItem
+            // 
+            this.windowToolStripMenuItem.Name = "windowToolStripMenuItem";
+            this.windowToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.windowToolStripMenuItem.Text = "Window";
+            // 
+            // clockToolStripMenuItem
+            // 
+            this.clockToolStripMenuItem.Name = "clockToolStripMenuItem";
+            this.clockToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.clockToolStripMenuItem.Text = "Clock";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(32F, 61F);
@@ -255,6 +280,9 @@
         private System.Windows.Forms.ToolStripMenuItem sansSerifToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem arialToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem comicSansToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem iconsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem windowToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem clockToolStripMenuItem;
     }
 }
 
