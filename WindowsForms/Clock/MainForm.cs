@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Text;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -23,10 +26,24 @@ namespace Clock
 			int startX = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Right - this.Right - 25;
 			int startY = 25;
             this.Location = new Point(startX, startY);
-            
-		}
 
-		private void MainForm_Load(object sender, EventArgs e)
+
+            AllocConsole();
+            CreateCustomFont(); 
+		}
+        void CreateCustomFont()
+        {
+            Console.WriteLine(Directory.GetCurrentDirectory());
+            Directory.SetCurrentDirectory("..\\..\\Fonts");
+            Console.WriteLine(Directory.GetCurrentDirectory());
+
+            PrivateFontCollection pfc = new PrivateFontCollection();
+            pfc.AddFontFile("Terminat.ttf");
+            Font font = new Font(pfc.Families[0], labelTime.Font.Size);
+            pfc.Dispose();
+            labelTime.Font = font;
+        }
+        private void MainForm_Load(object sender, EventArgs e)
 		{
 			//WM_CREATE
 		}
@@ -122,6 +139,14 @@ namespace Clock
         private void cbShowDate_Enter(object sender, EventArgs e)
         {
 			labelTime.Focus();
+        }
+        [DllImport("kernel32.dll")]
+        static extern bool AllocConsole();
+
+        private void chooseFontToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ChooseFont dialog = new ChooseFont();
+            dialog.Show();
         }
     }
 }
