@@ -14,9 +14,11 @@ namespace Clock
 {
     public partial class ChooseFont : Form
     {
-        public ChooseFont()
+        MainForm parent;
+        public ChooseFont(MainForm parent)
         {
             InitializeComponent();
+            this.parent = parent;
             Console.WriteLine(Directory.GetCurrentDirectory());
             string[] ttfFiles = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.ttf");
             string[] otfFiles = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.otf");
@@ -39,6 +41,18 @@ namespace Clock
             Font font = new Font(pfc.Families[0], Convert.ToInt32(numericUpDownFontSize.Value));
             pfc.Dispose();
             label3.Font = font;
+        }
+
+        private void btnOk_Click(object sender, EventArgs e)
+        {
+            if (comboBoxFonts.SelectedIndex != -1) //If no item is selected, the SelectedIndex value is -1 https://learn.microsoft.com/en-us/dotnet/desktop/winforms/controls/combobox-control-overview-windows-forms?view=netframeworkdesktop-4.8#:~:text=If%20no%20item%20is%20selected%2C%20the%20SelectedIndex%20value%20is%20%2D1
+            {
+                PrivateFontCollection pfc = new PrivateFontCollection();
+                pfc.AddFontFile(comboBoxFonts.SelectedItem.ToString());
+                Font font = new Font(pfc.Families[0], Convert.ToInt32(numericUpDownFontSize.Value));
+                pfc.Dispose();
+                this.parent.LabelTime.Font = font;
+            }
         }
     }
 }

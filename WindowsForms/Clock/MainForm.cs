@@ -17,6 +17,10 @@ namespace Clock
 	public partial class MainForm : Form
 	{
 		bool controlsVisible;
+        public Label LabelTime
+        {
+            get => labelTime;
+        }
 		public MainForm()
 		{
             InitializeComponent();
@@ -145,7 +149,7 @@ namespace Clock
 
         private void chooseFontToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ChooseFont dialog = new ChooseFont();
+            ChooseFont dialog = new ChooseFont(this);
             dialog.Show();
         }
     }
