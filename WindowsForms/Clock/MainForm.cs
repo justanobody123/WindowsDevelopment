@@ -23,7 +23,9 @@ namespace Clock
         }
 		public MainForm()
 		{
+            AllocConsole();
             InitializeComponent();
+            this.FormClosing += MainForm_Save;
             SetControlsVisibility(false);
 			this.StartPosition = FormStartPosition.Manual;
 
@@ -32,7 +34,7 @@ namespace Clock
             this.Location = new Point(startX, startY);
 
 
-            AllocConsole();
+            
             CreateCustomFont(); 
 		}
         void CreateCustomFont()
@@ -49,8 +51,20 @@ namespace Clock
         }
         private void MainForm_Load(object sender, EventArgs e)
 		{
-			//WM_CREATE
-		}
+            //WM_CREATE
+            SetControlsVisibility(Properties.Settings.Default.ShowControls);
+            cbShowDate.Checked = Properties.Settings.Default.ShowDate;
+            LabelTime.ForeColor = Properties.Settings.Default.ForegroundColor;
+            LabelTime.BackColor = Properties.Settings.Default.BackgroundColor;
+            Console.WriteLine(Directory.GetCurrentDirectory());
+            Console.WriteLine(Properties.Settings.Default.FontName);
+            PrivateFontCollection pfc = new PrivateFontCollection();
+            pfc.AddFontFile(Properties.Settings.Default.FontName);
+            Console.WriteLine(pfc.Families[0].ToString());
+            Font font = new Font(pfc.Families[0], Properties.Settings.Default.FontSize);
+            LabelTime.Font = font;
+            pfc.Dispose();
+        }
 
 		private void timer1_Tick(object sender, EventArgs e)
 		{
@@ -151,6 +165,14 @@ namespace Clock
         {
             ChooseFont dialog = new ChooseFont(this);
             dialog.Show();
+        }
+        private void MainForm_Save(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.ForegroundColor = LabelTime.ForeColor;
+            Properties.Settings.Default.BackgroundColor = LabelTime.BackColor;
+            Properties.Settings.Default.ShowControls = controlsVisible;
+            Properties.Settings.Default.ShowDate = cbShowDate.Checked;
+            Properties.Settings.Default.Save();
         }
     }
 }
