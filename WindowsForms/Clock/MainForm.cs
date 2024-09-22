@@ -54,6 +54,7 @@ namespace Clock
             //WM_CREATE
             SetControlsVisibility(Properties.Settings.Default.ShowControls);
             cbShowDate.Checked = Properties.Settings.Default.ShowDate;
+            pinToolStripMenuItem.Checked = Properties.Settings.Default.Pin;
             LabelTime.ForeColor = Properties.Settings.Default.ForegroundColor;
             LabelTime.BackColor = Properties.Settings.Default.BackgroundColor;
             Console.WriteLine(Directory.GetCurrentDirectory());
@@ -100,7 +101,7 @@ namespace Clock
             this.TransparencyKey = visible ? Color.Empty : this.BackColor;
             labelTime.BackColor = visible ? this.BackColor : Color.LightBlue;
             this.cbShowDate.Visible = visible;
-            this.TopMost = !visible;
+            //this.TopMost = !visible;
             btnHideControls.Visible = visible;
             this.ShowInTaskbar = visible;
 			showControlsToolStripMenuItem.Checked = visible;
@@ -172,7 +173,13 @@ namespace Clock
             Properties.Settings.Default.BackgroundColor = LabelTime.BackColor;
             Properties.Settings.Default.ShowControls = controlsVisible;
             Properties.Settings.Default.ShowDate = cbShowDate.Checked;
+            Properties.Settings.Default.Pin = pinToolStripMenuItem.Checked;
             Properties.Settings.Default.Save();
+        }
+
+        private void pinToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            this.TopMost = pinToolStripMenuItem.Checked;
         }
     }
 }

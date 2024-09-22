@@ -59,6 +59,7 @@ namespace Clock.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool ShowControls {
             get {
                 return ((bool)(this["ShowControls"]));
@@ -70,6 +71,7 @@ namespace Clock.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool ShowDate {
             get {
                 return ((bool)(this["ShowDate"]));
@@ -81,12 +83,25 @@ namespace Clock.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("24")]
         public int FontSize {
             get {
                 return ((int)(this["FontSize"]));
             }
             set {
                 this["FontSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Pin {
+            get {
+                return ((bool)(this["Pin"]));
+            }
+            set {
+                this["Pin"] = value;
             }
         }
     }
