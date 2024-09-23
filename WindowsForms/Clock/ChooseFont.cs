@@ -16,10 +16,10 @@ namespace Clock
     public partial class ChooseFont : Form
     {
         MainForm parent;
-        public ChooseFont(MainForm parent)
+        public ChooseFont()
         {
             InitializeComponent();
-            this.parent = parent;
+            //this.parent = parent;
             Console.WriteLine(Directory.GetCurrentDirectory());
             string[] ttfFiles = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.ttf");
             string[] otfFiles = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.otf");
@@ -29,19 +29,18 @@ namespace Clock
             for (int i = 0; i < ttfFiles.Length; i++)
             {
                 comboBoxFonts.Items.Add(files[i].Split('\\').Last());
-
+                Console.WriteLine($"Load font: {files[i]}");
             }
             //string[] extensions = new string[] { ".ttf", ".otf" };
             //string[] files = Directory.GetFiles(Directory.GetCurrentDirectory()).Where(item=> extensions.Contains(item.Split().Last('\\')));
         }
-
+        public ChooseFont(MainForm owner) : this()
+        {
+            this.parent = owner;
+        }
         private void comboBoxFonts_SelectedIndexChanged(object sender, EventArgs e)
         {
-            PrivateFontCollection pfc = new PrivateFontCollection();
-            pfc.AddFontFile(comboBoxFonts.SelectedItem.ToString());
-            Font font = new Font(pfc.Families[0], Convert.ToInt32(numericUpDownFontSize.Value));
-            pfc.Dispose();
-            label3.Font = font;
+            SetFontParameters();
         }
 
         private void btnOk_Click(object sender, EventArgs e)
@@ -59,6 +58,20 @@ namespace Clock
                 pfc.Dispose();
                 this.parent.LabelTime.Font = font;
             }
+        }
+        void SetFontParameters()
+        {
+            PrivateFontCollection pfc = new PrivateFontCollection();
+            pfc.AddFontFile(comboBoxFonts.SelectedItem.ToString());
+            Font font = new Font(pfc.Families[0], Convert.ToInt32(numericUpDownFontSize.Value));
+            pfc.Dispose();
+            label3.Font = font;
+        }
+
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SetFontParameters();
         }
     }
 }

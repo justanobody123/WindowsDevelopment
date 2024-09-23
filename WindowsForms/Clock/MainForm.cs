@@ -11,12 +11,13 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using System.Threading;
 namespace Clock
 {
 	public partial class MainForm : Form
 	{
 		bool controlsVisible;
+        ChooseFont chooseFontDialog;
         public Label LabelTime
         {
             get => labelTime;
@@ -32,10 +33,11 @@ namespace Clock
 			int startX = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Right - this.Right - 25;
 			int startY = 25;
             this.Location = new Point(startX, startY);
+            CreateCustomFont();
+            chooseFontDialog = new ChooseFont(this);
 
 
             
-            CreateCustomFont(); 
 		}
         void CreateCustomFont()
         {
@@ -55,6 +57,7 @@ namespace Clock
             SetControlsVisibility(Properties.Settings.Default.ShowControls);
             cbShowDate.Checked = Properties.Settings.Default.ShowDate;
             pinToolStripMenuItem.Checked = Properties.Settings.Default.Pin;
+            cbPin.Checked = Properties.Settings.Default.Pin;
             LabelTime.ForeColor = Properties.Settings.Default.ForegroundColor;
             LabelTime.BackColor = Properties.Settings.Default.BackgroundColor;
             Console.WriteLine(Directory.GetCurrentDirectory());
@@ -106,12 +109,13 @@ namespace Clock
             this.ShowInTaskbar = visible;
 			showControlsToolStripMenuItem.Checked = visible;
 			this.controlsVisible = visible;
+            this.cbPin.Visible = visible;
 
         }
 
         private void labelTime_MouseHover(object sender, EventArgs e)
         {
-            SetControlsVisibility(true);
+            
         }
 
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -164,8 +168,8 @@ namespace Clock
 
         private void chooseFontToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ChooseFont dialog = new ChooseFont(this);
-            dialog.Show();
+            
+            chooseFontDialog.Show();
         }
         private void MainForm_Save(object sender, EventArgs e)
         {
@@ -180,6 +184,29 @@ namespace Clock
         private void pinToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
             this.TopMost = pinToolStripMenuItem.Checked;
+            cbPin.Checked = pinToolStripMenuItem.Checked;
+        }
+
+        private void notifyIcon1_Click(object sender, EventArgs e)
+        {
+            if (this.TopMost == false)
+            {
+                this.TopMost = true;
+                this.TopMost = false;
+                
+            }
+        }
+        private void cbPin_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbPin.Checked) 
+            {
+                cbPin.BackgroundImage = Properties.Resources.pinned.ToBitmap();
+            }
+            else 
+            {
+                cbPin.BackgroundImage = Properties.Resources.not_pinned.ToBitmap();
+            }
+            pinToolStripMenuItem.Checked = cbPin.Checked;
         }
     }
 }

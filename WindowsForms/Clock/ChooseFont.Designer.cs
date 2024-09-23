@@ -36,6 +36,7 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.numericUpDownFontSize = new System.Windows.Forms.NumericUpDown();
             this.labelFontSize = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFontSize)).BeginInit();
             this.SuspendLayout();
             // 
@@ -44,7 +45,7 @@
             this.comboBoxFonts.FormattingEnabled = true;
             this.comboBoxFonts.Location = new System.Drawing.Point(16, 83);
             this.comboBoxFonts.Name = "comboBoxFonts";
-            this.comboBoxFonts.Size = new System.Drawing.Size(317, 24);
+            this.comboBoxFonts.Size = new System.Drawing.Size(304, 24);
             this.comboBoxFonts.TabIndex = 0;
             this.comboBoxFonts.SelectedIndexChanged += new System.EventHandler(this.comboBoxFonts_SelectedIndexChanged);
             // 
@@ -95,20 +96,26 @@
             0,
             0,
             0});
-            this.numericUpDownFontSize.Location = new System.Drawing.Point(339, 84);
+            this.numericUpDownFontSize.Location = new System.Drawing.Point(326, 84);
+            this.numericUpDownFontSize.Maximum = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
             this.numericUpDownFontSize.Minimum = new decimal(new int[] {
             24,
             0,
             0,
             0});
             this.numericUpDownFontSize.Name = "numericUpDownFontSize";
-            this.numericUpDownFontSize.Size = new System.Drawing.Size(75, 22);
+            this.numericUpDownFontSize.Size = new System.Drawing.Size(88, 22);
             this.numericUpDownFontSize.TabIndex = 6;
             this.numericUpDownFontSize.Value = new decimal(new int[] {
             24,
             0,
             0,
             0});
+           
             // 
             // labelFontSize
             // 
@@ -119,11 +126,23 @@
             this.labelFontSize.TabIndex = 7;
             this.labelFontSize.Text = "Size";
             // 
+            // button1
+            // 
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button1.Location = new System.Drawing.Point(325, 113);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(89, 23);
+            this.button1.TabIndex = 8;
+            this.button1.Text = "Применить";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // ChooseFont
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(426, 251);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.labelFontSize);
             this.Controls.Add(this.numericUpDownFontSize);
             this.Controls.Add(this.btnCancel);
@@ -150,5 +169,6 @@
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.NumericUpDown numericUpDownFontSize;
         private System.Windows.Forms.Label labelFontSize;
+        private System.Windows.Forms.Button button1;
     }
 }
