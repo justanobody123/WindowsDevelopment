@@ -37,12 +37,12 @@ namespace Clock.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public bool ShowDate {
+        public global::System.Drawing.Color ForegroundColor {
             get {
-                return ((bool)(this["ShowDate"]));
+                return ((global::System.Drawing.Color)(this["ForegroundColor"]));
             }
             set {
-                this["ShowDate"] = value;
+                this["ForegroundColor"] = value;
             }
         }
         
@@ -59,6 +59,7 @@ namespace Clock.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool ShowControls {
             get {
                 return ((bool)(this["ShowControls"]));
@@ -70,24 +71,37 @@ namespace Clock.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Drawing.Color ForegroundColor {
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowDate {
             get {
-                return ((global::System.Drawing.Color)(this["ForegroundColor"]));
+                return ((bool)(this["ShowDate"]));
             }
             set {
-                this["ForegroundColor"] = value;
+                this["ShowDate"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string AppIcon {
+        [global::System.Configuration.DefaultSettingValueAttribute("24")]
+        public int FontSize {
             get {
-                return ((string)(this["AppIcon"]));
+                return ((int)(this["FontSize"]));
             }
             set {
-                this["AppIcon"] = value;
+                this["FontSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Pin {
+            get {
+                return ((bool)(this["Pin"]));
+            }
+            set {
+                this["Pin"] = value;
             }
         }
     }

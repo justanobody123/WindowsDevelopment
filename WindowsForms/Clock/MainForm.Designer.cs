@@ -35,12 +35,10 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.showControlsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showDateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.fontsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.digital7ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.sansSerifToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.arialToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.comicSansToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setAnAlarmToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.chooseFontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.colorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.backgroundColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.foregroundColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -49,9 +47,7 @@
             this.cbShowDate = new System.Windows.Forms.CheckBox();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.btnHideControls = new System.Windows.Forms.Button();
-            this.iconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.windowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.clockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cbPin = new System.Windows.Forms.CheckBox();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -65,7 +61,7 @@
             // 
             this.labelTime.AutoSize = true;
             this.labelTime.ContextMenuStrip = this.contextMenuStrip1;
-            this.labelTime.Location = new System.Drawing.Point(36, 31);
+            this.labelTime.Location = new System.Drawing.Point(36, 88);
             this.labelTime.Name = "labelTime";
             this.labelTime.Size = new System.Drawing.Size(179, 63);
             this.labelTime.TabIndex = 0;
@@ -79,14 +75,15 @@
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showControlsToolStripMenuItem,
             this.showDateToolStripMenuItem,
+            this.pinToolStripMenuItem,
             this.toolStripSeparator2,
-            this.fontsToolStripMenuItem,
-            this.iconsToolStripMenuItem,
+            this.setAnAlarmToolStripMenuItem,
+            this.chooseFontToolStripMenuItem,
             this.colorsToolStripMenuItem,
             this.toolStripSeparator1,
             this.quitToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(211, 200);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(172, 198);
             // 
             // showControlsToolStripMenuItem
             // 
@@ -94,7 +91,7 @@
             this.showControlsToolStripMenuItem.CheckOnClick = true;
             this.showControlsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showControlsToolStripMenuItem.Name = "showControlsToolStripMenuItem";
-            this.showControlsToolStripMenuItem.Size = new System.Drawing.Size(210, 26);
+            this.showControlsToolStripMenuItem.Size = new System.Drawing.Size(171, 26);
             this.showControlsToolStripMenuItem.Text = "Show controls";
             this.showControlsToolStripMenuItem.Click += new System.EventHandler(this.showControlsToolStripMenuItem_Click);
             // 
@@ -102,53 +99,36 @@
             // 
             this.showDateToolStripMenuItem.CheckOnClick = true;
             this.showDateToolStripMenuItem.Name = "showDateToolStripMenuItem";
-            this.showDateToolStripMenuItem.Size = new System.Drawing.Size(210, 26);
+            this.showDateToolStripMenuItem.Size = new System.Drawing.Size(171, 26);
             this.showDateToolStripMenuItem.Text = "Show date";
             this.showDateToolStripMenuItem.Click += new System.EventHandler(this.showDateToolStripMenuItem_Click);
+            // 
+            // pinToolStripMenuItem
+            // 
+            this.pinToolStripMenuItem.CheckOnClick = true;
+            this.pinToolStripMenuItem.Name = "pinToolStripMenuItem";
+            this.pinToolStripMenuItem.Size = new System.Drawing.Size(171, 26);
+            this.pinToolStripMenuItem.Text = "Pin";
+            this.pinToolStripMenuItem.CheckedChanged += new System.EventHandler(this.pinToolStripMenuItem_CheckedChanged);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(207, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(168, 6);
             // 
-            // fontsToolStripMenuItem
+            // setAnAlarmToolStripMenuItem
             // 
-            this.fontsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.digital7ToolStripMenuItem,
-            this.sansSerifToolStripMenuItem,
-            this.arialToolStripMenuItem,
-            this.comicSansToolStripMenuItem});
-            this.fontsToolStripMenuItem.Name = "fontsToolStripMenuItem";
-            this.fontsToolStripMenuItem.Size = new System.Drawing.Size(210, 26);
-            this.fontsToolStripMenuItem.Text = "Fonts";
+            this.setAnAlarmToolStripMenuItem.Name = "setAnAlarmToolStripMenuItem";
+            this.setAnAlarmToolStripMenuItem.Size = new System.Drawing.Size(171, 26);
+            this.setAnAlarmToolStripMenuItem.Text = "Set the alarm";
+            this.setAnAlarmToolStripMenuItem.Click += new System.EventHandler(this.setAnAlarmToolStripMenuItem_Click);
             // 
-            // digital7ToolStripMenuItem
+            // chooseFontToolStripMenuItem
             // 
-            this.digital7ToolStripMenuItem.Name = "digital7ToolStripMenuItem";
-            this.digital7ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.digital7ToolStripMenuItem.Text = "Digital-7";
-            this.digital7ToolStripMenuItem.Click += new System.EventHandler(this.digital7ToolStripMenuItem_Click);
-            // 
-            // sansSerifToolStripMenuItem
-            // 
-            this.sansSerifToolStripMenuItem.Name = "sansSerifToolStripMenuItem";
-            this.sansSerifToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.sansSerifToolStripMenuItem.Text = "Sans-Serif";
-            this.sansSerifToolStripMenuItem.Click += new System.EventHandler(this.sansSerifToolStripMenuItem_Click);
-            // 
-            // arialToolStripMenuItem
-            // 
-            this.arialToolStripMenuItem.Name = "arialToolStripMenuItem";
-            this.arialToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.arialToolStripMenuItem.Text = "Arial";
-            this.arialToolStripMenuItem.Click += new System.EventHandler(this.arialToolStripMenuItem_Click);
-            // 
-            // comicSansToolStripMenuItem
-            // 
-            this.comicSansToolStripMenuItem.Name = "comicSansToolStripMenuItem";
-            this.comicSansToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.comicSansToolStripMenuItem.Text = "Bodoni MT";
-            this.comicSansToolStripMenuItem.Click += new System.EventHandler(this.BodoniMTToolStripMenuItem_Click);
+            this.chooseFontToolStripMenuItem.Name = "chooseFontToolStripMenuItem";
+            this.chooseFontToolStripMenuItem.Size = new System.Drawing.Size(171, 26);
+            this.chooseFontToolStripMenuItem.Text = "Choose font";
+            this.chooseFontToolStripMenuItem.Click += new System.EventHandler(this.chooseFontToolStripMenuItem_Click);
             // 
             // colorsToolStripMenuItem
             // 
@@ -156,7 +136,7 @@
             this.backgroundColorToolStripMenuItem,
             this.foregroundColorToolStripMenuItem});
             this.colorsToolStripMenuItem.Name = "colorsToolStripMenuItem";
-            this.colorsToolStripMenuItem.Size = new System.Drawing.Size(210, 26);
+            this.colorsToolStripMenuItem.Size = new System.Drawing.Size(171, 26);
             this.colorsToolStripMenuItem.Text = "Colors";
             // 
             // backgroundColorToolStripMenuItem
@@ -176,12 +156,12 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(207, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(168, 6);
             // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(210, 26);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(171, 26);
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
@@ -203,8 +183,9 @@
             // 
             this.notifyIcon1.ContextMenuStrip = this.contextMenuStrip1;
             this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
-            this.notifyIcon1.Text = "notifyIcon1";
+            this.notifyIcon1.Text = "MainForm";
             this.notifyIcon1.Visible = true;
+            this.notifyIcon1.Click += new System.EventHandler(this.notifyIcon1_Click);
             this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
             // 
             // btnHideControls
@@ -218,34 +199,27 @@
             this.btnHideControls.UseVisualStyleBackColor = true;
             this.btnHideControls.Click += new System.EventHandler(this.btnHideControls_Click);
             // 
-            // iconsToolStripMenuItem
+            // cbPin
             // 
-            this.iconsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.windowToolStripMenuItem,
-            this.clockToolStripMenuItem});
-            this.iconsToolStripMenuItem.Name = "iconsToolStripMenuItem";
-            this.iconsToolStripMenuItem.Size = new System.Drawing.Size(210, 26);
-            this.iconsToolStripMenuItem.Text = "Icons";
-            // 
-            // windowToolStripMenuItem
-            // 
-            this.windowToolStripMenuItem.Name = "windowToolStripMenuItem";
-            this.windowToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.windowToolStripMenuItem.Text = "Window";
-            this.windowToolStripMenuItem.Click += new System.EventHandler(this.windowToolStripMenuItem_Click);
-            // 
-            // clockToolStripMenuItem
-            // 
-            this.clockToolStripMenuItem.Name = "clockToolStripMenuItem";
-            this.clockToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.clockToolStripMenuItem.Text = "Clock";
-            this.clockToolStripMenuItem.Click += new System.EventHandler(this.clockToolStripMenuItem_Click);
+            this.cbPin.Appearance = System.Windows.Forms.Appearance.Button;
+            this.cbPin.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("cbPin.BackgroundImage")));
+            this.cbPin.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.cbPin.FlatAppearance.BorderSize = 0;
+            this.cbPin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cbPin.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.cbPin.Location = new System.Drawing.Point(212, 12);
+            this.cbPin.Name = "cbPin";
+            this.cbPin.Size = new System.Drawing.Size(64, 64);
+            this.cbPin.TabIndex = 4;
+            this.cbPin.UseVisualStyleBackColor = true;
+            this.cbPin.CheckedChanged += new System.EventHandler(this.cbPin_CheckedChanged);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(32F, 61F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(315, 366);
+            this.Controls.Add(this.cbPin);
             this.Controls.Add(this.btnHideControls);
             this.Controls.Add(this.cbShowDate);
             this.Controls.Add(this.labelTime);
@@ -277,14 +251,10 @@
         private System.Windows.Forms.ToolStripMenuItem colorsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem backgroundColorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem foregroundColorToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem fontsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem digital7ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem sansSerifToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem arialToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem comicSansToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem iconsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem windowToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem clockToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem chooseFontToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pinToolStripMenuItem;
+        private System.Windows.Forms.CheckBox cbPin;
+        private System.Windows.Forms.ToolStripMenuItem setAnAlarmToolStripMenuItem;
     }
 }
 

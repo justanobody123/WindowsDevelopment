@@ -63,29 +63,19 @@ namespace Clock.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon ClockIcon {
+        internal static System.Drawing.Icon not_pinned {
             get {
-                object obj = ResourceManager.GetObject("ClockIcon", resourceCulture);
+                object obj = ResourceManager.GetObject("not_pinned", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] DS_DIGII {
-            get {
-                object obj = ResourceManager.GetObject("DS_DIGII", resourceCulture);
-                return ((byte[])(obj));
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon WindowIcon {
+        internal static System.Drawing.Icon pinned {
             get {
-                object obj = ResourceManager.GetObject("WindowIcon", resourceCulture);
+                object obj = ResourceManager.GetObject("pinned", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
