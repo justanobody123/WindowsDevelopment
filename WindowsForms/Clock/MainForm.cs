@@ -12,15 +12,21 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
+using System.Reflection.Emit;
 namespace Clock
 {
 	public partial class MainForm : Form
 	{
 		bool controlsVisible;
         ChooseFont chooseFontDialog;
-        public Label LabelTime
+        AlarmClock alarmClock;
+        public System.Windows.Forms.Label LabelTime
         {
             get => labelTime;
+        }
+        public string AlarmTime
+        {
+            get; set;
         }
 		public MainForm()
 		{
@@ -35,9 +41,7 @@ namespace Clock
             this.Location = new Point(startX, startY);
             CreateCustomFont();
             chooseFontDialog = new ChooseFont(this);
-
-
-            
+            alarmClock = new AlarmClock(this);
 		}
         void CreateCustomFont()
         {
@@ -72,11 +76,44 @@ namespace Clock
 
 		private void timer1_Tick(object sender, EventArgs e)
 		{
+
 			labelTime.Text = DateTime.Now.ToString("hh:mm:ss tt");
 			if (cbShowDate.Checked) 
 			{
 				labelTime.Text += $"\n{DateTime.Now.ToString("yyyy.MM.dd")}";
 			}
+            if (!string.IsNullOrEmpty(AlarmTime))
+            {
+                Console.WriteLine("Timer: " + labelTime.Text);
+                Console.WriteLine("Alarm: " + AlarmTime);
+                //Проверка на совпадение времени таймера и времени будильника
+                if (labelTime.Text.Contains(AlarmTime))
+                {
+                    //если да
+                    //очистка строки
+                    AlarmTime = string.Empty;
+                    Console.WriteLine("Будильник сработал!");
+                    Dialog dialog = new Dialog();
+                    dialog.ShowDialog(this);
+                    //диалоговое окно со звуковым сигналом
+                    //Form dialog = new Form
+                    //{
+                    //    Text = "Будильник",
+                    //    Size = new System.Drawing.Size(300, 200),
+                    //    StartPosition = FormStartPosition.CenterParent
+                    //};
+                    //System.Windows.Forms.Label dialogLabel = new System.Windows.Forms.Label
+                    //{
+                    //    Text = "Wake up, Neo...",
+                    //    AutoSize = true,
+                    //    Location = new System.Drawing.Point(80, 70)
+                    //};
+                    //dialog.Controls.Add(dialogLabel);
+                    //dialog.ShowDialog();
+                }
+
+
+            }
 		}
 		private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
@@ -207,6 +244,11 @@ namespace Clock
                 cbPin.BackgroundImage = Properties.Resources.not_pinned.ToBitmap();
             }
             pinToolStripMenuItem.Checked = cbPin.Checked;
+        }
+
+        private void setAnAlarmToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            alarmClock.Show();
         }
     }
 }
