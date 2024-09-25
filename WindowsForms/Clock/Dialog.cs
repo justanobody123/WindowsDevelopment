@@ -21,8 +21,6 @@ namespace Clock
         public Dialog()
         {
             InitializeComponent();
-            //Load += Dialog_Load;
-            //FormClosing += Dialog_FormClosing;
             player = new SoundPlayer("..\\Media\\alarm_clock_sound.wav");
 
         }
@@ -32,7 +30,6 @@ namespace Clock
         }
         private void Dialog_Load(object sender, EventArgs e)
         {
-            Console.WriteLine("Отработка загрузки диалога");
             alarmThread = new Thread(PlaySound);
             alarmThread.IsBackground = true;
             alarmThread.Start();
@@ -44,6 +41,7 @@ namespace Clock
         private void Dialog_FormClosing(object sender, FormClosingEventArgs e)
         {
             player.Stop();
+            alarmThread.Join();
         }
     }
 }
