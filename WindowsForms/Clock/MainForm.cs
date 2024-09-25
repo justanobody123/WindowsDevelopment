@@ -28,6 +28,11 @@ namespace Clock
         {
             get; set;
         }
+        public NotifyIcon NotifyIcon1
+        {
+            get => notifyIcon1;
+            set => notifyIcon1 = value;
+        }
 		public MainForm()
 		{
             AllocConsole();
@@ -35,7 +40,6 @@ namespace Clock
             this.FormClosing += MainForm_Save;
             SetControlsVisibility(false);
 			this.StartPosition = FormStartPosition.Manual;
-
 			int startX = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Right - this.Right - 25;
 			int startY = 25;
             this.Location = new Point(startX, startY);
@@ -95,21 +99,7 @@ namespace Clock
                     Console.WriteLine("Будильник сработал!");
                     Dialog dialog = new Dialog();
                     dialog.ShowDialog(this);
-                    //диалоговое окно со звуковым сигналом
-                    //Form dialog = new Form
-                    //{
-                    //    Text = "Будильник",
-                    //    Size = new System.Drawing.Size(300, 200),
-                    //    StartPosition = FormStartPosition.CenterParent
-                    //};
-                    //System.Windows.Forms.Label dialogLabel = new System.Windows.Forms.Label
-                    //{
-                    //    Text = "Wake up, Neo...",
-                    //    AutoSize = true,
-                    //    Location = new System.Drawing.Point(80, 70)
-                    //};
-                    //dialog.Controls.Add(dialogLabel);
-                    //dialog.ShowDialog();
+                    NotifyIcon1.Text = "mainForm";
                 }
 
 

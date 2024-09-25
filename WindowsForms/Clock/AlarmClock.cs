@@ -25,8 +25,8 @@ namespace Clock
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            Console.WriteLine(this.alarmTime.Text.ToString());
             parent.AlarmTime = this.alarmTime.Text.ToString();
+            parent.NotifyIcon1.Text = "Будильник в " + this.alarmTime.Text.ToString(); 
             //Console.WriteLine(parent.SAlarmDate);
             Hide();
         }
