@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
 using System.Reflection.Emit;
+using System.Net.WebSockets;
 namespace Clock
 {
 	public partial class MainForm : Form
@@ -24,7 +25,7 @@ namespace Clock
         {
             get => labelTime;
         }
-        public string AlarmTime
+        public bool IsAlarmOn
         {
             get; set;
         }
@@ -86,22 +87,98 @@ namespace Clock
 			{
 				labelTime.Text += $"\n{DateTime.Now.ToString("yyyy.MM.dd")}";
 			}
-            if (!string.IsNullOrEmpty(AlarmTime))
+            //if (!string.IsNullOrEmpty(AlarmTime))
+            //{
+            //    
+            //    Console.WriteLine("Alarm: " + AlarmTime);
+            //    //Проверка на совпадение времени таймера и времени будильника
+            //    if (labelTime.Text.Contains(AlarmTime))
+            //    {
+            //        //если да
+            //        //очистка строки
+            //        AlarmTime = string.Empty;
+            //        Console.WriteLine("Будильник сработал!");
+            //        Dialog dialog = new Dialog();
+            //        dialog.ShowDialog(this);
+            //        NotifyIcon1.Text = "mainForm";
+            //    }
+
+
+            //}
+            if (IsAlarmOn)
             {
                 Console.WriteLine("Timer: " + labelTime.Text);
-                Console.WriteLine("Alarm: " + AlarmTime);
-                //Проверка на совпадение времени таймера и времени будильника
-                if (labelTime.Text.Contains(AlarmTime))
-                {
-                    //если да
-                    //очистка строки
-                    AlarmTime = string.Empty;
-                    Console.WriteLine("Будильник сработал!");
-                    Dialog dialog = new Dialog();
-                    dialog.ShowDialog(this);
-                    NotifyIcon1.Text = "mainForm";
-                }
 
+                if (alarmClock.CheckBoxAlarm1.Checked || alarmClock.CheckBoxAlarm2.Checked ||
+                    alarmClock.CheckBoxAlarm3.Checked || alarmClock.CheckBoxAlarm4.Checked ||
+                    alarmClock.CheckBoxAlarm5.Checked)
+                {
+                    if (labelTime.Text.Contains(alarmClock.DateTimePickerAlarm1.Text) ||
+                        labelTime.Text.Contains(alarmClock.DateTimePickerAlarm2.Text) ||
+                        labelTime.Text.Contains(alarmClock.DateTimePickerAlarm3.Text) ||
+                        labelTime.Text.Contains(alarmClock.DateTimePickerAlarm4.Text) ||
+                        labelTime.Text.Contains(alarmClock.DateTimePickerAlarm5.Text))
+                    {
+                        if (labelTime.Text.Contains(alarmClock.DateTimePickerAlarm1.Text))
+                        {
+                            alarmClock.CheckBoxAlarm1.Checked = false;
+                        }
+                        if (labelTime.Text.Contains(alarmClock.DateTimePickerAlarm2.Text))
+                        {
+                            alarmClock.CheckBoxAlarm2.Checked = false;
+                        }
+                        if (labelTime.Text.Contains(alarmClock.DateTimePickerAlarm3.Text))
+                        {
+                            alarmClock.CheckBoxAlarm3.Checked = false;
+                        }
+                        if (labelTime.Text.Contains(alarmClock.DateTimePickerAlarm4.Text))
+                        {
+                            alarmClock.CheckBoxAlarm4.Checked = false;
+                        }
+                        if (labelTime.Text.Contains(alarmClock.DateTimePickerAlarm5.Text))
+                        {
+                            alarmClock.CheckBoxAlarm5.Checked = false;
+                        }
+                        Dialog dialog = new Dialog();
+                        dialog.ShowDialog(this);
+                        //Console.WriteLine("Timer after: " + labelTime.Text);
+                        
+
+                    }
+                    
+                }
+                //if (alarmClock.CheckBoxAlarm2.Checked)
+                //{
+                //    Console.WriteLine("Alarm1: " + alarmClock.DateTimePickerAlarm2.Text);
+                //    if (labelTime.Text.Contains(alarmClock.DateTimePickerAlarm2.Text))
+                //    {
+
+                //    }
+                //}
+                //if (alarmClock.CheckBoxAlarm3.Checked)
+                //{
+                //    Console.WriteLine("Alarm1: " + alarmClock.DateTimePickerAlarm3.Text);
+                //    if (labelTime.Text.Contains(alarmClock.DateTimePickerAlarm3.Text))
+                //    {
+
+                //    }
+                //}
+                //if (alarmClock.CheckBoxAlarm4.Checked)
+                //{
+                //    Console.WriteLine("Alarm1: " + alarmClock.DateTimePickerAlarm4.Text);
+                //    if (labelTime.Text.Contains(alarmClock.DateTimePickerAlarm4.Text))
+                //    {
+
+                //    }
+                //}
+                //if (alarmClock.CheckBoxAlarm5.Checked)
+                //{
+                //    Console.WriteLine("Alarm1: " + alarmClock.DateTimePickerAlarm5.Text);
+                //    if (labelTime.Text.Contains(alarmClock.DateTimePickerAlarm5.Text))
+                //    {
+
+                //    }
+                //}
 
             }
 		}
