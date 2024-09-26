@@ -22,13 +22,27 @@ namespace Clock
 		bool controlsVisible;
         ChooseFont chooseFontDialog;
         AlarmClock alarmClock;
-        public System.Windows.Forms.Label LabelTime
+        TimerForm timerForm;
+        public System.Windows.Forms.Label LabelClock
         {
-            get => labelTime;
+            get => labelClock;
+        }
+        public System.Windows.Forms.Label LabelTimer
+        {
+            get => labelTimer;
         }
         public bool IsAlarmOn
         {
             get; set;
+        }
+        public DateTime TimerSettings
+        {
+            get; set;
+        }
+        public System.Windows.Forms.Timer HiddenTimer
+        {
+            get => timer;
+            set => timer = value;
         }
         public NotifyIcon NotifyIcon1
         {
@@ -48,6 +62,7 @@ namespace Clock
             CreateCustomFont();
             chooseFontDialog = new ChooseFont(this);
             alarmClock = new AlarmClock(this);
+            timerForm = new TimerForm(this);
 		}
         void CreateCustomFont()
         {
@@ -57,9 +72,9 @@ namespace Clock
 
             PrivateFontCollection pfc = new PrivateFontCollection();
             pfc.AddFontFile("Terminat.ttf");
-            Font font = new Font(pfc.Families[0], labelTime.Font.Size);
+            Font font = new Font(pfc.Families[0], labelClock.Font.Size);
             pfc.Dispose();
-            labelTime.Font = font;
+            labelClock.Font = font;
         }
         private void MainForm_Load(object sender, EventArgs e)
 		{
@@ -68,25 +83,24 @@ namespace Clock
             cbShowDate.Checked = Properties.Settings.Default.ShowDate;
             pinToolStripMenuItem.Checked = Properties.Settings.Default.Pin;
             cbPin.Checked = Properties.Settings.Default.Pin;
-            LabelTime.ForeColor = Properties.Settings.Default.ForegroundColor;
-            LabelTime.BackColor = Properties.Settings.Default.BackgroundColor;
+            LabelClock.ForeColor = Properties.Settings.Default.ForegroundColor;
+            LabelClock.BackColor = Properties.Settings.Default.BackgroundColor;
             Console.WriteLine(Directory.GetCurrentDirectory());
             Console.WriteLine(Properties.Settings.Default.FontName);
             PrivateFontCollection pfc = new PrivateFontCollection();
             pfc.AddFontFile(Properties.Settings.Default.FontName);
             Console.WriteLine(pfc.Families[0].ToString());
             Font font = new Font(pfc.Families[0], Properties.Settings.Default.FontSize);
-            LabelTime.Font = font;
+            LabelClock.Font = font;
             pfc.Dispose();
         }
 
 		private void timer1_Tick(object sender, EventArgs e)
 		{
-
-			labelTime.Text = DateTime.Now.ToString("hh:mm:ss tt");
+			labelClock.Text = DateTime.Now.ToString("hh:mm:ss tt");
 			if (cbShowDate.Checked) 
 			{
-				labelTime.Text += $"\n{DateTime.Now.ToString("yyyy.MM.dd")}";
+				labelClock.Text += $"\n{DateTime.Now.ToString("yyyy.MM.dd")}";
 			}
             //if (!string.IsNullOrEmpty(AlarmTime))
             //{
@@ -108,35 +122,35 @@ namespace Clock
             //}
             if (IsAlarmOn)
             {
-                Console.WriteLine("Timer: " + labelTime.Text);
+                Console.WriteLine("Timer: " + labelClock.Text);
 
                 if (alarmClock.CheckBoxAlarm1.Checked || alarmClock.CheckBoxAlarm2.Checked ||
                     alarmClock.CheckBoxAlarm3.Checked || alarmClock.CheckBoxAlarm4.Checked ||
                     alarmClock.CheckBoxAlarm5.Checked)
                 {
-                    if (labelTime.Text.Contains(alarmClock.DateTimePickerAlarm1.Text) ||
-                        labelTime.Text.Contains(alarmClock.DateTimePickerAlarm2.Text) ||
-                        labelTime.Text.Contains(alarmClock.DateTimePickerAlarm3.Text) ||
-                        labelTime.Text.Contains(alarmClock.DateTimePickerAlarm4.Text) ||
-                        labelTime.Text.Contains(alarmClock.DateTimePickerAlarm5.Text))
+                    if (labelClock.Text.Contains(alarmClock.DateTimePickerAlarm1.Text) ||
+                        labelClock.Text.Contains(alarmClock.DateTimePickerAlarm2.Text) ||
+                        labelClock.Text.Contains(alarmClock.DateTimePickerAlarm3.Text) ||
+                        labelClock.Text.Contains(alarmClock.DateTimePickerAlarm4.Text) ||
+                        labelClock.Text.Contains(alarmClock.DateTimePickerAlarm5.Text))
                     {
-                        if (labelTime.Text.Contains(alarmClock.DateTimePickerAlarm1.Text))
+                        if (labelClock.Text.Contains(alarmClock.DateTimePickerAlarm1.Text))
                         {
                             alarmClock.CheckBoxAlarm1.Checked = false;
                         }
-                        if (labelTime.Text.Contains(alarmClock.DateTimePickerAlarm2.Text))
+                        if (labelClock.Text.Contains(alarmClock.DateTimePickerAlarm2.Text))
                         {
                             alarmClock.CheckBoxAlarm2.Checked = false;
                         }
-                        if (labelTime.Text.Contains(alarmClock.DateTimePickerAlarm3.Text))
+                        if (labelClock.Text.Contains(alarmClock.DateTimePickerAlarm3.Text))
                         {
                             alarmClock.CheckBoxAlarm3.Checked = false;
                         }
-                        if (labelTime.Text.Contains(alarmClock.DateTimePickerAlarm4.Text))
+                        if (labelClock.Text.Contains(alarmClock.DateTimePickerAlarm4.Text))
                         {
                             alarmClock.CheckBoxAlarm4.Checked = false;
                         }
-                        if (labelTime.Text.Contains(alarmClock.DateTimePickerAlarm5.Text))
+                        if (labelClock.Text.Contains(alarmClock.DateTimePickerAlarm5.Text))
                         {
                             alarmClock.CheckBoxAlarm5.Checked = false;
                         }
@@ -223,7 +237,7 @@ namespace Clock
 		{
             this.FormBorderStyle = visible ? FormBorderStyle.Sizable : FormBorderStyle.None;
             this.TransparencyKey = visible ? Color.Empty : this.BackColor;
-            labelTime.BackColor = visible ? this.BackColor : Color.LightBlue;
+            labelClock.BackColor = visible ? this.BackColor : Color.LightBlue;
             this.cbShowDate.Visible = visible;
             //this.TopMost = !visible;
             btnHideControls.Visible = visible;
@@ -266,7 +280,7 @@ namespace Clock
 			ColorDialog dialog = new ColorDialog();
 			if (dialog.ShowDialog() == DialogResult.OK)
 			{
-				labelTime.BackColor = dialog.Color;
+				labelClock.BackColor = dialog.Color;
 			}
 			
         }
@@ -276,13 +290,13 @@ namespace Clock
             ColorDialog dialog = new ColorDialog();
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                labelTime.ForeColor = dialog.Color;
+                labelClock.ForeColor = dialog.Color;
             }
         }
 
         private void cbShowDate_Enter(object sender, EventArgs e)
         {
-			labelTime.Focus();
+			labelClock.Focus();
         }
         [DllImport("kernel32.dll")]
         static extern bool AllocConsole();
@@ -294,8 +308,8 @@ namespace Clock
         }
         private void MainForm_Save(object sender, EventArgs e)
         {
-            Properties.Settings.Default.ForegroundColor = LabelTime.ForeColor;
-            Properties.Settings.Default.BackgroundColor = LabelTime.BackColor;
+            Properties.Settings.Default.ForegroundColor = LabelClock.ForeColor;
+            Properties.Settings.Default.BackgroundColor = LabelClock.BackColor;
             Properties.Settings.Default.ShowControls = controlsVisible;
             Properties.Settings.Default.ShowDate = cbShowDate.Checked;
             Properties.Settings.Default.Pin = pinToolStripMenuItem.Checked;
@@ -333,6 +347,24 @@ namespace Clock
         private void setAnAlarmToolStripMenuItem_Click(object sender, EventArgs e)
         {
             alarmClock.Show();
+        }
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            Console.WriteLine("Тик");
+            labelTimer.Text = $"{TimerSettings.Subtract(DateTime.Now).Hours}:{TimerSettings.Subtract(DateTime.Now).Minutes}:{TimerSettings.Subtract(DateTime.Now).Seconds}";
+            if (LabelTimer.Text == "0:0:0")
+            {
+                HiddenTimer.Stop();
+                Dialog dialog = new Dialog();
+                dialog.ShowDialog(this);
+                labelTimer.Visible = false;
+            }
+        }
+
+        private void setTheTimerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            timerForm.Show();
         }
     }
 }

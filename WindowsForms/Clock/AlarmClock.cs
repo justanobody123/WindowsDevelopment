@@ -79,7 +79,6 @@ namespace Clock
                 if (checkBoxAlarm4.Checked) { builder.Append("\nв " + dateTimePickerAlarm4.Text); }
                 if (checkBoxAlarm5.Checked) { builder.Append("\nв "  + dateTimePickerAlarm5.Text); }
                 parent.NotifyIcon1.Text = builder.ToString();
-                //Вот только как я потом буду эти строки оттуда удалять? По \n? Надо подумать
             }
             else
             {
