@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using System.Threading;
 using System.Reflection.Emit;
 using System.Net.WebSockets;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 namespace Clock
 {
 	public partial class MainForm : Form
@@ -141,8 +142,24 @@ namespace Clock
                         }
                         Dialog dialog = new Dialog();
                         dialog.ShowDialog(this);
-                        //Console.WriteLine("Timer after: " + labelTime.Text);
-                        
+                        if (!(alarmClock.CheckBoxAlarm1.Checked || alarmClock.CheckBoxAlarm2.Checked ||
+                            alarmClock.CheckBoxAlarm3.Checked || alarmClock.CheckBoxAlarm4.Checked ||
+                            alarmClock.CheckBoxAlarm5.Checked))
+                        {
+                            IsAlarmOn = false;
+                            NotifyIcon1.Text = "Clock";
+                        }
+                        else
+                        {
+                            StringBuilder builder = new StringBuilder();
+                            builder.Append("Будильник:");
+                            if (alarmClock.CheckBoxAlarm1.Checked) { builder.Append("\nв " + alarmClock.DateTimePickerAlarm1.Text); }
+                            if (alarmClock.CheckBoxAlarm2.Checked) { builder.Append("\nв " + alarmClock.DateTimePickerAlarm2.Text); }
+                            if (alarmClock.CheckBoxAlarm3.Checked) { builder.Append("\nв " + alarmClock.DateTimePickerAlarm3.Text); }
+                            if (alarmClock.CheckBoxAlarm4.Checked) { builder.Append("\nв " + alarmClock.DateTimePickerAlarm4.Text); }
+                            if (alarmClock.CheckBoxAlarm5.Checked) { builder.Append("\nв " + alarmClock.DateTimePickerAlarm5.Text); }
+                            NotifyIcon1.Text = builder.ToString();
+                        }
 
                     }
                     

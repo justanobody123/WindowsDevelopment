@@ -74,10 +74,10 @@ namespace Clock
                 StringBuilder builder = new StringBuilder();
                 builder.Append("Будильник:");
                 if (checkBoxAlarm1.Checked) { builder.Append("\nв " + dateTimePickerAlarm1.Text); }
-                if (checkBoxAlarm1.Checked) { builder.Append("\nв " + dateTimePickerAlarm1.Text); }
-                if (checkBoxAlarm1.Checked) { builder.Append("\nв " + dateTimePickerAlarm1.Text); }
-                if (checkBoxAlarm1.Checked) { builder.Append("\nв " + dateTimePickerAlarm1.Text); }
-                if (checkBoxAlarm1.Checked) { builder.Append("\nв "  + dateTimePickerAlarm1.Text); }
+                if (checkBoxAlarm2.Checked) { builder.Append("\nв " + dateTimePickerAlarm2.Text); }
+                if (checkBoxAlarm3.Checked) { builder.Append("\nв " + dateTimePickerAlarm3.Text); }
+                if (checkBoxAlarm4.Checked) { builder.Append("\nв " + dateTimePickerAlarm4.Text); }
+                if (checkBoxAlarm5.Checked) { builder.Append("\nв "  + dateTimePickerAlarm5.Text); }
                 parent.NotifyIcon1.Text = builder.ToString();
                 //Вот только как я потом буду эти строки оттуда удалять? По \n? Надо подумать
             }
