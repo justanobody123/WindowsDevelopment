@@ -97,29 +97,18 @@ namespace Clock
 
 		private void timer1_Tick(object sender, EventArgs e)
 		{
-			labelClock.Text = DateTime.Now.ToString("hh:mm:ss tt");
-			if (cbShowDate.Checked) 
-			{
-				labelClock.Text += $"\n{DateTime.Now.ToString("yyyy.MM.dd")}";
-			}
-            //if (!string.IsNullOrEmpty(AlarmTime))
-            //{
-            //    
-            //    Console.WriteLine("Alarm: " + AlarmTime);
-            //    //Проверка на совпадение времени таймера и времени будильника
-            //    if (labelTime.Text.Contains(AlarmTime))
-            //    {
-            //        //если да
-            //        //очистка строки
-            //        AlarmTime = string.Empty;
-            //        Console.WriteLine("Будильник сработал!");
-            //        Dialog dialog = new Dialog();
-            //        dialog.ShowDialog(this);
-            //        NotifyIcon1.Text = "mainForm";
-            //    }
-
-
-            //}
+            try
+            {
+                LabelClock.Text = DateTime.Now.ToString("hh:mm:ss");
+                if (cbShowDate.Checked)
+                {
+                    LabelClock.Text += $"\n{DateTime.Now.ToString("yyyy.MM.dd")}";
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка: {ex.Message}");
+            }
             if (IsAlarmOn)
             {
                 Console.WriteLine("Timer: " + labelClock.Text);
@@ -174,43 +163,8 @@ namespace Clock
                             if (alarmClock.CheckBoxAlarm5.Checked) { builder.Append("\nв " + alarmClock.DateTimePickerAlarm5.Text); }
                             NotifyIcon1.Text = builder.ToString();
                         }
-
-                    }
-                    
-                }
-                //if (alarmClock.CheckBoxAlarm2.Checked)
-                //{
-                //    Console.WriteLine("Alarm1: " + alarmClock.DateTimePickerAlarm2.Text);
-                //    if (labelTime.Text.Contains(alarmClock.DateTimePickerAlarm2.Text))
-                //    {
-
-                //    }
-                //}
-                //if (alarmClock.CheckBoxAlarm3.Checked)
-                //{
-                //    Console.WriteLine("Alarm1: " + alarmClock.DateTimePickerAlarm3.Text);
-                //    if (labelTime.Text.Contains(alarmClock.DateTimePickerAlarm3.Text))
-                //    {
-
-                //    }
-                //}
-                //if (alarmClock.CheckBoxAlarm4.Checked)
-                //{
-                //    Console.WriteLine("Alarm1: " + alarmClock.DateTimePickerAlarm4.Text);
-                //    if (labelTime.Text.Contains(alarmClock.DateTimePickerAlarm4.Text))
-                //    {
-
-                //    }
-                //}
-                //if (alarmClock.CheckBoxAlarm5.Checked)
-                //{
-                //    Console.WriteLine("Alarm1: " + alarmClock.DateTimePickerAlarm5.Text);
-                //    if (labelTime.Text.Contains(alarmClock.DateTimePickerAlarm5.Text))
-                //    {
-
-                //    }
-                //}
-
+                    }                    
+                }       
             }
 		}
 		private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -245,6 +199,10 @@ namespace Clock
 			showControlsToolStripMenuItem.Checked = visible;
 			this.controlsVisible = visible;
             this.cbPin.Visible = visible;
+            if (timer.Enabled)
+            {
+                labelTimer.Visible = visible;
+            }
 
         }
 
@@ -352,13 +310,16 @@ namespace Clock
         private void timer_Tick(object sender, EventArgs e)
         {
             Console.WriteLine("Тик");
-            labelTimer.Text = $"{TimerSettings.Subtract(DateTime.Now).Hours}:{TimerSettings.Subtract(DateTime.Now).Minutes}:{TimerSettings.Subtract(DateTime.Now).Seconds}";
-            if (LabelTimer.Text == "0:0:0")
+            //labelTimer.Text = $"{TimerSettings.Subtract(DateTime.Now).Hours}:{TimerSettings.Subtract(DateTime.Now).Minutes}:{TimerSettings.Subtract(DateTime.Now).Seconds}";
+            labelTimer.Text = (TimerSettings.Subtract(DateTime.Now)).ToString(@"h\:mm\:ss"); //("h\\:mm\\:ss")  будет аналогична, собака для избегания лишнего экранирования слэшей
+            if (LabelTimer.Text == "0:00:00")
             {
                 HiddenTimer.Stop();
                 Dialog dialog = new Dialog();
                 dialog.ShowDialog(this);
+                LabelTimer.Text = "TIMER";
                 labelTimer.Visible = false;
+                TimerSettings = DateTime.MinValue;
             }
         }
 
