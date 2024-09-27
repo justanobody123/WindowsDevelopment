@@ -104,5 +104,17 @@ namespace Clock.Properties {
                 this["Pin"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AutoLoad {
+            get {
+                return ((bool)(this["AutoLoad"]));
+            }
+            set {
+                this["AutoLoad"] = value;
+            }
+        }
     }
 }

@@ -15,14 +15,17 @@ using System.Threading;
 using System.Reflection.Emit;
 using System.Net.WebSockets;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
+using Microsoft.Win32;
 namespace Clock
 {
 	public partial class MainForm : Form
 	{
 		bool controlsVisible;
+		bool autoLoad;
         ChooseFont chooseFontDialog;
         AlarmClock alarmClock;
         TimerForm timerForm;
+        
         public System.Windows.Forms.Label LabelClock
         {
             get => labelClock;
@@ -59,13 +62,15 @@ namespace Clock
 			int startX = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Right - this.Right - 25;
 			int startY = 25;
             this.Location = new Point(startX, startY);
-            CreateCustomFont();
             chooseFontDialog = new ChooseFont(this);
             alarmClock = new AlarmClock(this);
             timerForm = new TimerForm(this);
 		}
         void CreateCustomFont()
         {
+            string path = Application.ExecutablePath;
+            path = path.Substring(0, path.LastIndexOf('\\') + 1);
+            Directory.SetCurrentDirectory(path);
             Console.WriteLine(Directory.GetCurrentDirectory());
             Directory.SetCurrentDirectory("..\\..\\Fonts");
             Console.WriteLine(Directory.GetCurrentDirectory());
@@ -85,6 +90,10 @@ namespace Clock
             cbPin.Checked = Properties.Settings.Default.Pin;
             LabelClock.ForeColor = Properties.Settings.Default.ForegroundColor;
             LabelClock.BackColor = Properties.Settings.Default.BackgroundColor;
+            autoLoad = Properties.Settings.Default.AutoLoad;
+            runAtSystemStartupToolStripMenuItem.Checked = autoLoad;
+            SetAutoLoad(autoLoad);
+            CreateCustomFont();
             Console.WriteLine(Directory.GetCurrentDirectory());
             Console.WriteLine(Properties.Settings.Default.FontName);
             PrivateFontCollection pfc = new PrivateFontCollection();
@@ -271,6 +280,7 @@ namespace Clock
             Properties.Settings.Default.ShowControls = controlsVisible;
             Properties.Settings.Default.ShowDate = cbShowDate.Checked;
             Properties.Settings.Default.Pin = pinToolStripMenuItem.Checked;
+            Properties.Settings.Default.AutoLoad = autoLoad;
             Properties.Settings.Default.Save();
         }
 
@@ -326,6 +336,27 @@ namespace Clock
         private void setTheTimerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             timerForm.Show();
+        }
+
+        private void runAtSystemStartupToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            autoLoad = runAtSystemStartupToolStripMenuItem.Checked;
+            SetAutoLoad(autoLoad);
+        }
+        private void SetAutoLoad(bool enable)
+        {
+            string keyName = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(keyName, true))
+            {
+                if (enable)
+                {
+                    key.SetValue("Clock", Application.ExecutablePath);
+                }
+                else
+                {
+                    key.DeleteValue("Clock", false);
+                }
+            }
         }
     }
 }

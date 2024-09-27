@@ -38,6 +38,7 @@
             this.pinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.setAnAlarmToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setTheTimerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.chooseFontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.colorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.backgroundColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,7 +51,7 @@
             this.cbPin = new System.Windows.Forms.CheckBox();
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.labelTimer = new System.Windows.Forms.Label();
-            this.setTheTimerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.runAtSystemStartupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -79,6 +80,7 @@
             this.showControlsToolStripMenuItem,
             this.showDateToolStripMenuItem,
             this.pinToolStripMenuItem,
+            this.runAtSystemStartupToolStripMenuItem,
             this.toolStripSeparator2,
             this.setAnAlarmToolStripMenuItem,
             this.setTheTimerToolStripMenuItem,
@@ -87,7 +89,7 @@
             this.toolStripSeparator1,
             this.quitToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(211, 252);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(220, 278);
             // 
             // showControlsToolStripMenuItem
             // 
@@ -95,7 +97,7 @@
             this.showControlsToolStripMenuItem.CheckOnClick = true;
             this.showControlsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showControlsToolStripMenuItem.Name = "showControlsToolStripMenuItem";
-            this.showControlsToolStripMenuItem.Size = new System.Drawing.Size(210, 26);
+            this.showControlsToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
             this.showControlsToolStripMenuItem.Text = "Show controls";
             this.showControlsToolStripMenuItem.Click += new System.EventHandler(this.showControlsToolStripMenuItem_Click);
             // 
@@ -103,7 +105,7 @@
             // 
             this.showDateToolStripMenuItem.CheckOnClick = true;
             this.showDateToolStripMenuItem.Name = "showDateToolStripMenuItem";
-            this.showDateToolStripMenuItem.Size = new System.Drawing.Size(210, 26);
+            this.showDateToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
             this.showDateToolStripMenuItem.Text = "Show date";
             this.showDateToolStripMenuItem.Click += new System.EventHandler(this.showDateToolStripMenuItem_Click);
             // 
@@ -111,26 +113,33 @@
             // 
             this.pinToolStripMenuItem.CheckOnClick = true;
             this.pinToolStripMenuItem.Name = "pinToolStripMenuItem";
-            this.pinToolStripMenuItem.Size = new System.Drawing.Size(210, 26);
+            this.pinToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
             this.pinToolStripMenuItem.Text = "Pin";
             this.pinToolStripMenuItem.CheckedChanged += new System.EventHandler(this.pinToolStripMenuItem_CheckedChanged);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(207, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(216, 6);
             // 
             // setAnAlarmToolStripMenuItem
             // 
             this.setAnAlarmToolStripMenuItem.Name = "setAnAlarmToolStripMenuItem";
-            this.setAnAlarmToolStripMenuItem.Size = new System.Drawing.Size(210, 26);
+            this.setAnAlarmToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
             this.setAnAlarmToolStripMenuItem.Text = "Set the alarm";
             this.setAnAlarmToolStripMenuItem.Click += new System.EventHandler(this.setAnAlarmToolStripMenuItem_Click);
+            // 
+            // setTheTimerToolStripMenuItem
+            // 
+            this.setTheTimerToolStripMenuItem.Name = "setTheTimerToolStripMenuItem";
+            this.setTheTimerToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
+            this.setTheTimerToolStripMenuItem.Text = "Set the timer";
+            this.setTheTimerToolStripMenuItem.Click += new System.EventHandler(this.setTheTimerToolStripMenuItem_Click);
             // 
             // chooseFontToolStripMenuItem
             // 
             this.chooseFontToolStripMenuItem.Name = "chooseFontToolStripMenuItem";
-            this.chooseFontToolStripMenuItem.Size = new System.Drawing.Size(210, 26);
+            this.chooseFontToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
             this.chooseFontToolStripMenuItem.Text = "Choose font";
             this.chooseFontToolStripMenuItem.Click += new System.EventHandler(this.chooseFontToolStripMenuItem_Click);
             // 
@@ -140,7 +149,7 @@
             this.backgroundColorToolStripMenuItem,
             this.foregroundColorToolStripMenuItem});
             this.colorsToolStripMenuItem.Name = "colorsToolStripMenuItem";
-            this.colorsToolStripMenuItem.Size = new System.Drawing.Size(210, 26);
+            this.colorsToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
             this.colorsToolStripMenuItem.Text = "Colors";
             // 
             // backgroundColorToolStripMenuItem
@@ -160,12 +169,12 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(207, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(216, 6);
             // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(210, 26);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
@@ -233,12 +242,13 @@
             this.labelTimer.Text = "TIMER";
             this.labelTimer.Visible = false;
             // 
-            // setTheTimerToolStripMenuItem
+            // runAtSystemStartupToolStripMenuItem
             // 
-            this.setTheTimerToolStripMenuItem.Name = "setTheTimerToolStripMenuItem";
-            this.setTheTimerToolStripMenuItem.Size = new System.Drawing.Size(210, 26);
-            this.setTheTimerToolStripMenuItem.Text = "Set the timer";
-            this.setTheTimerToolStripMenuItem.Click += new System.EventHandler(this.setTheTimerToolStripMenuItem_Click);
+            this.runAtSystemStartupToolStripMenuItem.CheckOnClick = true;
+            this.runAtSystemStartupToolStripMenuItem.Name = "runAtSystemStartupToolStripMenuItem";
+            this.runAtSystemStartupToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
+            this.runAtSystemStartupToolStripMenuItem.Text = "Run at system startup";
+            this.runAtSystemStartupToolStripMenuItem.CheckedChanged += new System.EventHandler(this.runAtSystemStartupToolStripMenuItem_CheckedChanged);
             // 
             // MainForm
             // 
@@ -285,6 +295,7 @@
         private System.Windows.Forms.Timer timer;
         private System.Windows.Forms.Label labelTimer;
         private System.Windows.Forms.ToolStripMenuItem setTheTimerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem runAtSystemStartupToolStripMenuItem;
     }
 }
 
