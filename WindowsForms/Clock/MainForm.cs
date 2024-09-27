@@ -62,6 +62,7 @@ namespace Clock
 			int startX = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Right - this.Right - 25;
 			int startY = 25;
             this.Location = new Point(startX, startY);
+            CreateCustomFont();
             chooseFontDialog = new ChooseFont(this);
             alarmClock = new AlarmClock(this);
             timerForm = new TimerForm(this);
@@ -93,7 +94,6 @@ namespace Clock
             autoLoad = Properties.Settings.Default.AutoLoad;
             runAtSystemStartupToolStripMenuItem.Checked = autoLoad;
             SetAutoLoad(autoLoad);
-            CreateCustomFont();
             Console.WriteLine(Directory.GetCurrentDirectory());
             Console.WriteLine(Properties.Settings.Default.FontName);
             PrivateFontCollection pfc = new PrivateFontCollection();
@@ -345,7 +345,9 @@ namespace Clock
         }
         private void SetAutoLoad(bool enable)
         {
+            //Строка указывает на путь в реестре винды, где хранятся ключи для автозагрузки приложений.
             string keyName = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
+            //Опять таки, using чтобы потом вручную не диспозить RegistryKey.
             using (RegistryKey key = Registry.CurrentUser.OpenSubKey(keyName, true))
             {
                 if (enable)
