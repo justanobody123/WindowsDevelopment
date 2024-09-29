@@ -91,7 +91,7 @@ namespace Clock
             cbPin.Checked = Properties.Settings.Default.Pin;
             LabelClock.ForeColor = Properties.Settings.Default.ForegroundColor;
             LabelClock.BackColor = Properties.Settings.Default.BackgroundColor;
-            autoLoad = Properties.Settings.Default.AutoLoad;
+            autoLoad = Properties.Settings.Default.AutoLoad; //Лучше проверять на наличие записи в реестре, потому что ее можно оттуда удалить вручную, а изменения переменной не сохранятся.
             runAtSystemStartupToolStripMenuItem.Checked = autoLoad;
             SetAutoLoad(autoLoad);
             Console.WriteLine(Directory.GetCurrentDirectory());
