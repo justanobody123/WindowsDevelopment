@@ -18,14 +18,17 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 using Microsoft.Win32;
 namespace Clock
 {
-	public partial class MainForm : Form
-	{
-		bool controlsVisible;
-		bool autoLoad;
+    public partial class MainForm : Form
+    {
+        bool controlsVisible;
+        bool autoLoad;
         ChooseFont chooseFontDialog;
         AlarmClock alarmClock;
         TimerForm timerForm;
-        
+        public bool ControlsVisible
+        {
+            get => controlsVisible;
+        }
         public System.Windows.Forms.Label LabelClock
         {
             get => labelClock;
@@ -52,21 +55,21 @@ namespace Clock
             get => notifyIcon1;
             set => notifyIcon1 = value;
         }
-		public MainForm()
-		{
+        public MainForm()
+        {
             AllocConsole();
             InitializeComponent();
             this.FormClosing += MainForm_Save;
             SetControlsVisibility(false);
-			this.StartPosition = FormStartPosition.Manual;
-			int startX = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Right - this.Right - 25;
-			int startY = 25;
+            this.StartPosition = FormStartPosition.Manual;
+            int startX = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Right - this.Right - 25;
+            int startY = 25;
             this.Location = new Point(startX, startY);
             CreateCustomFont();
             chooseFontDialog = new ChooseFont(this);
             alarmClock = new AlarmClock(this);
             timerForm = new TimerForm(this);
-		}
+        }
         void CreateCustomFont()
         {
             string path = Application.ExecutablePath;
@@ -75,7 +78,6 @@ namespace Clock
             Console.WriteLine(Directory.GetCurrentDirectory());
             Directory.SetCurrentDirectory("..\\..\\Fonts");
             Console.WriteLine(Directory.GetCurrentDirectory());
-
             PrivateFontCollection pfc = new PrivateFontCollection();
             pfc.AddFontFile("Terminat.ttf");
             Font font = new Font(pfc.Families[0], labelClock.Font.Size);
@@ -83,7 +85,7 @@ namespace Clock
             labelClock.Font = font;
         }
         private void MainForm_Load(object sender, EventArgs e)
-		{
+        {
             //WM_CREATE
             SetControlsVisibility(Properties.Settings.Default.ShowControls);
             cbShowDate.Checked = Properties.Settings.Default.ShowDate;
@@ -91,7 +93,10 @@ namespace Clock
             cbPin.Checked = Properties.Settings.Default.Pin;
             LabelClock.ForeColor = Properties.Settings.Default.ForegroundColor;
             LabelClock.BackColor = Properties.Settings.Default.BackgroundColor;
-            autoLoad = Properties.Settings.Default.AutoLoad; //Лучше проверять на наличие записи в реестре, потому что ее можно оттуда удалить вручную, а изменения переменной не сохранятся.
+            RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", false);
+            autoLoad = rk.GetValue("Clock") != null ? true : false;
+            rk.Dispose();
+            //autoLoad = Properties.Settings.Default.AutoLoad; //Лучше проверять на наличие записи в реестре, потому что ее можно оттуда удалить вручную, а изменения переменной не сохранятся.
             runAtSystemStartupToolStripMenuItem.Checked = autoLoad;
             SetAutoLoad(autoLoad);
             Console.WriteLine(Directory.GetCurrentDirectory());
@@ -104,8 +109,8 @@ namespace Clock
             pfc.Dispose();
         }
 
-		private void timer1_Tick(object sender, EventArgs e)
-		{
+        private void timer1_Tick(object sender, EventArgs e)
+        {
             try
             {
                 LabelClock.Text = DateTime.Now.ToString("hh:mm:ss");
@@ -172,32 +177,32 @@ namespace Clock
                             if (alarmClock.CheckBoxAlarm5.Checked) { builder.Append("\nв " + alarmClock.DateTimePickerAlarm5.Text); }
                             NotifyIcon1.Text = builder.ToString();
                         }
-                    }                    
-                }       
+                    }
+                }
             }
-		}
-		private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
-		{
-			//Под this понимается объект типа MainForm, к которому применяется метод, sender - тот, для кого было вызвано событие (notifyIcon1)
-			this.WindowState = FormWindowState.Normal;
-			this.ShowInTaskbar = true;
-		}
-		//Переопределяем метод из базового класса Form, отсюда и сигнатура
-		protected override void OnResize(EventArgs e)
-		{
-			if (this.WindowState == FormWindowState.Minimized)
-			{
-				this.ShowInTaskbar = false;
-			}
-		}
-		private void btnHideControls_Click(object sender, EventArgs e)
-		{
+        }
+        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            //Под this понимается объект типа MainForm, к которому применяется метод, sender - тот, для кого было вызвано событие (notifyIcon1)
+            this.WindowState = FormWindowState.Normal;
+            this.ShowInTaskbar = true;
+        }
+        //Переопределяем метод из базового класса Form, отсюда и сигнатура
+        protected override void OnResize(EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.ShowInTaskbar = false;
+            }
+        }
+        private void btnHideControls_Click(object sender, EventArgs e)
+        {
 
-			SetControlsVisibility(false);
+            SetControlsVisibility(false);
 
         }
-		void SetControlsVisibility(bool visible)
-		{
+        void SetControlsVisibility(bool visible)
+        {
             this.FormBorderStyle = visible ? FormBorderStyle.Sizable : FormBorderStyle.None;
             this.TransparencyKey = visible ? Color.Empty : this.BackColor;
             labelClock.BackColor = visible ? this.BackColor : Color.LightBlue;
@@ -205,8 +210,8 @@ namespace Clock
             //this.TopMost = !visible;
             btnHideControls.Visible = visible;
             this.ShowInTaskbar = visible;
-			showControlsToolStripMenuItem.Checked = visible;
-			this.controlsVisible = visible;
+            showControlsToolStripMenuItem.Checked = visible;
+            this.controlsVisible = visible;
             this.cbPin.Visible = visible;
             if (timer.Enabled)
             {
@@ -217,39 +222,39 @@ namespace Clock
 
         private void labelTime_MouseHover(object sender, EventArgs e)
         {
-            
+
         }
 
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-			this.Close();
+            this.Close();
         }
 
         private void showControlsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-			SetControlsVisibility(!controlsVisible);
+            SetControlsVisibility(!controlsVisible);
         }
 
         private void showDateToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
-			cbShowDate.Checked = showDateToolStripMenuItem.Checked;
+            cbShowDate.Checked = showDateToolStripMenuItem.Checked;
         }
 
         private void cbShowDate_CheckedChanged(object sender, EventArgs e)
         {
-			this.controlsVisible = showControlsToolStripMenuItem.Checked;
-			SetControlsVisibility(controlsVisible);
+            this.controlsVisible = showControlsToolStripMenuItem.Checked;
+            SetControlsVisibility(controlsVisible);
         }
 
         private void backgroundColorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-			ColorDialog dialog = new ColorDialog();
-			if (dialog.ShowDialog() == DialogResult.OK)
-			{
-				labelClock.BackColor = dialog.Color;
-			}
-			
+            ColorDialog dialog = new ColorDialog();
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                labelClock.BackColor = dialog.Color;
+            }
+
         }
 
         private void foregroundColorToolStripMenuItem_Click(object sender, EventArgs e)
@@ -263,14 +268,14 @@ namespace Clock
 
         private void cbShowDate_Enter(object sender, EventArgs e)
         {
-			labelClock.Focus();
+            labelClock.Focus();
         }
         [DllImport("kernel32.dll")]
         static extern bool AllocConsole();
 
         private void chooseFontToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
+
             chooseFontDialog.Show();
         }
         private void MainForm_Save(object sender, EventArgs e)
@@ -280,7 +285,6 @@ namespace Clock
             Properties.Settings.Default.ShowControls = controlsVisible;
             Properties.Settings.Default.ShowDate = cbShowDate.Checked;
             Properties.Settings.Default.Pin = pinToolStripMenuItem.Checked;
-            Properties.Settings.Default.AutoLoad = autoLoad;
             Properties.Settings.Default.Save();
         }
 
@@ -296,16 +300,16 @@ namespace Clock
             {
                 this.TopMost = true;
                 this.TopMost = false;
-                
+
             }
         }
         private void cbPin_CheckedChanged(object sender, EventArgs e)
         {
-            if (cbPin.Checked) 
+            if (cbPin.Checked)
             {
                 cbPin.BackgroundImage = Properties.Resources.pinned.ToBitmap();
             }
-            else 
+            else
             {
                 cbPin.BackgroundImage = Properties.Resources.not_pinned.ToBitmap();
             }

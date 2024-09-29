@@ -37,7 +37,7 @@ namespace Clock
                 parent.TimerSettings = parent.TimerSettings.AddMinutes(dateTimePickerTimer.Value.Minute);
                 parent.TimerSettings = parent.TimerSettings.AddSeconds(dateTimePickerTimer.Value.Second);
                 Console.WriteLine(parent.TimerSettings.ToString());
-                parent.LabelTimer.Visible = true;
+                parent.LabelTimer.Visible = parent.ControlsVisible;
                 parent.HiddenTimer.Start();
                 //dateTimePickerTimer.Value
                 this.Hide();
