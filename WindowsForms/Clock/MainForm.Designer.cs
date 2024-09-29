@@ -30,14 +30,15 @@
 		{
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.labelTime = new System.Windows.Forms.Label();
+            this.clock = new System.Windows.Forms.Timer(this.components);
+            this.labelClock = new System.Windows.Forms.Label();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.showControlsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showDateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.setAnAlarmToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setTheTimerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.chooseFontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.colorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.backgroundColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -48,26 +49,29 @@
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.btnHideControls = new System.Windows.Forms.Button();
             this.cbPin = new System.Windows.Forms.CheckBox();
+            this.timer = new System.Windows.Forms.Timer(this.components);
+            this.labelTimer = new System.Windows.Forms.Label();
+            this.runAtSystemStartupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // timer1
+            // clock
             // 
-            this.timer1.Enabled = true;
-            this.timer1.Interval = 1000;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            this.clock.Enabled = true;
+            this.clock.Interval = 1000;
+            this.clock.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // labelTime
+            // labelClock
             // 
-            this.labelTime.AutoSize = true;
-            this.labelTime.ContextMenuStrip = this.contextMenuStrip1;
-            this.labelTime.Location = new System.Drawing.Point(36, 88);
-            this.labelTime.Name = "labelTime";
-            this.labelTime.Size = new System.Drawing.Size(179, 63);
-            this.labelTime.TabIndex = 0;
-            this.labelTime.Text = "label1";
-            this.labelTime.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.labelTime.MouseHover += new System.EventHandler(this.labelTime_MouseHover);
+            this.labelClock.AutoSize = true;
+            this.labelClock.ContextMenuStrip = this.contextMenuStrip1;
+            this.labelClock.Location = new System.Drawing.Point(36, 88);
+            this.labelClock.Name = "labelClock";
+            this.labelClock.Size = new System.Drawing.Size(218, 63);
+            this.labelClock.TabIndex = 0;
+            this.labelClock.Text = "CLOCK";
+            this.labelClock.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.labelClock.MouseHover += new System.EventHandler(this.labelTime_MouseHover);
             // 
             // contextMenuStrip1
             // 
@@ -76,14 +80,16 @@
             this.showControlsToolStripMenuItem,
             this.showDateToolStripMenuItem,
             this.pinToolStripMenuItem,
+            this.runAtSystemStartupToolStripMenuItem,
             this.toolStripSeparator2,
             this.setAnAlarmToolStripMenuItem,
+            this.setTheTimerToolStripMenuItem,
             this.chooseFontToolStripMenuItem,
             this.colorsToolStripMenuItem,
             this.toolStripSeparator1,
             this.quitToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(172, 198);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(220, 278);
             // 
             // showControlsToolStripMenuItem
             // 
@@ -91,7 +97,7 @@
             this.showControlsToolStripMenuItem.CheckOnClick = true;
             this.showControlsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showControlsToolStripMenuItem.Name = "showControlsToolStripMenuItem";
-            this.showControlsToolStripMenuItem.Size = new System.Drawing.Size(171, 26);
+            this.showControlsToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
             this.showControlsToolStripMenuItem.Text = "Show controls";
             this.showControlsToolStripMenuItem.Click += new System.EventHandler(this.showControlsToolStripMenuItem_Click);
             // 
@@ -99,7 +105,7 @@
             // 
             this.showDateToolStripMenuItem.CheckOnClick = true;
             this.showDateToolStripMenuItem.Name = "showDateToolStripMenuItem";
-            this.showDateToolStripMenuItem.Size = new System.Drawing.Size(171, 26);
+            this.showDateToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
             this.showDateToolStripMenuItem.Text = "Show date";
             this.showDateToolStripMenuItem.Click += new System.EventHandler(this.showDateToolStripMenuItem_Click);
             // 
@@ -107,26 +113,33 @@
             // 
             this.pinToolStripMenuItem.CheckOnClick = true;
             this.pinToolStripMenuItem.Name = "pinToolStripMenuItem";
-            this.pinToolStripMenuItem.Size = new System.Drawing.Size(171, 26);
+            this.pinToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
             this.pinToolStripMenuItem.Text = "Pin";
             this.pinToolStripMenuItem.CheckedChanged += new System.EventHandler(this.pinToolStripMenuItem_CheckedChanged);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(168, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(216, 6);
             // 
             // setAnAlarmToolStripMenuItem
             // 
             this.setAnAlarmToolStripMenuItem.Name = "setAnAlarmToolStripMenuItem";
-            this.setAnAlarmToolStripMenuItem.Size = new System.Drawing.Size(171, 26);
+            this.setAnAlarmToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
             this.setAnAlarmToolStripMenuItem.Text = "Set the alarm";
             this.setAnAlarmToolStripMenuItem.Click += new System.EventHandler(this.setAnAlarmToolStripMenuItem_Click);
+            // 
+            // setTheTimerToolStripMenuItem
+            // 
+            this.setTheTimerToolStripMenuItem.Name = "setTheTimerToolStripMenuItem";
+            this.setTheTimerToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
+            this.setTheTimerToolStripMenuItem.Text = "Set the timer";
+            this.setTheTimerToolStripMenuItem.Click += new System.EventHandler(this.setTheTimerToolStripMenuItem_Click);
             // 
             // chooseFontToolStripMenuItem
             // 
             this.chooseFontToolStripMenuItem.Name = "chooseFontToolStripMenuItem";
-            this.chooseFontToolStripMenuItem.Size = new System.Drawing.Size(171, 26);
+            this.chooseFontToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
             this.chooseFontToolStripMenuItem.Text = "Choose font";
             this.chooseFontToolStripMenuItem.Click += new System.EventHandler(this.chooseFontToolStripMenuItem_Click);
             // 
@@ -136,7 +149,7 @@
             this.backgroundColorToolStripMenuItem,
             this.foregroundColorToolStripMenuItem});
             this.colorsToolStripMenuItem.Name = "colorsToolStripMenuItem";
-            this.colorsToolStripMenuItem.Size = new System.Drawing.Size(171, 26);
+            this.colorsToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
             this.colorsToolStripMenuItem.Text = "Colors";
             // 
             // backgroundColorToolStripMenuItem
@@ -156,12 +169,12 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(168, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(216, 6);
             // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(171, 26);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
@@ -191,7 +204,7 @@
             // btnHideControls
             // 
             this.btnHideControls.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold);
-            this.btnHideControls.Location = new System.Drawing.Point(47, 273);
+            this.btnHideControls.Location = new System.Drawing.Point(47, 374);
             this.btnHideControls.Name = "btnHideControls";
             this.btnHideControls.Size = new System.Drawing.Size(229, 56);
             this.btnHideControls.TabIndex = 2;
@@ -214,15 +227,39 @@
             this.cbPin.UseVisualStyleBackColor = true;
             this.cbPin.CheckedChanged += new System.EventHandler(this.cbPin_CheckedChanged);
             // 
+            // timer
+            // 
+            this.timer.Interval = 1000;
+            this.timer.Tick += new System.EventHandler(this.timer_Tick);
+            // 
+            // labelTimer
+            // 
+            this.labelTimer.AutoSize = true;
+            this.labelTimer.Location = new System.Drawing.Point(36, 274);
+            this.labelTimer.Name = "labelTimer";
+            this.labelTimer.Size = new System.Drawing.Size(200, 63);
+            this.labelTimer.TabIndex = 5;
+            this.labelTimer.Text = "TIMER";
+            this.labelTimer.Visible = false;
+            // 
+            // runAtSystemStartupToolStripMenuItem
+            // 
+            this.runAtSystemStartupToolStripMenuItem.CheckOnClick = true;
+            this.runAtSystemStartupToolStripMenuItem.Name = "runAtSystemStartupToolStripMenuItem";
+            this.runAtSystemStartupToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
+            this.runAtSystemStartupToolStripMenuItem.Text = "Run at system startup";
+            this.runAtSystemStartupToolStripMenuItem.CheckedChanged += new System.EventHandler(this.runAtSystemStartupToolStripMenuItem_CheckedChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(32F, 61F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(315, 366);
+            this.ClientSize = new System.Drawing.Size(315, 452);
+            this.Controls.Add(this.labelTimer);
             this.Controls.Add(this.cbPin);
             this.Controls.Add(this.btnHideControls);
             this.Controls.Add(this.cbShowDate);
-            this.Controls.Add(this.labelTime);
+            this.Controls.Add(this.labelClock);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 32F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(12, 11, 12, 11);
@@ -237,8 +274,8 @@
 
 		#endregion
 
-		private System.Windows.Forms.Timer timer1;
-		private System.Windows.Forms.Label labelTime;
+		private System.Windows.Forms.Timer clock;
+		private System.Windows.Forms.Label labelClock;
 		private System.Windows.Forms.CheckBox cbShowDate;
 		private System.Windows.Forms.NotifyIcon notifyIcon1;
 		private System.Windows.Forms.Button btnHideControls;
@@ -255,6 +292,10 @@
         private System.Windows.Forms.ToolStripMenuItem pinToolStripMenuItem;
         private System.Windows.Forms.CheckBox cbPin;
         private System.Windows.Forms.ToolStripMenuItem setAnAlarmToolStripMenuItem;
+        private System.Windows.Forms.Timer timer;
+        private System.Windows.Forms.Label labelTimer;
+        private System.Windows.Forms.ToolStripMenuItem setTheTimerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem runAtSystemStartupToolStripMenuItem;
     }
 }
 

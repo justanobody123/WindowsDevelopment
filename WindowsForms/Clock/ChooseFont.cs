@@ -56,7 +56,7 @@ namespace Clock
                 Properties.Settings.Default.Save();
                 Font font = new Font(pfc.Families[0], Convert.ToInt32(numericUpDownFontSize.Value));
                 pfc.Dispose();
-                this.parent.LabelTime.Font = font;
+                this.parent.LabelClock.Font = font;
             }
         }
         void SetFontParameters()

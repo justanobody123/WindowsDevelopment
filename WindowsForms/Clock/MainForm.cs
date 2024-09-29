@@ -13,20 +13,39 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
 using System.Reflection.Emit;
+using System.Net.WebSockets;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
+using Microsoft.Win32;
 namespace Clock
 {
 	public partial class MainForm : Form
 	{
 		bool controlsVisible;
+		bool autoLoad;
         ChooseFont chooseFontDialog;
         AlarmClock alarmClock;
-        public System.Windows.Forms.Label LabelTime
+        TimerForm timerForm;
+        
+        public System.Windows.Forms.Label LabelClock
         {
-            get => labelTime;
+            get => labelClock;
         }
-        public string AlarmTime
+        public System.Windows.Forms.Label LabelTimer
+        {
+            get => labelTimer;
+        }
+        public bool IsAlarmOn
         {
             get; set;
+        }
+        public DateTime TimerSettings
+        {
+            get; set;
+        }
+        public System.Windows.Forms.Timer HiddenTimer
+        {
+            get => timer;
+            set => timer = value;
         }
         public NotifyIcon NotifyIcon1
         {
@@ -46,18 +65,22 @@ namespace Clock
             CreateCustomFont();
             chooseFontDialog = new ChooseFont(this);
             alarmClock = new AlarmClock(this);
+            timerForm = new TimerForm(this);
 		}
         void CreateCustomFont()
         {
+            string path = Application.ExecutablePath;
+            path = path.Substring(0, path.LastIndexOf('\\') + 1);
+            Directory.SetCurrentDirectory(path);
             Console.WriteLine(Directory.GetCurrentDirectory());
             Directory.SetCurrentDirectory("..\\..\\Fonts");
             Console.WriteLine(Directory.GetCurrentDirectory());
 
             PrivateFontCollection pfc = new PrivateFontCollection();
             pfc.AddFontFile("Terminat.ttf");
-            Font font = new Font(pfc.Families[0], labelTime.Font.Size);
+            Font font = new Font(pfc.Families[0], labelClock.Font.Size);
             pfc.Dispose();
-            labelTime.Font = font;
+            labelClock.Font = font;
         }
         private void MainForm_Load(object sender, EventArgs e)
 		{
@@ -66,43 +89,91 @@ namespace Clock
             cbShowDate.Checked = Properties.Settings.Default.ShowDate;
             pinToolStripMenuItem.Checked = Properties.Settings.Default.Pin;
             cbPin.Checked = Properties.Settings.Default.Pin;
-            LabelTime.ForeColor = Properties.Settings.Default.ForegroundColor;
-            LabelTime.BackColor = Properties.Settings.Default.BackgroundColor;
+            LabelClock.ForeColor = Properties.Settings.Default.ForegroundColor;
+            LabelClock.BackColor = Properties.Settings.Default.BackgroundColor;
+            autoLoad = Properties.Settings.Default.AutoLoad;
+            runAtSystemStartupToolStripMenuItem.Checked = autoLoad;
+            SetAutoLoad(autoLoad);
             Console.WriteLine(Directory.GetCurrentDirectory());
             Console.WriteLine(Properties.Settings.Default.FontName);
             PrivateFontCollection pfc = new PrivateFontCollection();
             pfc.AddFontFile(Properties.Settings.Default.FontName);
             Console.WriteLine(pfc.Families[0].ToString());
             Font font = new Font(pfc.Families[0], Properties.Settings.Default.FontSize);
-            LabelTime.Font = font;
+            LabelClock.Font = font;
             pfc.Dispose();
         }
 
 		private void timer1_Tick(object sender, EventArgs e)
 		{
-
-			labelTime.Text = DateTime.Now.ToString("hh:mm:ss tt");
-			if (cbShowDate.Checked) 
-			{
-				labelTime.Text += $"\n{DateTime.Now.ToString("yyyy.MM.dd")}";
-			}
-            if (!string.IsNullOrEmpty(AlarmTime))
+            try
             {
-                Console.WriteLine("Timer: " + labelTime.Text);
-                Console.WriteLine("Alarm: " + AlarmTime);
-                //Проверка на совпадение времени таймера и времени будильника
-                if (labelTime.Text.Contains(AlarmTime))
+                LabelClock.Text = DateTime.Now.ToString("hh:mm:ss");
+                if (cbShowDate.Checked)
                 {
-                    //если да
-                    //очистка строки
-                    AlarmTime = string.Empty;
-                    Console.WriteLine("Будильник сработал!");
-                    Dialog dialog = new Dialog();
-                    dialog.ShowDialog(this);
-                    NotifyIcon1.Text = "mainForm";
+                    LabelClock.Text += $"\n{DateTime.Now.ToString("yyyy.MM.dd")}";
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка: {ex.Message}");
+            }
+            if (IsAlarmOn)
+            {
+                Console.WriteLine("Timer: " + labelClock.Text);
 
-
+                if (alarmClock.CheckBoxAlarm1.Checked || alarmClock.CheckBoxAlarm2.Checked ||
+                    alarmClock.CheckBoxAlarm3.Checked || alarmClock.CheckBoxAlarm4.Checked ||
+                    alarmClock.CheckBoxAlarm5.Checked)
+                {
+                    if (labelClock.Text.Contains(alarmClock.DateTimePickerAlarm1.Text) ||
+                        labelClock.Text.Contains(alarmClock.DateTimePickerAlarm2.Text) ||
+                        labelClock.Text.Contains(alarmClock.DateTimePickerAlarm3.Text) ||
+                        labelClock.Text.Contains(alarmClock.DateTimePickerAlarm4.Text) ||
+                        labelClock.Text.Contains(alarmClock.DateTimePickerAlarm5.Text))
+                    {
+                        if (labelClock.Text.Contains(alarmClock.DateTimePickerAlarm1.Text))
+                        {
+                            alarmClock.CheckBoxAlarm1.Checked = false;
+                        }
+                        if (labelClock.Text.Contains(alarmClock.DateTimePickerAlarm2.Text))
+                        {
+                            alarmClock.CheckBoxAlarm2.Checked = false;
+                        }
+                        if (labelClock.Text.Contains(alarmClock.DateTimePickerAlarm3.Text))
+                        {
+                            alarmClock.CheckBoxAlarm3.Checked = false;
+                        }
+                        if (labelClock.Text.Contains(alarmClock.DateTimePickerAlarm4.Text))
+                        {
+                            alarmClock.CheckBoxAlarm4.Checked = false;
+                        }
+                        if (labelClock.Text.Contains(alarmClock.DateTimePickerAlarm5.Text))
+                        {
+                            alarmClock.CheckBoxAlarm5.Checked = false;
+                        }
+                        Dialog dialog = new Dialog();
+                        dialog.ShowDialog(this);
+                        if (!(alarmClock.CheckBoxAlarm1.Checked || alarmClock.CheckBoxAlarm2.Checked ||
+                            alarmClock.CheckBoxAlarm3.Checked || alarmClock.CheckBoxAlarm4.Checked ||
+                            alarmClock.CheckBoxAlarm5.Checked))
+                        {
+                            IsAlarmOn = false;
+                            NotifyIcon1.Text = "Clock";
+                        }
+                        else
+                        {
+                            StringBuilder builder = new StringBuilder();
+                            builder.Append("Будильник:");
+                            if (alarmClock.CheckBoxAlarm1.Checked) { builder.Append("\nв " + alarmClock.DateTimePickerAlarm1.Text); }
+                            if (alarmClock.CheckBoxAlarm2.Checked) { builder.Append("\nв " + alarmClock.DateTimePickerAlarm2.Text); }
+                            if (alarmClock.CheckBoxAlarm3.Checked) { builder.Append("\nв " + alarmClock.DateTimePickerAlarm3.Text); }
+                            if (alarmClock.CheckBoxAlarm4.Checked) { builder.Append("\nв " + alarmClock.DateTimePickerAlarm4.Text); }
+                            if (alarmClock.CheckBoxAlarm5.Checked) { builder.Append("\nв " + alarmClock.DateTimePickerAlarm5.Text); }
+                            NotifyIcon1.Text = builder.ToString();
+                        }
+                    }                    
+                }       
             }
 		}
 		private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -129,7 +200,7 @@ namespace Clock
 		{
             this.FormBorderStyle = visible ? FormBorderStyle.Sizable : FormBorderStyle.None;
             this.TransparencyKey = visible ? Color.Empty : this.BackColor;
-            labelTime.BackColor = visible ? this.BackColor : Color.LightBlue;
+            labelClock.BackColor = visible ? this.BackColor : Color.LightBlue;
             this.cbShowDate.Visible = visible;
             //this.TopMost = !visible;
             btnHideControls.Visible = visible;
@@ -137,6 +208,10 @@ namespace Clock
 			showControlsToolStripMenuItem.Checked = visible;
 			this.controlsVisible = visible;
             this.cbPin.Visible = visible;
+            if (timer.Enabled)
+            {
+                labelTimer.Visible = visible;
+            }
 
         }
 
@@ -172,7 +247,7 @@ namespace Clock
 			ColorDialog dialog = new ColorDialog();
 			if (dialog.ShowDialog() == DialogResult.OK)
 			{
-				labelTime.BackColor = dialog.Color;
+				labelClock.BackColor = dialog.Color;
 			}
 			
         }
@@ -182,13 +257,13 @@ namespace Clock
             ColorDialog dialog = new ColorDialog();
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                labelTime.ForeColor = dialog.Color;
+                labelClock.ForeColor = dialog.Color;
             }
         }
 
         private void cbShowDate_Enter(object sender, EventArgs e)
         {
-			labelTime.Focus();
+			labelClock.Focus();
         }
         [DllImport("kernel32.dll")]
         static extern bool AllocConsole();
@@ -200,11 +275,12 @@ namespace Clock
         }
         private void MainForm_Save(object sender, EventArgs e)
         {
-            Properties.Settings.Default.ForegroundColor = LabelTime.ForeColor;
-            Properties.Settings.Default.BackgroundColor = LabelTime.BackColor;
+            Properties.Settings.Default.ForegroundColor = LabelClock.ForeColor;
+            Properties.Settings.Default.BackgroundColor = LabelClock.BackColor;
             Properties.Settings.Default.ShowControls = controlsVisible;
             Properties.Settings.Default.ShowDate = cbShowDate.Checked;
             Properties.Settings.Default.Pin = pinToolStripMenuItem.Checked;
+            Properties.Settings.Default.AutoLoad = autoLoad;
             Properties.Settings.Default.Save();
         }
 
@@ -239,6 +315,50 @@ namespace Clock
         private void setAnAlarmToolStripMenuItem_Click(object sender, EventArgs e)
         {
             alarmClock.Show();
+        }
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            Console.WriteLine("Тик");
+            //labelTimer.Text = $"{TimerSettings.Subtract(DateTime.Now).Hours}:{TimerSettings.Subtract(DateTime.Now).Minutes}:{TimerSettings.Subtract(DateTime.Now).Seconds}";
+            labelTimer.Text = (TimerSettings.Subtract(DateTime.Now)).ToString(@"h\:mm\:ss"); //("h\\:mm\\:ss")  будет аналогична, собака для избегания лишнего экранирования слэшей
+            if (LabelTimer.Text == "0:00:00")
+            {
+                HiddenTimer.Stop();
+                Dialog dialog = new Dialog();
+                dialog.ShowDialog(this);
+                LabelTimer.Text = "TIMER";
+                labelTimer.Visible = false;
+                TimerSettings = DateTime.MinValue;
+            }
+        }
+
+        private void setTheTimerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            timerForm.Show();
+        }
+
+        private void runAtSystemStartupToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            autoLoad = runAtSystemStartupToolStripMenuItem.Checked;
+            SetAutoLoad(autoLoad);
+        }
+        private void SetAutoLoad(bool enable)
+        {
+            //Строка указывает на путь в реестре винды, где хранятся ключи для автозагрузки приложений.
+            string keyName = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
+            //Опять таки, using чтобы потом вручную не диспозить RegistryKey.
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(keyName, true))
+            {
+                if (enable)
+                {
+                    key.SetValue("Clock", Application.ExecutablePath);
+                }
+                else
+                {
+                    key.DeleteValue("Clock", false);
+                }
+            }
         }
     }
 }
